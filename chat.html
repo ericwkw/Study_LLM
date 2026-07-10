@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity AI 對話 — 中文科（教師版）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;
+    --ec-blue-dark:#0072ab;
+    --ec-red:#ED1A2E;
+    --ec-green:#00AC6C;
+    --ec-maroon:#7B2539;
+    --ec-amber:#F5A623;
+    --ec-purple:#7C5CDB;
+    --ink:#1e2a35;
+    --ink-2:#55636f;
+    --ink-3:#8a97a3;
+    --line:#e6ebf0;
+    --bg:#f5f8fa;
+    --card:#ffffff;
+    font-size:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);
+    display:flex;min-height:100vh;
+  }
+
+  /* ─── Sidebar (shared frame) ─── */
+  .sidebar{
+    width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+  }
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .nav{padding:14px 10px;flex:1;overflow-y:auto;}
+  .nav-group{margin-bottom:18px;}
+  .nav-group h6{
+    font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;
+    padding:0 10px 8px;text-transform:uppercase;
+  }
+  .nav a{
+    display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;
+    color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;
+  }
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .nav a .ic{width:17px;height:17px;flex-shrink:0;}
+  .nav .pill-new{
+    margin-left:auto;font-size:.58rem;font-weight:700;color:#fff;background:var(--ec-red);
+    padding:2px 6px;border-radius:99px;letter-spacing:.05em;
+  }
+  .sidebar .user{
+    border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;
+  }
+  .sidebar .user .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--ec-blue);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;
+  }
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  /* ─── Main chat column ─── */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;}
+  .chat-scroll{flex:1;overflow-y:auto;padding:26px 34px 10px;}
+  .chat-inner{max-width:860px;margin:0 auto;}
+
+  /* What's new */
+  .whatsnew{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:34px;
+  }
+  .whatsnew .wn-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .whatsnew .wn-head b{font-size:.72rem;letter-spacing:.18em;color:var(--ink-2);font-weight:600;}
+  .whatsnew .wn-head a{font-size:.72rem;color:var(--ec-blue);text-decoration:none;}
+  .whatsnew .row{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:.8rem;color:var(--ink);}
+  .whatsnew .patch{
+    font-size:.58rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border-radius:6px;
+    padding:2px 7px;letter-spacing:.05em;
+  }
+  .whatsnew .ver{color:var(--ink-3);font-size:.72rem;}
+  .whatsnew .row .arrow{margin-left:auto;color:var(--ink-3);}
+
+  /* Hero */
+  .hero-chat{text-align:center;margin-bottom:26px;}
+  .hero-chat .eyebrow{
+    font-size:.7rem;letter-spacing:.28em;color:var(--ink-3);font-weight:600;
+    display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:14px;
+  }
+  .hero-chat .eyebrow::before,.hero-chat .eyebrow::after{
+    content:"";height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--line));
+  }
+  .hero-chat .eyebrow::after{background:linear-gradient(90deg,var(--line),transparent);}
+  .hero-chat h1{
+    font-size:2.6rem;font-weight:800;letter-spacing:.01em;
+    background:linear-gradient(100deg,var(--ec-blue) 10%,var(--ec-green) 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-chat p{font-size:.92rem;color:var(--ink-2);margin-top:10px;}
+  .role-pill{
+    display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:99px;
+    padding:3px;margin-top:18px;
+  }
+  .role-pill span{
+    padding:8px 26px;border-radius:99px;font-size:.85rem;color:var(--ec-blue-dark);
+    background:#e6f4fb;font-weight:600;
+  }
+  .role-pill em{
+    padding:8px 14px;font-size:.68rem;color:var(--ink-3);font-style:normal;align-self:center;
+  }
+
+  /* Suggestion cards */
+  .sugg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 10px;}
+  .sugg .s-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .sugg .s-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(30,42,53,.08);}
+  .sugg .s-card .cat{
+    font-size:.62rem;letter-spacing:.14em;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;
+  }
+  .sugg .s-card h4{font-size:.85rem;font-weight:600;line-height:1.5;}
+  .sugg .s-card:nth-child(1) .cat{color:var(--ec-blue);}
+  .sugg .s-card:nth-child(2) .cat{color:var(--ec-green);}
+  .sugg .s-card:nth-child(3) .cat{color:var(--ec-amber);}
+  .sugg .s-card:nth-child(4) .cat{color:var(--ec-purple);}
+  .sugg .s-card:nth-child(5) .cat{color:var(--ec-maroon);}
+  .sugg .s-card:nth-child(4),.sugg .s-card:nth-child(5){grid-column:span 1;}
+  .sugg-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:66%;margin:0 auto;}
+
+  /* Messages */
+  .thread{margin-top:10px;display:flex;flex-direction:column;gap:14px;}
+  .msg{max-width:78%;padding:12px 16px;border-radius:16px;font-size:.88rem;line-height:1.65;}
+  .msg.user{align-self:flex-end;background:var(--ec-blue);color:#fff;border-bottom-right-radius:5px;}
+  .msg.ai{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;}
+  .msg.ai .tag{
+    display:inline-block;font-size:.6rem;font-weight:700;color:var(--ec-blue-dark);
+    background:#e6f4fb;border-radius:6px;padding:2px 7px;margin-bottom:6px;letter-spacing:.05em;
+  }
+  .typing{align-self:flex-start;color:var(--ink-3);font-size:.8rem;padding:4px 6px;}
+
+  /* ─── Composer ─── */
+  .composer-wrap{padding:12px 34px 22px;border-top:1px solid var(--line);background:var(--bg);}
+  .composer{
+    max-width:860px;margin:0 auto;background:#fff;border:1px solid var(--line);
+    border-radius:20px;padding:14px 16px 10px;box-shadow:0 4px 18px rgba(30,42,53,.05);
+    position:relative;
+  }
+  .composer textarea{
+    width:100%;border:none;outline:none;resize:none;font-family:inherit;
+    font-size:.92rem;color:var(--ink);min-height:44px;background:transparent;
+  }
+  .composer textarea::placeholder{color:var(--ink-3);}
+  .composer .bar{display:flex;align-items:center;gap:6px;margin-top:6px;}
+  .cbtn{
+    display:inline-flex;align-items:center;gap:6px;border:none;background:transparent;
+    color:var(--ink-2);font-size:.8rem;font-family:inherit;cursor:pointer;
+    padding:7px 10px;border-radius:9px;position:relative;
+  }
+  .cbtn:hover{background:#f2f6f9;}
+  .cbtn.open{background:#e6f4fb;color:var(--ec-blue-dark);}
+  .cbtn .chev{font-size:.6rem;color:var(--ink-3);}
+  .cbtn .ic{width:16px;height:16px;}
+  .cbtn .badge-mode{
+    font-size:.6rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;
+    border-radius:6px;padding:2px 6px;
+  }
+  .spacer{flex:1;}
+  .send{
+    width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
+    background:linear-gradient(120deg,var(--ec-blue),var(--ec-green));color:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .send svg{width:17px;height:17px;}
+  .mic{background:transparent;border:none;color:var(--ink-2);cursor:pointer;padding:8px;border-radius:9px;}
+  .mic:hover{background:#f2f6f9;}
+  .hint{
+    max-width:860px;margin:8px auto 0;text-align:center;font-size:.66rem;color:var(--ink-3);
+  }
+
+  /* ─── Popover menus ─── */
+  .menu{
+    position:absolute;bottom:calc(100% + 10px);background:#fff;border:1px solid var(--line);
+    border-radius:14px;box-shadow:0 12px 34px rgba(30,42,53,.14);min-width:280px;
+    padding:6px;display:none;z-index:30;
+  }
+  .menu.show{display:block;}
+  .menu .m-sect{
+    font-size:.62rem;letter-spacing:.14em;font-weight:700;color:var(--ink-3);
+    padding:10px 12px 6px;text-transform:uppercase;
+  }
+  .menu .m-item{
+    display:flex;align-items:flex-start;gap:11px;padding:10px 12px;border-radius:10px;
+    cursor:pointer;
+  }
+  .menu .m-item:hover{background:#f2f6f9;}
+  .menu .m-item.selected{background:#e6f4fb;}
+  .menu .m-item .ic{width:17px;height:17px;flex-shrink:0;margin-top:2px;color:var(--ink-2);}
+  .menu .m-item b{font-size:.85rem;font-weight:600;display:block;}
+  .menu .m-item small{font-size:.72rem;color:var(--ink-3);line-height:1.4;display:block;margin-top:2px;}
+  .menu .m-item .check{margin-left:auto;color:var(--ec-blue);font-weight:700;visibility:hidden;}
+  .menu .m-item.selected .check{visibility:visible;}
+  .menu hr{border:none;border-top:1px solid var(--line);margin:6px 4px;}
+  .menu .m-caps{display:flex;gap:8px;margin-left:auto;color:var(--ink-3);}
+  .menu .m-caps svg{width:14px;height:14px;}
+
+  /* toggle switch inside tools menu */
+  .switch{margin-left:auto;width:34px;height:19px;border-radius:99px;background:#d6dee5;position:relative;flex-shrink:0;transition:background .15s;}
+  .switch::after{
+    content:"";position:absolute;top:2.5px;left:3px;width:14px;height:14px;border-radius:50%;
+    background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  }
+  .m-item.on .switch{background:var(--ec-green);}
+  .m-item.on .switch::after{left:17px;}
+
+  .toast{
+    position:fixed;bottom:110px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;
+    opacity:0;pointer-events:none;transition:opacity .25s;z-index:50;
+  }
+  .toast.show{opacity:.94;}
+
+  @media (max-width:900px){ .sidebar{display:none;} .sugg{grid-template-columns:1fr;} .sugg-row2{max-width:100%;grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<!-- ───────── Sidebar ───────── -->
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>AI 工具</h6>
+      <a href="chat.html" class="active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-9 8.36 8.5 8.5 0 01-3.4-.7L3 21l1.84-5.6A8.38 8.38 0 013.5 11.5a8.5 8.5 0 018.5-8.5 8.38 8.38 0 019 8.5z"/></svg>AI 對話</a>
+      <a href="agents.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>Apps／代理</a>
+      <a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>AI 工具</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">W</div>
+    <div class="meta"><b>Eric Wu</b><span>eric.wu@school.edu.hk</span></div>
+  </div>
+</aside>
+
+<!-- ───────── Main ───────── -->
+<main class="main">
+  <div class="chat-scroll" id="chatScroll">
+    <div class="chat-inner">
+
+      <div class="hero-chat" id="hero" style="margin-top:60px;">
+        <div class="eyebrow">教 師 工 作 空 間</div>
+        <h1>EdCity AI 對話</h1>
+        <p>隨時提問 — 備課支援、教學設計、創意靈感</p>
+        <div class="role-pill"><span>👩‍🏫 教師</span><em>本原型只涵蓋教師版</em></div>
+
+        <div class="sugg">
+          <div class="s-card" onclick="useSuggestion('幫我把《背影》一課設計成互動課堂問答遊戲')">
+            <div class="cat">🧩 建立小應用</div>
+            <h4>課堂問答遊戲 —《背影》搶答挑戰</h4>
+          </div>
+          <div class="s-card" onclick="useSuggestion('替我草擬一封有關中文週活動的家長通告')">
+            <div class="cat">📄 建立文件</div>
+            <h4>家長通告 — 中文週活動安排</h4>
+          </div>
+          <div class="s-card" onclick="useSuggestion('製作一份介紹唐詩三首的課堂簡報')">
+            <div class="cat">📊 製作簡報</div>
+            <h4>唐詩三首 — 課堂簡報</h4>
+          </div>
+        </div>
+        <div class="sugg sugg-row2">
+          <div class="s-card" onclick="useSuggestion('搜尋最新的中文科讀寫教學策略')">
+            <div class="cat" style="color:var(--ec-purple)">🔍 搜尋網上資源</div>
+            <h4>最新讀寫教學策略</h4>
+          </div>
+          <div class="s-card" onclick="useSuggestion('用時間線視覺化中國文學發展史')">
+            <div class="cat" style="color:var(--ec-maroon)">📈 視覺化</div>
+            <h4>中國文學發展史時間線</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="thread" id="thread"></div>
+    </div>
+  </div>
+
+  <!-- ───────── Composer ───────── -->
+  <div class="composer-wrap">
+    <div class="composer">
+      <textarea id="input" rows="1" placeholder="設計教案、評分準則或課堂活動…"></textarea>
+      <div class="bar">
+
+        <!-- ＋ menu -->
+        <button class="cbtn" id="btnPlus" onclick="toggleMenu('menuPlus',this)" aria-haspopup="true">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="badge-mode" id="modeBadge" style="display:none"></span>
+        </button>
+        <div class="menu" id="menuPlus" style="left:0;">
+          <div class="m-item" data-mode="ask" onclick="setMode('ask')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-9 8.36 8.5 8.5 0 01-3.4-.7L3 21l1.84-5.6A8.38 8.38 0 013.5 11.5a8.5 8.5 0 018.5-8.5 8.38 8.38 0 019 8.5z"/></svg>
+            <span><b>提問模式</b><small>只提供答案 — 不使用工具或建立檔案</small></span>
+            <span class="check">✓</span>
+          </div>
+          <div class="m-item" data-mode="plan" onclick="setMode('plan')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            <span><b>規劃模式</b><small>先草擬計劃，確認後才執行</small></span>
+            <span class="check">✓</span>
+          </div>
+          <hr>
+          <div class="m-item" onclick="newChat()">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM12 11v6M9 14h6"/></svg>
+            <span><b>新對話</b></span>
+          </div>
+          <hr>
+          <div class="m-item" onclick="toast('原型示範：附加檔案')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+            <span><b>附加檔案</b></span>
+          </div>
+          <div class="m-item" onclick="toast('原型示範：手繪輸入')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+            <span><b>手繪</b></span>
+          </div>
+        </div>
+
+        <!-- Tools menu -->
+        <button class="cbtn" id="btnTools" onclick="toggleMenu('menuTools',this)" aria-haspopup="true">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          工具 <span class="chev">▼</span>
+        </button>
+        <div class="menu" id="menuTools" style="left:44px;">
+          <div class="m-sect">啟用工具</div>
+          <div class="m-item on" onclick="toggleTool(this,'網上搜尋')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <span><b>網上搜尋</b><small>搜尋最新教學資源與資料</small></span>
+            <span class="switch"></span>
+          </div>
+          <div class="m-item on" onclick="toggleTool(this,'建立文件')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6"/></svg>
+            <span><b>建立文件</b><small>生成工作紙、通告及教學文件</small></span>
+            <span class="switch"></span>
+          </div>
+          <div class="m-item" onclick="toggleTool(this,'製作簡報')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span><b>製作簡報</b><small>生成可下載的 PPTX 課堂簡報</small></span>
+            <span class="switch"></span>
+          </div>
+          <div class="m-item" onclick="toggleTool(this,'視覺化')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"/></svg>
+            <span><b>視覺化</b><small>圖表、時間線及概念圖</small></span>
+            <span class="switch"></span>
+          </div>
+          <div class="m-item" onclick="toggleTool(this,'互動代理')">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>
+            <span><b>互動代理</b><small>建立課堂互動小應用</small></span>
+            <span class="switch"></span>
+          </div>
+        </div>
+
+        <!-- Model menu -->
+        <button class="cbtn" id="btnModel" onclick="toggleMenu('menuModel',this)" aria-haspopup="true">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+          <span id="modelLabel">自動</span> <span class="chev">▼</span>
+        </button>
+        <div class="menu" id="menuModel" style="left:110px;min-width:320px;max-height:380px;overflow-y:auto;">
+          <div class="m-sect">對話模型</div>
+          <div class="m-item selected" data-model="自動" onclick="setModel(this,'自動')">
+            <span><b>自動</b><small>按任務自動挑選最合適的模型</small></span>
+            <span class="m-caps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></span>
+            <span class="check">✓</span>
+          </div>
+          <div class="m-item" data-model="快速模型" onclick="setModel(this,'快速模型')">
+            <span><b>快速模型</b><small>回應快速，適合簡單提問</small></span>
+            <span class="check">✓</span>
+          </div>
+          <div class="m-item" data-model="智能模型" onclick="setModel(this,'智能模型')">
+            <span><b>智能模型</b><small>處理較複雜的教學設計任務</small></span>
+            <span class="check">✓</span>
+          </div>
+          <div class="m-sect">更多模型</div>
+          <div class="m-item" data-model="Gemini 3 Flash" onclick="setModel(this,'Gemini 3 Flash')"><span><b>Gemini 3 Flash</b></span><span class="check">✓</span></div>
+          <div class="m-item" data-model="Gemini 3.1 Pro" onclick="setModel(this,'Gemini 3.1 Pro')"><span><b>Gemini 3.1 Pro</b></span><span class="check">✓</span></div>
+          <div class="m-item" data-model="Claude Sonnet 5" onclick="setModel(this,'Claude Sonnet 5')"><span><b>Claude Sonnet 5</b></span><span class="check">✓</span></div>
+          <div class="m-item" data-model="GPT-5.4" onclick="setModel(this,'GPT-5.4')"><span><b>GPT-5.4</b></span><span class="check">✓</span></div>
+          <div class="m-item" data-model="GPT-5.4 Mini" onclick="setModel(this,'GPT-5.4 Mini')"><span><b>GPT-5.4 Mini</b></span><span class="check">✓</span></div>
+          <div class="m-item" data-model="GLM-5.2" onclick="setModel(this,'GLM-5.2')"><span><b>GLM-5.2</b></span><span class="check">✓</span></div>
+        </div>
+
+        <span class="spacer"></span>
+        <button class="mic" onclick="toast('原型示範：語音輸入')" aria-label="語音輸入">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+        </button>
+        <button class="send" onclick="sendMsg()" aria-label="送出">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="hint">EdCity AI 對話 · 內部示範原型，回覆為預設示例，僅供概念演示</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let mode = null;           // null | 'ask' | 'plan'
+let model = '自動';
+let openMenu = null;
+
+function toggleMenu(id, btn){
+  const m = document.getElementById(id);
+  const wasOpen = m.classList.contains('show');
+  closeMenus();
+  if(!wasOpen){ m.classList.add('show'); btn.classList.add('open'); openMenu = m; }
+}
+function closeMenus(){
+  document.querySelectorAll('.menu').forEach(x=>x.classList.remove('show'));
+  document.querySelectorAll('.cbtn').forEach(x=>x.classList.remove('open'));
+  openMenu = null;
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.cbtn') && !e.target.closest('.menu')) closeMenus();
+});
+
+function setMode(m){
+  const items = document.querySelectorAll('#menuPlus .m-item[data-mode]');
+  if(mode === m){ mode = null; } else { mode = m; }
+  items.forEach(i=>i.classList.toggle('selected', i.dataset.mode===mode));
+  const badge = document.getElementById('modeBadge');
+  if(mode){ badge.style.display='inline-block'; badge.textContent = mode==='ask'?'提問模式':'規劃模式'; }
+  else { badge.style.display='none'; }
+  closeMenus();
+  toast(mode ? (mode==='ask'?'已切換至提問模式':'已切換至規劃模式') : '已回復預設模式');
+}
+function toggleTool(el, name){
+  el.classList.toggle('on');
+  toast((el.classList.contains('on')?'已啟用：':'已停用：') + name);
+}
+function setModel(el, name){
+  model = name;
+  document.querySelectorAll('#menuModel .m-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('modelLabel').textContent = name;
+  closeMenus();
+  toast('對話模型：' + name);
+}
+function newChat(){
+  document.getElementById('thread').innerHTML='';
+  document.getElementById('hero').style.display='';
+  document.getElementById('input').value='';
+  closeMenus();
+  toast('已開始新對話');
+}
+function useSuggestion(text){
+  document.getElementById('input').value = text;
+  document.getElementById('input').focus();
+}
+function sendMsg(){
+  const inp = document.getElementById('input');
+  const text = inp.value.trim();
+  if(!text) return;
+  document.getElementById('hero').style.display='none';
+  const thread = document.getElementById('thread');
+  thread.insertAdjacentHTML('beforeend', `<div class="msg user"></div>`);
+  thread.lastElementChild.textContent = text;
+  inp.value='';
+  const typing = document.createElement('div');
+  typing.className='typing'; typing.textContent='EdCity AI 正在輸入…';
+  thread.appendChild(typing);
+  scrollBottom();
+  setTimeout(()=>{
+    typing.remove();
+    const tag = mode==='plan' ? '規劃模式 · '+model : mode==='ask' ? '提問模式 · '+model : model;
+    thread.insertAdjacentHTML('beforeend', `
+      <div class="msg ai"><span class="tag">${tag}</span><br>
+      這是原型的預設示例回覆。正式版本會根據你的要求${mode==='plan'?'先草擬教學計劃供你確認，再':''}生成完整內容，例如教案大綱、活動建議或評估設計。<br><br>
+      你可以試試：切換<b>提問／規劃模式</b>（＋按鈕）、開關<b>工具</b>，或轉用其他<b>模型</b>，感受不同的互動方式。</div>`);
+    scrollBottom();
+  }, 900);
+}
+function scrollBottom(){
+  const sc = document.getElementById('chatScroll');
+  sc.scrollTop = sc.scrollHeight;
+}
+document.getElementById('input').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); }
+});
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1600);
+}
+</script>
+<script src="usage-modal.js"></script>
+</body>
+</html>
