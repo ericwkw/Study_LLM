@@ -71,6 +71,30 @@
 
   footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
 
+  /* engagement layer */
+  .view-toggle{display:inline-flex;background:#f5f8fa;border:1px solid var(--line);border-radius:99px;padding:3px;margin-left:12px;}
+  .view-toggle button{border:none;background:transparent;border-radius:99px;padding:6px 14px;font-size:.72rem;color:var(--ink-2);cursor:pointer;font-family:inherit;font-weight:600;}
+  .view-toggle button.on{background:var(--ec-green);color:#fff;}
+  .greet{font-size:1.4rem;font-weight:800;}
+  .mood-row{display:flex;gap:9px;margin:14px 0 4px;flex-wrap:wrap;}
+  .mood{
+    flex:1;min-width:150px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:13px;
+    padding:12px 14px;cursor:pointer;font-family:inherit;
+  }
+  .mood b{display:block;font-size:.82rem;color:var(--ink);}
+  .mood small{font-size:.68rem;color:var(--ink-3);display:block;margin-top:2px;}
+  .mood.on{border-color:#bfe8d7;background:#f7fdf9;box-shadow:0 0 0 2px #dcf3e8;}
+  .garden{display:flex;align-items:center;gap:5px;margin-top:9px;font-size:1.15rem;}
+  .garden .week{opacity:1;}
+  .garden .lbl{font-size:.66rem;color:var(--ink-3);margin-left:8px;}
+  .rec .go.doing{color:var(--ink-3);border-color:var(--line);cursor:default;}
+  .rec .go.done{color:#fff;background:var(--ec-green);border-color:var(--ec-green);cursor:default;}
+  .rec.hidden{display:none;}
+  .parent-panel{display:none;}
+  .parent-panel .q{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #f2f6f8;font-size:.8rem;line-height:1.65;color:var(--ink-2);}
+  .parent-panel .q .n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#effaf5;color:#0c6b48;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .parent-note{background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;padding:11px 15px;font-size:.76rem;color:#0c6b48;line-height:1.65;margin-bottom:14px;}
+
   .role-banner{background:#effaf5;border-bottom:1px solid #bfe8d7;color:#0c6b48;
     font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
 </style>
@@ -81,14 +105,25 @@
 <div class="topbar">
   <img src="edcity_logo.svg" alt="香港教育城 EdCity">
   <span class="tag">學生／家長入口 · 與教師系統分離</span>
-  <div class="who"><div class="avatar">K</div>Karen · 中二</div>
+  <div class="who"><div class="avatar">K</div>Karen · 中二
+    <span class="view-toggle">
+      <button class="on" id="vStu" onclick="setView('stu')">學生</button>
+      <button id="vPar" onclick="setView('par')">家長視角</button>
+    </span>
+  </div>
 </div>
 
 <div class="wrap">
   <div class="ribbon">🟡 提案中 · 入口為設計方案，未建置（AI 導師部分另設 🔴 決策門檻）</div>
 
-  <h1>你的學習進度</h1>
+  <div id="stuView">
+  <h1 class="greet">Karen 👋 今晚想做甚麼？</h1>
   <div class="sub">2025/26 下學期 · 中文科</div>
+  <div class="mood-row">
+    <button class="mood on" data-m="light" onclick="setMood(this)"><b>🍃 輕鬆練 10 分鐘</b><small>短練習，做完就休息</small></button>
+    <button class="mood" data-m="focus" onclick="setMood(this)"><b>💪 認真練 20 分鐘</b><small>集中練文言字詞</small></button>
+    <button class="mood" data-m="review" onclick="setMood(this)"><b>🔁 溫故知新</b><small>重溫老師發佈過的練習</small></button>
+  </div>
   <div class="privacy">🔒 這裏只會顯示<b>你自己</b>的進度，沒有排名，也不會跟同學比較。這是刻意的設計，不是未完成的功能。</div>
 
   <div class="prog-card">
@@ -99,16 +134,33 @@
     <div class="skill-row r"><span class="nm">文言字詞</span><div class="bar"><i style="width:31%"></i></div><span class="st">未跟上 ▼</span></div>
     <div class="persist">
       <span class="p-ic">🌱</span>
-      <div><b>你堅持住的事</b><br>推論題你已連續四星期堅持練習。三月時你說最怕這類題，現在它是你進步最快的一項。文言字詞暫時未跟上也不要緊——慢慢走，也是在走。</div>
+      <div><b>你堅持住的事</b><br>推論題你已連續四星期堅持練習。三月時你說最怕這類題，現在它是你進步最快的一項。文言字詞暫時未跟上也不要緊，一步一步來就好。
+        <div class="garden" id="garden"><span class="week">🌱</span><span class="week">🌿</span><span class="week">☘️</span><span class="week">🍀</span><span class="lbl">每堅持一星期，就多一片葉。完成今晚的練習，可以再添一片</span></div>
+      </div>
     </div>
   </div>
 
   <div class="rec-card">
-    <h3>給你的練習建議</h3>
+    <h3 id="recTitle">🍃 輕鬆練習（10 分鐘內做完）</h3>
     <div class="src">由 EdCity AI 建議 · 針對「文言字詞」— 與老師使用同一個官方推薦引擎，只推薦免費官方資源</div>
-    <div class="rec"><div class="ic">📜</div><div><b>文言常用虛詞練習（一）</b><small>15 分鐘 · 官方免費資源</small></div><button class="go">開始</button></div>
-    <div class="rec"><div class="ic">🃏</div><div><b>文言字詞學習卡 — 中二選篇</b><small>10 分鐘 · 官方免費資源</small></div><button class="go">開始</button></div>
-    <div class="rec"><div class="ic">✍️</div><div><b>《背影》字詞重溫小測</b><small>8 分鐘 · 你老師發佈的練習</small></div><button class="go">開始</button></div>
+    <div class="rec" data-m="light focus"><div class="ic">🃏</div><div><b>文言字詞學習卡 — 中二選篇</b><small>10 分鐘 · 官方免費資源</small></div><button class="go" onclick="startRec(this)">開始</button></div>
+    <div class="rec" data-m="light review"><div class="ic">✍️</div><div><b>《背影》字詞重溫小測</b><small>8 分鐘 · 你老師發佈的練習</small></div><button class="go" onclick="startRec(this)">開始</button></div>
+    <div class="rec" data-m="focus"><div class="ic">📜</div><div><b>文言常用虛詞練習（一）</b><small>15 分鐘 · 官方免費資源</small></div><button class="go" onclick="startRec(this)">開始</button></div>
+    <div class="rec" data-m="review"><div class="ic">🔁</div><div><b>推論題錯題回顧</b><small>12 分鐘 · 取自你之前做錯的題目</small></div><button class="go" onclick="startRec(this)">開始</button></div>
+  </div>
+  </div><!-- /stuView -->
+
+  <div class="parent-panel" id="parView">
+    <h1 class="greet">Karen 這星期的學習</h1>
+    <div class="sub">家長視角 · 2025/26 下學期 · 中文科</div>
+    <div class="parent-note">🤝 這一頁的目的是幫你<b>陪伴 Karen</b>，而不是給你一張成績單。你看到的資料與她看到的相同：只有她自己的進度，沒有名次，也不會跟其他孩子比較。</div>
+    <div class="rec-card">
+      <h3>本週可以跟 Karen 聊的三件事</h3>
+      <div class="src">根據她的學習紀錄生成 · 只提供話題，不鼓勵施壓</div>
+      <div class="q"><span class="n">1</span><span><b>推論題</b>她已連續練習了四星期；三月時她還說最怕這類題。不妨問問她：「你是怎樣不再怕它的？」</span></div>
+      <div class="q"><span class="n">2</span><span><b>文言字詞</b>是她暫時覺得最難的部分。與其問她「溫咗書未」，不如陪她讀一段〈背影〉，請她教你一個生字。</span></div>
+      <div class="q"><span class="n">3</span><span>這星期她完成了三次練習，全部由她自己選擇、自己安排。值得讚她一句：「你安排得很好。」</span></div>
+    </div>
   </div>
 
   <div class="tutor">
@@ -125,6 +177,49 @@
   </footer>
 </div>
 
+<script>
+/* mood check-in filters practice list */
+const MOOD_TITLES = {light:'🍃 輕鬆練習（10 分鐘內做完）', focus:'💪 認真練：集中文言字詞', review:'🔁 溫故知新'};
+let mood='light';
+function setMood(btn){
+  mood=btn.dataset.m;
+  document.querySelectorAll('.mood').forEach(m=>m.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('recTitle').textContent = MOOD_TITLES[mood];
+  document.querySelectorAll('.rec[data-m]').forEach(r=>{
+    r.classList.toggle('hidden', !r.dataset.m.split(' ').includes(mood));
+  });
+  sToast('好，已按你今晚的狀態選了幾個練習');
+}
+/* start → doing → done, garden grows */
+function startRec(btn){
+  if(btn.classList.contains('done')||btn.classList.contains('doing')) return;
+  btn.classList.add('doing'); btn.textContent='進行中…';
+  setTimeout(()=>{
+    btn.classList.remove('doing'); btn.classList.add('done'); btn.textContent='完成 ✓';
+    const g=document.getElementById('garden');
+    const leaf=document.createElement('span'); leaf.className='week'; leaf.textContent='🌱';
+    g.insertBefore(leaf, g.querySelector('.lbl'));
+    sToast('今晚這一步完成了。不必多，每一步都算數 🌱');
+  }, 1200);
+}
+/* student ⇄ parent view */
+function setView(v){
+  document.getElementById('vStu').classList.toggle('on', v==='stu');
+  document.getElementById('vPar').classList.toggle('on', v==='par');
+  document.getElementById('stuView').style.display = v==='stu' ? '' : 'none';
+  document.getElementById('parView').style.display = v==='par' ? 'block' : 'none';
+  sToast(v==='par' ? '已切換至家長視角：同一份資料，從陪伴的角度呈現' : '已切換回學生視圖');
+}
+let sTT;
+function sToast(m){
+  let t=document.getElementById('sToast');
+  if(!t){t=document.createElement('div');t.id='sToast';t.style.cssText='position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:#1e2a35;color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:200;';document.body.appendChild(t);}
+  t.textContent=m;t.style.opacity=.94;clearTimeout(sTT);sTT=setTimeout(()=>t.style.opacity=0,1900);
+}
+/* apply default mood filter on load */
+setMood(document.querySelector('.mood.on'));
+</script>
 <script src="demo-nav.js"></script>
 </body>
 </html>
