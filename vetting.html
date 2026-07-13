@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 供應商審核 — 故事 3：EdMarket 供應商關係（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .nav{padding:14px 10px;flex:1;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:#b07c10;letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#fdf6ec;color:#b07c10;font-weight:600;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:0 34px 80px;}
+  .role-banner{background:#fdf6ec;border-bottom:1px solid #f3e3c3;color:#b07c10;
+    font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 34px;margin:0 -34px;position:sticky;top:0;z-index:50;}
+  .pad{padding-top:26px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;
+    color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:48em;line-height:1.6;}
+  .reality{
+    margin:14px 0 20px;background:#fee2e2;border:1px solid #f5c6c6;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:#991b1b;line-height:1.6;max-width:52em;
+  }
+  .neutral{
+    margin:0 0 22px;background:#e6f4fb;border:1px solid #c4e5f5;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:var(--ec-blue-dark);line-height:1.65;max-width:52em;
+  }
+
+  h2{font-size:1rem;font-weight:700;margin:24px 0 12px;}
+  .vendor-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .vc-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .vc-head .vl{width:40px;height:40px;border-radius:11px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0;}
+  .vc-head b{font-size:.92rem;display:block;}
+  .vc-head small{font-size:.7rem;color:var(--ink-3);}
+  .vc-head .status{margin-left:auto;font-size:.66rem;font-weight:700;border-radius:99px;padding:4px 12px;}
+  .status.cert{color:var(--ec-green);background:#effaf5;border:1px solid #bfe8d7;}
+  .status.prog{color:#b07c10;background:#fdf6ec;border:1px solid #f3e3c3;}
+  .status.fail{color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;}
+  .gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;}
+  .gate{font-size:.7rem;border-radius:10px;padding:8px 11px;line-height:1.45;border:1px solid;}
+  .gate b{display:block;font-size:.68rem;}
+  .gate.pass{color:#0c6b48;background:#f7fdf9;border-color:#bfe8d7;}
+  .gate.fail{color:#991b1b;background:#fff5f5;border-color:#f5c6c6;}
+  .gate.wait{color:var(--ink-3);background:#fafcfd;border-color:var(--line);}
+  .fail-note{margin-top:11px;font-size:.73rem;color:#991b1b;background:#fff5f5;border:1px solid #f5c6c6;border-radius:9px;padding:8px 12px;line-height:1.6;}
+  .fit{margin-top:12px;border-top:1px dashed var(--line);padding-top:11px;}
+  .fit .f-lbl{font-size:.68rem;color:var(--ink-3);margin-bottom:7px;}
+  .fit-chip{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;color:var(--ink-2);background:#f5f8fa;border:1px solid var(--line);border-radius:99px;padding:4px 11px;margin:0 5px 5px 0;}
+  .fit-chip .v{color:var(--ec-green);font-weight:700;}
+  .btns{margin-top:12px;display:flex;gap:8px;}
+  .btn{border:none;border-radius:9px;padding:8px 15px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-2);font-weight:600;}
+
+  .wording{
+    background:#fff;border:1px dashed #e5a0a8;border-radius:14px;padding:16px 18px;margin-top:24px;
+  }
+  .wording .gate-tag{display:inline-flex;font-size:.66rem;font-weight:700;color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;border-radius:99px;padding:4px 11px;margin-bottom:9px;}
+  .wording b{font-size:.86rem;}
+  .wording p{font-size:.76rem;color:var(--ink-2);line-height:1.65;margin-top:6px;}
+  .wording .quote{font-size:.8rem;background:#fafcfd;border:1px solid var(--line);border-radius:9px;padding:9px 13px;margin-top:9px;color:var(--ink);}
+
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:0 18px 60px;}.role-banner{margin:0 -18px;padding:9px 18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>平台營運</h6>
+      <a href="tags.html">🏷 標籤審核與管理</a>
+      <a href="vetting.html" class="active">🛡 供應商審核</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>其他視圖</h6>
+      <a href="index.html">← 返回教師介面</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">方</div>
+    <div class="meta"><b>方小姐</b><span>EdMarket 供應商關係主任</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="role-banner">平 台 營 運 層 級 — 供 應 商 關 係 視 圖（教 育 城 內 部）</div>
+  <div class="pad">
+  <div class="ribbon">🟡 提案中 · 審核流程為設計方案；beta 目錄已上線但未有審核機制</div>
+
+  <h1>供應商審核 — 合規閘與適配資料</h1>
+  <div class="sub">兩層標準：<b>第一層合規閘</b>——公開、客觀、非過即不過，任何供應商均可申請；<b>第二層適配資料</b>——供應商提交、教育城核實的事實，供學校自行判斷。</div>
+
+  <div class="reality">⚠️ 現況：EdMarket beta 目錄<b>已上線且無審核即上架</b>——供應商工具毋須經任何人審視即可出現在目錄。本流程是為此補建的質量閘：要保護的是「官方＝可信」的聯想，它正在被沒有質量保證的目錄消耗。</div>
+  <div class="neutral">🛡 採購中立原則：方小姐<b>核實事實，不評分、不排名、不推薦</b>。「符合教育城基準準則」是供應商掙來的認證；「買這一款」是教育城任何人都不會說的話。</div>
+
+  <h2>審核佇列</h2>
+
+  <div class="vendor-card">
+    <div class="vc-head">
+      <div class="vl" style="background:var(--ec-green)">智</div>
+      <div><b>智寫科技 — 寫作回饋工具</b><small>申請日期 2026-06-28 · 中文寫作 · 小學及中學</small></div>
+      <span class="status prog">審核中 · 4/5 閘通過</span>
+    </div>
+    <div class="gates">
+      <div class="gate pass"><b>✓ 個人資料（PDPO）</b>數據治理就緒</div>
+      <div class="gate pass"><b>✓ 內容安全</b>含國家安全內容過濾</div>
+      <div class="gate pass"><b>✓ 雙語無障礙</b>中英文皆達標</div>
+      <div class="gate pass"><b>✓ 學生身份處理</b>有真實方案</div>
+      <div class="gate fail"><b>✗ 課程對應證據</b>未能提供</div>
+    </div>
+    <div class="fail-note">供應商簡報稱「內容對齊課程」——要求即場示範與官方課程框架的實際對應，未能提供，只重複宣傳語句。此前已有兩家供應商倒在同一條問題上。<b>已要求補交</b>，補交前不獲認證。</div>
+    <div class="fit">
+      <div class="f-lbl">第二層 · 已核實的適配資料（只陳列，不評分）：</div>
+      <span class="fit-chip"><span class="v">✓</span>AI 出錯時的處理流程：已提供並核實</span>
+      <span class="fit-chip"><span class="v">✓</span>批量批改上限：200 篇／批</span>
+      <span class="fit-chip"><span class="v">✓</span>教師覆核步驟：預設開啟</span>
+    </div>
+    <div class="btns">
+      <button class="btn" onclick="toast('原型示範：向供應商發出補交要求')">要求補交證據</button>
+      <button class="btn ghost" onclick="toast('原型示範：查看完整申請')">完整申請</button>
+    </div>
+  </div>
+
+  <div class="vendor-card">
+    <div class="vc-head">
+      <div class="vl" style="background:var(--ec-blue)">語</div>
+      <div><b>智語科技 — 普通話朗讀評測</b><small>申請日期 2026-06-12 · 普通話 · 小學</small></div>
+      <span class="status cert">✓ 已認證 · 符合教育城基準準則</span>
+    </div>
+    <div class="gates">
+      <div class="gate pass"><b>✓ 個人資料（PDPO）</b></div>
+      <div class="gate pass"><b>✓ 內容安全</b></div>
+      <div class="gate pass"><b>✓ 雙語無障礙</b></div>
+      <div class="gate pass"><b>✓ 學生身份處理</b></div>
+      <div class="gate pass"><b>✓ 課程對應證據</b>即場示範通過</div>
+    </div>
+    <div class="fit">
+      <div class="f-lbl">第二層 · 已核實的適配資料（只陳列，不評分）：</div>
+      <span class="fit-chip"><span class="v">✓</span>聲調評測誤差資料：已公開</span>
+      <span class="fit-chip"><span class="v">✓</span>弱勢學生適用性證據：已核實</span>
+      <span class="fit-chip"><span class="v">✓</span>共用分類法對接：待分類法發布</span>
+    </div>
+  </div>
+
+  <div class="vendor-card">
+    <div class="vc-head">
+      <div class="vl" style="background:var(--ink-3)">習</div>
+      <div><b>習題王 — 操練題庫</b><small>申請日期 2026-07-02 · 跨科 · 小學</small></div>
+      <span class="status fail">✗ 未通過 · 可補正後重新申請</span>
+    </div>
+    <div class="gates">
+      <div class="gate pass"><b>✓ 個人資料（PDPO）</b></div>
+      <div class="gate fail"><b>✗ 內容安全</b>過濾機制不完整</div>
+      <div class="gate wait"><b>— 雙語無障礙</b>未評估</div>
+      <div class="gate wait"><b>— 學生身份處理</b>未評估</div>
+      <div class="gate wait"><b>— 課程對應證據</b>未評估</div>
+    </div>
+  </div>
+
+  <div class="wording">
+    <span class="gate-tag">🔴 待決策 · 法律／領導層裁定</span>
+    <b>認證措辭 — 中立界線未定</b>
+    <p>「符合準則」到哪裏為止、「背書」從哪裏開始——認證狀態的確切措辭須待裁定方可發佈。現行工作措辭：</p>
+    <div class="quote">「此工具已通過教育城基準合規審核。教育城不就採購作任何推薦。」</div>
+  </div>
+
+  <footer class="note">EdCity 供應商審核 · 故事 3「Before It's Trustworthy」示意畫面 · 內部示範原型，僅供概念演示</footer>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script>
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
+</script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
