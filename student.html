@@ -94,6 +94,20 @@
   .parent-panel .q{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #f2f6f8;font-size:.8rem;line-height:1.65;color:var(--ink-2);}
   .parent-panel .q .n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#effaf5;color:#0c6b48;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px;}
   .mood-result{border-top:2px dashed #dcf3e8;padding-top:12px;margin-top:2px;}
+  .snap-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .snap{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px 15px;}
+  .snap .s-ic{font-size:1.15rem;display:block;margin-bottom:6px;}
+  .snap b{font-size:.82rem;display:block;color:var(--ink);}
+  .snap small{font-size:.68rem;color:var(--ink-3);display:block;margin-top:3px;line-height:1.5;}
+  .q-actions{display:flex;gap:6px;flex-shrink:0;align-self:center;}
+  .q-btn{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font-size:.68rem;color:var(--ink-2);font-weight:600;cursor:pointer;font-family:inherit;}
+  .q-btn:hover{border-color:var(--ec-green);color:#0c6b48;}
+  .q-btn.done{background:var(--ec-green);border-color:var(--ec-green);color:#fff;cursor:default;}
+  .joint{background:#fff;border:1px solid #bfe8d7;border-radius:16px;padding:20px;margin-bottom:14px;}
+  .joint h3{font-size:.92rem;font-weight:700;margin-bottom:6px;}
+  .joint p{font-size:.78rem;color:var(--ink-2);line-height:1.7;margin-bottom:12px;}
+  .joint .j-btn{border:none;border-radius:11px;padding:11px 18px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(120deg,var(--ec-green),var(--ec-blue));}
+  .joint .j-btn:disabled{background:#e6ebf0;color:#8a97a3;cursor:default;}
   .parent-note{background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;padding:11px 15px;font-size:.76rem;color:#0c6b48;line-height:1.65;margin-bottom:14px;}
 
   .role-banner{background:#effaf5;border-bottom:1px solid #bfe8d7;color:#0c6b48;
@@ -159,12 +173,24 @@
     <h1 class="greet">Karen 這星期的學習</h1>
     <div class="sub">家長視角 · 2025/26 下學期 · 中文科</div>
     <div class="parent-note">🤝 這一頁的目的是幫你<b>陪伴 Karen</b>，而不是給你一張成績單。你看到的資料與她看到的相同：只有她自己的進度，沒有名次，也不會跟其他孩子比較。</div>
+
+    <div class="snap-row">
+      <div class="snap"><span class="s-ic">🌱</span><b>連續 4 星期</b><small>推論題練習沒有中斷——三月時她最怕的正是這類題</small></div>
+      <div class="snap"><span class="s-ic">🧭</span><b>3 次自選練習</b><small>全部由她自己選擇、自己安排時間</small></div>
+      <div class="snap"><span class="s-ic">📜</span><b>本週生字：蹣跚</b><small>她在〈背影〉學到的——可以請她教你</small></div>
+    </div>
     <div class="rec-card">
       <h3>本週可以跟 Karen 聊的三件事</h3>
       <div class="src">根據她的學習紀錄生成 · 只提供話題，不鼓勵施壓</div>
-      <div class="q"><span class="n">1</span><span><b>推論題</b>她已連續練習了四星期；三月時她還說最怕這類題。不妨問問她：「你是怎樣不再怕它的？」</span></div>
-      <div class="q"><span class="n">2</span><span><b>文言字詞</b>是她暫時覺得最難的部分。與其問她「溫咗書未」，不如陪她讀一段〈背影〉，請她教你一個生字。</span></div>
-      <div class="q"><span class="n">3</span><span>這星期她完成了三次練習，全部由她自己選擇、自己安排。值得讚她一句：「你安排得很好。」</span></div>
+      <div class="q"><span class="n">1</span><span><b>推論題</b>她已連續練習了四星期；三月時她還說最怕這類題。不妨問問她：「你是怎樣不再怕它的？」</span><span class="q-actions"><button class="q-btn" onclick="topicDone(this)">試過了</button><button class="q-btn" onclick="swapTopic(this)">換一題</button></span></div>
+      <div class="q"><span class="n">2</span><span><b>文言字詞</b>是她暫時覺得最難的部分。與其問她「溫咗書未」，不如陪她讀一段〈背影〉，請她教你一個生字。</span><span class="q-actions"><button class="q-btn" onclick="topicDone(this)">試過了</button><button class="q-btn" onclick="swapTopic(this)">換一題</button></span></div>
+      <div class="q"><span class="n">3</span><span>這星期她完成了三次練習，全部由她自己選擇、自己安排。值得讚她一句：「你安排得很好。」</span><span class="q-actions"><button class="q-btn" onclick="topicDone(this)">試過了</button><button class="q-btn" onclick="swapTopic(this)">換一題</button></span></div>
+    </div>
+
+    <div class="joint">
+      <h3>🕯 今晚一起做一件小事（約 10 分鐘）</h3>
+      <p>陪她讀〈背影〉第 4 段——就是父親買橘子那一段。你不用教，只需要聽她讀，再請她解釋一個她喜歡的詞。讀完可以互相說一件「對方為你做過、但你沒說出口多謝」的小事。</p>
+      <button class="j-btn" id="jointBtn" onclick="addJoint()">加入 Karen 的今晚練習清單 →</button>
     </div>
   </div>
 
@@ -208,6 +234,33 @@ function startRec(btn){
     sToast('今晚這一步完成了。不必多，每一步都算數 🌱');
   }, 1200);
 }
+/* parent engagement */
+const ALT_TOPICS=[
+  '她這星期在「寫作．結構」持平了——可以問她：「你覺得作文最難開頭還是結尾？」聽就好，不用給答案。',
+  '她的錯題回顧做了兩次。可以說：「肯回頭看自己錯甚麼，比一次做對更難得。」',
+  '問她最近讀過印象最深的一句課文——然後請她讀給你聽。'
+];
+let altIdx=0;
+function topicDone(btn){
+  btn.textContent='試過了 ✓'; btn.classList.add('done'); btn.disabled=true;
+  sToast('好——陪伴本身就是重點，不用急着看效果');
+}
+function swapTopic(btn){
+  const span=btn.closest('.q').querySelector('span:nth-child(2)');
+  span.textContent=ALT_TOPICS[altIdx%ALT_TOPICS.length]; altIdx++;
+  const done=btn.closest('.q').querySelector('.q-btn');
+  done.textContent='試過了'; done.classList.remove('done'); done.disabled=false;
+  sToast('換了一個話題');
+}
+function addJoint(){
+  const b=document.getElementById('jointBtn');
+  b.textContent='已加入 Karen 的清單 ✓'; b.disabled=true;
+  const list=document.querySelector('#stuView .mood-result');
+  list.insertAdjacentHTML('beforeend',
+    `<div class="rec" data-m="light focus review"><div class="ic">👨‍👩‍👧</div><div><b>和爸媽一起讀〈背影〉第 4 段</b><small>約 10 分鐘 · 由家長加入 · 讀完互相說一件小事</small></div><button class="go" onclick="startRec(this)">開始</button></div>`);
+  sToast('已加入她的今晚練習清單——切回學生視圖看看');
+}
+
 /* student ⇄ parent view */
 function setView(v){
   document.getElementById('vStu').classList.toggle('on', v==='stu');
