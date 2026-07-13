@@ -142,6 +142,12 @@
   .block .b-tag.both{color:var(--ec-purple);background:#f1edfb;border:1px solid #ddd3f5;}
   .block b{font-size:.8rem;display:block;}
   .block small{font-size:.7rem;color:var(--ink-3);line-height:1.55;display:block;margin-top:2px;}
+  .xs-pick{
+    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;
+    border-radius:99px;padding:8px 17px;font-size:.8rem;color:var(--ink-2);cursor:pointer;font-family:inherit;
+  }
+  .xs-pick:hover{border-color:var(--uc);}
+  .xs-pick.on{background:#effaf5;border-color:#bfe8d7;color:var(--ec-green);font-weight:700;}
   .collab{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:11px;padding:10px 14px;font-size:.73rem;color:#8a6d00;line-height:1.6;margin-top:12px;}
 
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
@@ -274,21 +280,33 @@
     <h2><span class="p-tile">🔗</span>跨科教材創作</h2>
     <div class="p-sub">兩科圍繞同一主題共同製作一份教材。每個環節都標明所屬科目，由該科教師自行審訂。</div>
 
-    <div class="xs-row">
-      <span class="xs-pill chi">中文</span><span class="xs-plus">×</span><span class="xs-pill sci">科學</span>
-      <input class="theme-input" value="主題：二十四節氣 — 文學意象與地球科學" readonly>
-      <button class="btn" onclick="toast('原型示範：重新生成大綱')">生成大綱</button>
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin-bottom:10px;">第一步 · 選擇合作科目</div>
+    <div class="xs-row" style="margin-bottom:6px;">
+      <span class="xs-pill chi">中文（你）</span><span class="xs-plus">×</span>
+      <button class="xs-pick on" data-x="sci" onclick="pickPartner(this,'科學')">🔬 科學</button>
+      <button class="xs-pick" data-x="maths" onclick="pickPartner(this,'數學')">🔢 數學</button>
+      <button class="xs-pick" data-x="eng" onclick="pickPartner(this,'英文')">🔤 英文</button>
     </div>
 
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin:14px 0 10px;">第二步 · 訂立共同主題</div>
+    <div class="xs-row">
+      <input class="theme-input" id="xsTheme" value="二十四節氣 — 文學意象與地球科學">
+      <button class="btn" id="xsGen" onclick="genOutline()">✨ 生成大綱</button>
+    </div>
+
+    <div id="xsOutline" style="display:none;">
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin:18px 0 10px;">第三步 · 大綱草稿（每個環節標明所屬科目）</div>
     <div class="block"><span class="b-tag chi">中文</span><span><b>導入 · 節氣詩詞選讀</b><small>〈清明〉〈立秋〉選段，分析意象：古人如何以文字記錄物候</small></span></div>
     <div class="block"><span class="b-tag sci">科學</span><span><b>原理 · 地球公轉與太陽直射點</b><small>節氣背後的天文機制，配軌道示意圖與角度計算活動</small></span></div>
     <div class="block"><span class="b-tag both">跨科</span><span><b>探究 · 詩中物候 vs 今日觀測</b><small>對照詩句描述與香港天文台的當代數據。氣候變遷之下，「清明時節雨紛紛」還準嗎？學生先提出假設，再查證</small></span></div>
     <div class="block"><span class="b-tag chi">中文</span><span><b>輸出 · 寫一段你的節氣觀察</b><small>以科學觀測作素材、文學筆法作表達；兩科評分準則並列</small></span></div>
 
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin:18px 0 10px;">第四步 · 兩科共同審訂</div>
     <div class="collab">🤝 <b>審訂責任：</b>中文環節由你審訂，科學環節則邀請科學科同事負責。跨科教材必須兩科教師都核准，才會發佈。</div>
     <div style="margin-top:14px;">
-      <button class="btn" onclick="toast('原型示範：邀請科學科同事共同審訂')">邀請科學科同事 →</button>
+      <button class="btn" id="inviteBtn" onclick="this.textContent='已邀請 · 待對方審訂 ✓';this.disabled=true;toast('已向科學科同事發出共同審訂邀請')">邀請科學科同事共同審訂 →</button>
     </div>
+    </div><!-- /xsOutline -->
   </div>
 
   <footer class="note">EdCity 教材準備 · 課堂教師三大用例入口示意 · 內部示範原型，僅供概念演示</footer>
@@ -296,6 +314,34 @@
 
 <div class="toast" id="toast"></div>
 <script>
+/* UC3 stepped flow: partner → theme → outline → co-review */
+const XS_THEMES = {
+  '科學':'二十四節氣 — 文學意象與地球科學',
+  '數學':'詩詞中的數 — 對仗、格律與數列規律',
+  '英文':'雙語成語對讀 — 中英諺語的文化對照'
+};
+function pickPartner(btn,name){
+  [...btn.parentElement.querySelectorAll('.xs-pick')].forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('xsTheme').value = XS_THEMES[name];
+  document.getElementById('xsOutline').style.display='none';
+  const g=document.getElementById('xsGen'); g.textContent='✨ 生成大綱'; g.disabled=false;
+  toast('合作科目：'+name+'（大綱示例以科學為準）');
+}
+function genOutline(){
+  const g=document.getElementById('xsGen');
+  g.textContent='生成中…'; g.disabled=true;
+  setTimeout(()=>{
+    g.textContent='✓ 已生成';
+    const o=document.getElementById('xsOutline');
+    o.style.display='';
+    o.scrollIntoView?.({behavior:'smooth',block:'nearest'});
+    const inv=document.getElementById('inviteBtn');
+    inv.textContent='邀請科學科同事共同審訂 →'; inv.disabled=false;
+    toast('大綱草稿已生成，待兩科教師審訂');
+  }, 800);
+}
+
 /* UC1 three-step flow: pick source → file appears → check reveals report */
 const UC1_FILES = {
   plat:   {ic:'🗂', name:'《背影》單元教案 v3', meta:'2025 年 11 月建立 · 你的平台工作區 · 曾發佈至校內共享庫', chip:'平台內教材'},
