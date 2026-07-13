@@ -208,24 +208,30 @@
     <div class="p-sub">無論教材是在資源平台內建立，還是多年來存放在電腦裏的 Word 檔，都可以交給平台逐項檢查，並獲得增潤建議。</div>
     <div class="official">🏛 <b>為何在這裏做：</b>平台獲教育局支持，檢查一律以官方課程框架及最新指引為準。「這份教材沒問題」這句話，由有公信力的機構說出來才有份量。</div>
 
-    <div class="f-label" style="font-size:.82rem;font-weight:700;margin-bottom:10px;">你的教材在哪裏？</div>
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin-bottom:10px;">第一步 · 你的教材在哪裏？</div>
     <div class="mode-row">
-      <button class="mode-card" onclick="setMode(this);toast('原型示範：從資源平台工作區選取')">
+      <button class="mode-card" id="modePlat" onclick="pickSource('plat')">
         <span class="m-ic">🗂</span><b>從資源平台選取</b>
         <small>平台內已有的教材，直接選取即可，毋須上載</small>
       </button>
-      <button class="mode-card on" onclick="setMode(this);toast('原型示範：上載平台外檔案（.docx / .pdf / .pptx）')">
+      <button class="mode-card" id="modeUpload" onclick="pickSource('upload')">
         <span class="m-ic">⬆️</span><b>上載平台外檔案</b>
         <small>多年累積的 Word、PDF 或簡報，上載後同樣逐項把關，內容不會被改寫</small>
       </button>
     </div>
 
-    <div class="mat">
-      <span class="f-ic">📄</span>
-      <span><b>中二《背影》閱讀理解工作紙.docx</b><small>2019 年建立 · 上次修訂 2023 年 · 你的校內共享資料夾</small></span>
-      <span class="src-chip">平台外教材</span>
+    <div id="fileStep" style="display:none;">
+      <div class="f-label" style="font-size:.82rem;font-weight:700;margin-bottom:10px;">第二步 · 已選取的教材</div>
+      <div class="mat">
+        <span class="f-ic" id="matIc">📄</span>
+        <span><b id="matName">—</b><small id="matMeta">—</small></span>
+        <span class="src-chip" id="matChip">—</span>
+      </div>
+      <button class="btn" id="checkBtn" onclick="runCheck()">🛡️ 開始檢查（對照官方課程框架）</button>
     </div>
 
+    <div id="reportStep" style="display:none;">
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin:18px 0 10px;">第三步 · 檢查結果與增潤建議</div>
     <div class="check"><span class="st p">✓</span><span>課程對應<small>內容對應中國語文課程「閱讀範疇 3.1／3.2」，與現行課程框架一致</small></span></div>
     <div class="check"><span class="st p">✓</span><span>事實與文本核對<small>引文與《背影》原文一致，無錯引</small></span></div>
     <div class="check"><span class="st w">⚠</span><span>年期提示<small>第 4 題引用的課外例子（2018 年新聞）已過時，學生未必有共鳴，建議更換</small></span></div>
@@ -236,6 +242,7 @@
       <button class="btn" onclick="toast('原型示範：套用選取的增潤建議，另存新版本')">套用增潤（另存新版）</button>
       <button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--ink-2);" onclick="toast('原型示範：僅儲存驗證報告')">只要驗證報告</button>
     </div>
+    </div><!-- /reportStep -->
   </div>
 
   <!-- UC2 -->
@@ -289,9 +296,34 @@
 
 <div class="toast" id="toast"></div>
 <script>
-function setMode(btn){
-  [...btn.parentElement.children].forEach(c=>c.classList.remove('on'));
-  btn.classList.add('on');
+/* UC1 three-step flow: pick source → file appears → check reveals report */
+const UC1_FILES = {
+  plat:   {ic:'🗂', name:'《背影》單元教案 v3', meta:'2025 年 11 月建立 · 你的平台工作區 · 曾發佈至校內共享庫', chip:'平台內教材'},
+  upload: {ic:'📄', name:'中二《背影》閱讀理解工作紙.docx', meta:'2019 年建立 · 上次修訂 2023 年 · 由你的電腦上載', chip:'平台外教材'}
+};
+function pickSource(k){
+  document.getElementById('modePlat').classList.toggle('on', k==='plat');
+  document.getElementById('modeUpload').classList.toggle('on', k==='upload');
+  const f = UC1_FILES[k];
+  document.getElementById('matIc').textContent = f.ic;
+  document.getElementById('matName').textContent = f.name;
+  document.getElementById('matMeta').textContent = f.meta;
+  document.getElementById('matChip').textContent = f.chip;
+  document.getElementById('fileStep').style.display = '';
+  document.getElementById('reportStep').style.display = 'none';
+  const cb = document.getElementById('checkBtn');
+  cb.textContent = '🛡️ 開始檢查（對照官方課程框架）'; cb.disabled = false;
+  toast(k==='plat' ? '已選取平台內教材（示例）' : '已上載平台外檔案（示例）');
+}
+function runCheck(){
+  const cb = document.getElementById('checkBtn');
+  cb.textContent = '檢查中…'; cb.disabled = true;
+  setTimeout(()=>{
+    cb.textContent = '✓ 檢查完成';
+    document.getElementById('reportStep').style.display = '';
+    document.getElementById('reportStep').scrollIntoView?.({behavior:'smooth', block:'nearest'});
+    toast('檢查完成：2 項通過、1 項提示、3 項增潤建議');
+  }, 800);
 }
 function showUC(btn){
   document.querySelectorAll('.uc-tab').forEach(t=>t.classList.remove('on'));
