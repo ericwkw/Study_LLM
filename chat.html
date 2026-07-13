@@ -128,7 +128,11 @@
   .sugg .s-card:nth-child(4) .cat{color:var(--ec-purple);}
   .sugg .s-card:nth-child(5) .cat{color:var(--ec-maroon);}
   .sugg .s-card:nth-child(4),.sugg .s-card:nth-child(5){grid-column:span 1;}
-  .sugg-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:66%;margin:0 auto;}
+  .sugg-row2{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 auto;}
+  .msg.ai .fitchip{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;color:var(--ink-2);background:#f5f8fa;border:1px solid var(--line);border-radius:99px;padding:3px 10px;margin:3px 4px 0 0;}
+  .msg.ai .fitchip i{font-style:normal;color:var(--ec-green);font-weight:700;}
+  .msg.ai .gatebox{display:block;font-size:.7rem;color:#991b1b;background:#fff5f5;border:1px solid #f5c6c6;border-radius:9px;padding:8px 11px;margin-top:10px;line-height:1.6;}
+  .msg.ai a{color:var(--ec-blue-dark);font-weight:700;}
 
   /* Messages */
   .thread{margin-top:10px;display:flex;flex-direction:column;gap:14px;}
@@ -290,6 +294,10 @@
           <div class="s-card" onclick="useSuggestion('用時間線視覺化中國文學發展史')">
             <div class="cat" style="color:var(--ec-maroon)">📈 視覺化</div>
             <h4>中國文學發展史時間線</h4>
+          </div>
+          <div class="s-card" onclick="askToolFit()">
+            <div class="cat" style="color:var(--ec-red)">🧭 工具指引</div>
+            <h4>哪個寫作回饋工具適合我班？</h4>
           </div>
         </div>
       </div>
@@ -489,6 +497,29 @@ function sendMsg(){
       你可以試試：切換<b>提問／規劃模式</b>（＋按鈕）、開關<b>工具</b>，或轉用其他<b>模型</b>，感受不同的互動方式。</div>`);
     scrollBottom();
   }, 900);
+}
+/* 故事 5：EdCity.ai 工具指引 — 核實的適配資料，不作採購推薦 */
+function askToolFit(){
+  document.getElementById('hero').style.display='none';
+  const thread = document.getElementById('thread');
+  const u=document.createElement('div'); u.className='msg user';
+  u.textContent='我班（中二乙）程度參差，想找一個寫作回饋工具。哪個比較適合？';
+  thread.appendChild(u);
+  const typing=document.createElement('div'); typing.className='typing'; typing.textContent='EdCity AI 正在對照已審核工具的適配資料…';
+  thread.appendChild(typing); scrollBottom();
+  setTimeout(()=>{
+    typing.remove();
+    thread.insertAdjacentHTML('beforeend', `
+      <div class="msg ai"><span class="tag">工具指引 · 只列核實事實</span><br>
+      按你班的情況（中二・混合程度・對照官方課程框架），目錄中有兩個<b>已通過教育城合規審核</b>的寫作回饋工具。以下是供應商提交、教育城核實的適配資料——不是評分，也不是排名：<br><br>
+      <b>1. 智寫 — 寫作回饋工具</b>（校方已採購 · 可直接開啟）<br>
+      <span class="fitchip"><i>✓</i>混合程度分層回饋：已核實</span><span class="fitchip"><i>✓</i>AI 出錯時的處理流程：已提供</span><span class="fitchip"><i>✓</i>教師覆核：預設開啟</span><br><br>
+      <b>2. 另一款已認證工具</b>（需向學校申請訂閱）<br>
+      <span class="fitchip"><i>✓</i>弱勢學生適用性證據：已核實</span><span class="fitchip"><i>—</i>分層回饋：供應商未提交證據</span><br>
+      <span class="gatebox">🔴 待決策 · 採購中立界線：教育城<b>不會推薦你購買任何工具</b>——以上只是核實過的事實，選擇權在你和學校。正式版本能否顯示「需購買」的工具，仍待中立性裁定；若裁定從嚴，這裏只會顯示免費官方資源。</span><br>
+      你可以到 <a href="agents.html">Apps／代理</a> 查看完整資料，或先用免費的官方批改工具。</div>`);
+    scrollBottom();
+  }, 1100);
 }
 function scrollBottom(){
   const sc = document.getElementById('chatScroll');

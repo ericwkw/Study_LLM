@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 班級學習面貌 — 教師本班視圖（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .role-chip{display:inline-flex;align-items:center;gap:6px;font-size:.64rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border:1px solid #c4e5f5;border-radius:99px;padding:4px 10px;margin-top:9px;}
+  .nav{padding:14px 10px;flex:1;overflow-y:auto;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .nav a .ic{width:17px;height:17px;flex-shrink:0;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:26px 34px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;
+    color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
+  .class-pick{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;}
+  .class-pick b{color:var(--ec-blue-dark);}
+  .source-note{
+    margin:14px 0 18px;background:#e6f4fb;border:1px solid #c4e5f5;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:var(--ec-blue-dark);line-height:1.65;max-width:52em;
+  }
+
+  .gchips{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .gchips .lbl{font-size:.68rem;letter-spacing:.16em;color:var(--ec-maroon);font-weight:600;margin-right:4px;}
+  .gchip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 15px;font-size:.8rem;color:var(--ink-2);cursor:pointer;font-family:inherit;}
+  .gchip.on{background:var(--ec-blue);border-color:var(--ec-blue);color:#fff;font-weight:600;}
+
+  h2{font-size:1rem;font-weight:700;margin:22px 0 12px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  th,td{text-align:left;padding:12px 16px;font-size:.82rem;border-bottom:1px solid var(--line);}
+  th{font-size:.7rem;letter-spacing:.08em;color:var(--ink-3);font-weight:600;background:#fafcfd;}
+  tr:last-child td{border-bottom:none;}
+  .trend{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.8rem;}
+  .up{color:var(--ec-green);} .flat{color:#b07c10;} .down{color:var(--ec-red);}
+  .n-chip{font-size:.66rem;color:var(--ink-3);background:#f5f8fa;border:1px solid var(--line);border-radius:99px;padding:2px 8px;}
+
+  .impact{
+    margin-top:22px;background:#fff;border:1px solid #bfe8d7;border-radius:14px;padding:18px 20px;
+  }
+  .impact h3{font-size:.92rem;font-weight:700;margin-bottom:8px;}
+  .impact p{font-size:.79rem;color:var(--ink-2);line-height:1.7;}
+  .impact .link-row{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap;}
+  .lbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 15px;font-size:.78rem;color:var(--ec-blue-dark);font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;}
+  .lbtn:hover{border-color:var(--ec-blue);}
+
+  .caution{
+    margin-top:18px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:#0c6b48;line-height:1.65;max-width:52em;
+  }
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+    <div class="role-chip">🧑‍🏫 課堂層級 · 教師視圖</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>AI 工具</h6>
+      <a href="chat.html">AI 對話</a>
+      <a href="agents.html">Apps／代理</a>
+      <a href="index.html">AI 工具</a>
+      <a href="marking.html">AI 批改</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>課堂管理</h6>
+      <a href="groups.html">教學分組</a>
+      <a href="materials.html">教材準備</a>
+      <a href="insights.html" class="active">📊 班級學習面貌</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">W</div>
+    <div class="meta"><b>Eric Wu</b><span>eric.wu@school.edu.hk</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="ribbon">🔴 待決策 · 依賴共用分類法（尚未存在）——此畫面示意分類法建成後的學習面貌</div>
+
+  <div class="page-head">
+    <div>
+      <h1>班級學習面貌</h1>
+      <div class="sub">你批改時標記的技能標籤，經審核後在這裏匯總成<b>你自己班</b>的學習面貌——批改的每一分鐘，都變成看得見的教學依據。</div>
+    </div>
+    <div class="class-pick">📋 <b>中二乙班</b> · 中文 · 32 人</div>
+  </div>
+
+  <div class="source-note">ℹ️ 數據來源：AI 批改與已對接工具回報的技能標籤，<b>全部經內容審核後</b>方會計入。只有你看到本班的完整面貌；科組只見趨勢方向，學生只見自己。</div>
+
+  <div class="gchips">
+    <span class="lbl">按 分 組 檢 視</span>
+    <button class="gchip on" data-g="all" onclick="setG(this)">全班</button>
+    <button class="gchip" data-g="stretch" onclick="setG(this)">增潤組</button>
+    <button class="gchip" data-g="core" onclick="setG(this)">核心組</button>
+    <button class="gchip" data-g="support" onclick="setG(this)">支援組</button>
+  </div>
+
+  <h2 id="tblTitle">技能面貌 · 全班</h2>
+  <table>
+    <thead><tr><th>技能維度</th><th>近六週趨勢</th><th>樣本</th><th>你可能想知道</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <div class="impact">
+    <h3>🔎 一個看得見的因果：工作紙 v2 之後</h3>
+    <p>你在 5 月底用「教材準備」為支援組加了分層提問版工作紙。之後四次練習，支援組在「推論」的穩固比率由 3/10 升至 6/10——樣本少，未足以下結論，但值得繼續觀察。</p>
+    <div class="link-row">
+      <a class="lbtn" href="materials.html">📚 再生成分層教材 →</a>
+      <a class="lbtn" href="groups.html">👥 調整教學分組 →</a>
+      <a class="lbtn" href="marking.html">✍️ 繼續批改（累積更多樣本）→</a>
+    </div>
+  </div>
+
+  <div class="caution">🌱 <b>提醒自己：</b>這個面貌用來安排下一步教學，不是用來評判學生。文言字詞落後的六位同學，需要的是不同的路徑，不是同一條路走快些。</div>
+
+  <footer class="note">EdCity 班級學習面貌 · 教師本班視圖（學生表現可視化 — 平台核心價值）· 內部示範原型，僅供概念演示</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+<script>
+const DATA = {
+  all:{title:'技能面貌 · 全班（32 人）', rows:[
+    ['閱讀理解 · 推論','up','▲ 進步中','28 份樣本','新閱讀策略似乎見效——增潤組已可挑戰更深層提問'],
+    ['閱讀理解 · 主旨','up','▲ 進步中','26 份樣本','—'],
+    ['寫作 · 結構組織','flat','▶ 大致持平','19 份樣本','三個分組差異不大，可全班同步處理'],
+    ['文言字詞','down','▼ 需要關注','22 份樣本','困難集中在支援組及核心組六位同學'],
+  ]},
+  stretch:{title:'技能面貌 · 增潤組（9 人）', rows:[
+    ['閱讀理解 · 推論','up','▲ 穩固','9 份樣本','可加開放式提問——先寫再看評語'],
+    ['寫作 · 結構組織','up','▲ 進步中','7 份樣本','適合嘗試議論文結構'],
+    ['文言字詞','flat','▶ 大致持平','8 份樣本','—'],
+  ]},
+  core:{title:'技能面貌 · 核心組（17 人）', rows:[
+    ['閱讀理解 · 推論','up','▲ 進步中','15 份樣本','—'],
+    ['寫作 · 結構組織','flat','▶ 大致持平','10 份樣本','開頭段落是共同弱項'],
+    ['文言字詞','down','▼ 需要關注','12 份樣本','三位同學連續兩次未達穩固'],
+  ]},
+  support:{title:'技能面貌 · 支援組（6 人）', rows:[
+    ['閱讀理解 · 推論','up','▲ 進步中','4 份樣本','工作紙 v2 之後有起色（見下方）'],
+    ['寫作 · 結構組織','flat','▶ 大致持平','2 份樣本','樣本太少，暫不作判斷'],
+    ['文言字詞','down','▼ 需要關注','6 份樣本','建議配合筆順與詞語卡，從字入手'],
+  ]},
+};
+function setG(btn){
+  document.querySelectorAll('.gchip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  render(btn.dataset.g);
+  toast('已切換至：'+btn.textContent.trim());
+}
+function render(g){
+  const d = DATA[g];
+  document.getElementById('tblTitle').textContent = d.title;
+  document.getElementById('tbody').innerHTML = d.rows.map(r=>
+    `<tr><td>${r[0]}</td><td><span class="trend ${r[1]}">${r[2]}</span></td><td><span class="n-chip">${r[3]}</span></td><td style="font-size:.76rem;color:var(--ink-2);">${r[4]}</td></tr>`
+  ).join('');
+}
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
+render('all');
+</script>
+<script src="usage-modal.js"></script>
+<script src="demo-nav.js"></script>
+</body>
+</html>

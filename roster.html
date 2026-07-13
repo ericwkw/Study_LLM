@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>學校管理系統（SMS）— 故事 2：名冊維護（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#dde3e8;--bg:#eef1f4;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+  /* deliberately plainer shell — this is SMS, not the Resources Platform */
+  .role-banner{background:#3d4a56;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
+  .topbar{background:#fff;border-bottom:2px solid var(--line);padding:12px 26px;display:flex;align-items:center;gap:14px;}
+  .topbar img{height:28px;width:auto;}
+  .topbar .sys{font-size:.85rem;font-weight:700;}
+  .topbar .sys small{display:block;font-size:.64rem;color:var(--ink-3);font-weight:500;}
+  .topbar .who{margin-left:auto;font-size:.78rem;color:var(--ink-2);}
+
+  .wrap{max-width:880px;margin:0 auto;padding:24px 20px 80px;}
+  .ribbons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;border-radius:99px;padding:5px 14px;}
+  .ribbon.live{color:#0c6b48;background:#e6f7ef;border:1px solid #b3e2cc;}
+  .ribbon.prop{color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 18px;line-height:1.65;max-width:46em;}
+
+  .foundation{
+    background:#fff;border-left:4px solid var(--ec-blue);border-radius:8px;padding:12px 16px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.7;margin-bottom:20px;
+  }
+  .foundation b{color:var(--ink);}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);}
+  th,td{text-align:left;padding:12px 14px;font-size:.82rem;border-bottom:1px solid var(--line);vertical-align:middle;}
+  th{font-size:.7rem;letter-spacing:.06em;color:var(--ink-3);font-weight:700;background:#f6f8fa;}
+  tr:last-child td{border-bottom:none;}
+  .st{font-size:.66rem;font-weight:700;border-radius:4px;padding:3px 9px;display:inline-block;}
+  .st.ok{color:#0c6b48;background:#e6f7ef;}
+  .st.warn{color:#8a5a00;background:#fdf1c7;}
+  .act{border:1px solid var(--line);background:#fff;border-radius:6px;padding:7px 13px;font-size:.74rem;color:var(--ec-blue-dark);font-weight:700;cursor:pointer;font-family:inherit;}
+  .act:hover{border-color:var(--ec-blue);}
+  .act:disabled{color:var(--ink-3);cursor:default;border-color:var(--line);}
+
+  .pending{
+    margin-top:20px;background:#fff;border:1px solid #f0dfa0;border-radius:8px;padding:16px 18px;
+  }
+  .pending h3{font-size:.9rem;font-weight:700;margin-bottom:9px;}
+  .pending p{font-size:.79rem;color:var(--ink-2);line-height:1.7;margin-bottom:12px;}
+  .downstream{
+    margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.8;
+  }
+  .downstream b{color:var(--ink);display:block;margin-bottom:4px;font-size:.84rem;}
+  .downstream .flow{font-size:.76rem;color:var(--ink-3);}
+  .downstream .flow em{font-style:normal;color:var(--ec-blue-dark);font-weight:700;}
+
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="role-banner">學 校 行 政 層 級 — 校 務 處 名 冊 維 護（校 管 系 統）</div>
+<div class="topbar">
+  <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+  <span class="sys">學校管理系統（SMS）<small>紀錄系統 · 與教學工具分離運作</small></span>
+  <span class="who">何主任 · 校務處文書主任</span>
+</div>
+
+<div class="wrap">
+  <div class="ribbons">
+    <span class="ribbon live">🟢 名冊維護功能今天已存在（現行系統）</span>
+    <span class="ribbon prop">🟡 完整度檢視畫面為提案，未建置</span>
+  </div>
+
+  <h1>班級名冊 · 完整度檢視</h1>
+  <div class="sub">每學期核對一次：哪些班的名冊完整、最新、標註齊全。這個畫面樸實無華——但教學分組、自動入檔、學生入口，全部建立在它之上。</div>
+
+  <div class="foundation">🏗 <b>為何這個畫面重要：</b>陳老師的教學分組、批改成績的自動入檔、Karen 的學生入口——每一項都直接讀取這裏的名冊，任何系統都不另存副本。何主任更新一次，全平台自動跟上；她不需要開啟資源平台，一次都不需要。</div>
+
+  <table>
+    <thead><tr><th>班別</th><th>人數</th><th>最後更新</th><th>資料完整度</th><th>狀態</th><th></th></tr></thead>
+    <tbody>
+      <tr><td><b>中一甲</b></td><td>30</td><td>2026-07-02</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+      <tr><td><b>中二乙</b></td><td>32</td><td>2026-07-08</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+      <tr id="rowC"><td><b>中三丙</b></td><td>32 → 33</td><td>2026-06-30</td><td>97%</td><td><span class="st warn" id="stC">⚠ 1 個轉班待處理</span></td><td><button class="act" id="btnC" onclick="handleTransfer()">處理轉班</button></td></tr>
+      <tr><td><b>中三丁</b></td><td>29</td><td>2026-07-05</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="pending" id="pendingCard">
+    <h3>⚠ 待處理：學生轉班</h3>
+    <p><b>簡愛琳（Karen）</b>由中二乙班轉入中三丙班，生效日期 2026-07-06。校務處確認後，名冊即時更新——她會自動退出原班教師的教學分組，學生入口的班別資料亦隨即更正。</p>
+    <button class="act" onclick="handleTransfer()">確認轉班並更新名冊</button>
+  </div>
+
+  <div class="downstream">
+    <b>下游同步（自動，毋須任何人手動跟進）</b>
+    <span class="flow">名冊更新 → <em>教學分組</em>：Karen 自動退出陳老師的分組 → <em>批改入檔</em>：成績記入新班 → <em>學生入口</em>：班別即時更正 → <em>科組統計</em>：下次匯總自動反映</span>
+  </div>
+
+  <footer class="note">
+    學校管理系統 · 故事 2「The Reliable Roster」示意畫面 · 內部示範原型，僅供概念演示<br>
+    名冊維護是全平台唯一今天已真實存在的基礎功能；完整度檢視則是為它補建的簡單視窗。
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+function handleTransfer(){
+  document.getElementById('stC').outerHTML='<span class="st ok">✓ 完整</span>';
+  document.getElementById('btnC').outerHTML='';
+  const p=document.getElementById('pendingCard');
+  p.innerHTML='<h3>✓ 轉班已完成</h3><p>簡愛琳已記入中三丙班名冊。所有下游系統（教學分組、批改入檔、學生入口）將自動同步——你的工作到此為止。</p>';
+  p.style.borderColor='#b3e2cc';
+  toast('名冊已更新 · 下游系統自動同步');
+}
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+</script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
