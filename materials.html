@@ -34,21 +34,41 @@
   h1{font-size:1.5rem;font-weight:800;}
   .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 20px;max-width:48em;line-height:1.6;}
 
-  /* Use-case tabs */
+  /* Use-case tabs — each with its own identity: icon tile + accent + flow glyph */
   .uc-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
   .uc-tab{
-    flex:1;min-width:220px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;
+    flex:1;min-width:230px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;
     padding:14px 16px;cursor:pointer;font-family:inherit;transition:border-color .15s;
+    border-top:3px solid var(--uc,var(--line));
   }
-  .uc-tab .num{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:var(--ink-3);}
-  .uc-tab b{display:block;font-size:.88rem;margin:4px 0 3px;color:var(--ink);}
+  .uc-tab .tab-head{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .uc-tab .tile{
+    width:38px;height:38px;border-radius:10px;flex-shrink:0;font-size:1.1rem;
+    display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb,var(--uc) 13%,white);
+  }
+  .uc-tab .num{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:var(--uc);display:block;}
+  .uc-tab b{display:block;font-size:.88rem;margin-top:2px;color:var(--ink);}
+  .uc-tab .flow{
+    display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:7px 0 6px;
+  }
+  .uc-tab .flow span{
+    font-size:.64rem;font-weight:600;color:var(--ink-2);background:#f5f8fa;
+    border:1px solid var(--line);border-radius:6px;padding:2px 7px;
+  }
+  .uc-tab .flow .arr{background:none;border:none;color:var(--uc);font-weight:800;padding:0 1px;}
+  .uc-tab .flow .out{background:color-mix(in srgb,var(--uc) 12%,white);border-color:color-mix(in srgb,var(--uc) 35%,white);color:var(--uc);}
   .uc-tab small{font-size:.7rem;color:var(--ink-3);line-height:1.45;display:block;}
-  .uc-tab.on{border-color:var(--ec-blue);box-shadow:0 0 0 2px #e6f4fb;}
-  .uc-tab.on .num{color:var(--ec-blue-dark);}
+  .uc-tab.on{border-color:var(--uc);box-shadow:0 0 0 2px color-mix(in srgb,var(--uc) 15%,white);}
 
-  .panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;display:none;}
+  .panel{background:#fff;border:1px solid var(--line);border-top:3px solid var(--uc,var(--line));border-radius:16px;padding:22px;display:none;}
   .panel.show{display:block;}
-  .panel h2{font-size:1.02rem;font-weight:800;margin-bottom:4px;}
+  .panel h2{font-size:1.02rem;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+  .panel h2 .p-tile{
+    width:32px;height:32px;border-radius:9px;font-size:.95rem;flex-shrink:0;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb,var(--uc) 13%,white);
+  }
   .panel .p-sub{font-size:.76rem;color:var(--ink-2);margin-bottom:16px;line-height:1.6;max-width:46em;}
 
   .official{
@@ -161,23 +181,26 @@
   <div class="sub">課堂教師教材準備的三大用例——驗證你已有的、從可信來源組合新的、跨科合作創作。三者都以官方課程框架為錨。</div>
 
   <div class="uc-tabs">
-    <button class="uc-tab on" data-p="p1" onclick="showUC(this)">
-      <span class="num">用例 1</span><b>評估・驗證・充實現有教材</b>
-      <small>你已有的教材——平台內或平台外建立——由具官方背景的引擎把關與增潤</small>
+    <button class="uc-tab on" data-p="p1" style="--uc:var(--ec-blue)" onclick="showUC(this)">
+      <span class="tab-head"><span class="tile">🛡️</span><span><span class="num">用例 1 · 把關</span><b>評估・驗證・充實現有教材</b></span></span>
+      <div class="flow"><span>📄 你已有的教材</span><span class="arr">→</span><span class="out">✅ 驗證報告＋增潤版</span></div>
+      <small>起點是<b>一份舊教材</b>——平台以官方課程框架檢查並建議增潤</small>
     </button>
-    <button class="uc-tab" data-p="p2" onclick="showUC(this)">
-      <span class="num">用例 2</span><b>知識庫選材・混合組卷</b>
-      <small>從 EDB、教育城、校本課本及參考書中挑選、混合、組合教材</small>
+    <button class="uc-tab" data-p="p2" style="--uc:var(--ec-green)" onclick="showUC(this)">
+      <span class="tab-head"><span class="tile">🧺</span><span><span class="num">用例 2 · 組合</span><b>知識庫選材・混合組卷</b></span></span>
+      <div class="flow"><span>🏛＋🏫＋📚＋📖 四類來源</span><span class="arr">→</span><span class="out">📝 一份新工作紙</span></div>
+      <small>起點是<b>空白</b>——從可信知識庫挑選材料，混合組成新教材</small>
     </button>
-    <button class="uc-tab" data-p="p3" onclick="showUC(this)">
-      <span class="num">用例 3</span><b>跨科教材創作</b>
-      <small>兩科合作生成一份教材，例如中文 × 科學</small>
+    <button class="uc-tab" data-p="p3" style="--uc:var(--ec-purple)" onclick="showUC(this)">
+      <span class="tab-head"><span class="tile">🔗</span><span><span class="num">用例 3 · 跨科</span><b>跨科教材創作</b></span></span>
+      <div class="flow"><span>中文＋科學 兩科</span><span class="arr">→</span><span class="out">📘 一份共同教材</span></div>
+      <small>起點是<b>一個主題</b>——兩科各佔環節、各自審訂</small>
     </button>
   </div>
 
   <!-- UC1 -->
-  <div class="panel show" id="p1">
-    <h2>評估・驗證・充實現有教材</h2>
+  <div class="panel show" id="p1" style="--uc:var(--ec-blue)">
+    <h2><span class="p-tile">🛡️</span>評估・驗證・充實現有教材</h2>
     <div class="p-sub">上載或選取你自己的教材——不論是在資源平台內建立，還是你多年來在平台外累積的 Word 檔——平台逐項檢查，並建議增潤方向。</div>
     <div class="official">🏛 <b>為何在這裏做：</b>平台獲教育局支持，對照的是官方課程框架與最新指引——「這份教材沒問題」由具公信力的地方說出來，才有份量。</div>
 
@@ -204,8 +227,8 @@
   </div>
 
   <!-- UC2 -->
-  <div class="panel" id="p2">
-    <h2>知識庫選材・混合組卷</h2>
+  <div class="panel" id="p2" style="--uc:var(--ec-green)">
+    <h2><span class="p-tile">🧺</span>知識庫選材・混合組卷</h2>
     <div class="p-sub">從四類可信來源挑選材料，混合組成一份工作紙或單元教材。每一項都標明出處與使用權限。</div>
 
     <div class="src-chips">
@@ -228,8 +251,8 @@
   </div>
 
   <!-- UC3 -->
-  <div class="panel" id="p3">
-    <h2>跨科教材創作</h2>
+  <div class="panel" id="p3" style="--uc:var(--ec-purple)">
+    <h2><span class="p-tile">🔗</span>跨科教材創作</h2>
     <div class="p-sub">兩科共用同一主題生成一份教材——每個環節標明所屬科目，兩科教師各自審訂自己的部分。</div>
 
     <div class="xs-row">
