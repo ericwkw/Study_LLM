@@ -84,6 +84,15 @@
   .panel ul{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:.76rem;color:var(--ink-2);}
   .panel ul li{display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
   .panel ul li::before{content:"·";color:var(--ec-blue);font-weight:800;}
+  .panel .release{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;}
+  .panel .release .rel-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .panel .release .rel-head b{font-size:.8rem;}
+  .panel .release .ped{font-size:.6rem;font-weight:700;color:var(--ec-green);background:#effaf5;border:1px solid #bfe8d7;border-radius:99px;padding:2px 8px;}
+  .rel-opt{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;cursor:pointer;}
+  .rel-opt.on,.rel-opt:has(input:checked){border-color:#bfe8d7;background:#f7fdf9;}
+  .rel-opt input{margin-top:3px;accent-color:var(--ec-green);}
+  .rel-opt b{font-size:.76rem;display:block;}
+  .rel-opt small{font-size:.68rem;color:var(--ink-3);line-height:1.5;display:block;margin-top:2px;}
   .panel .sms{
     margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;font-size:.74rem;color:var(--ink-2);line-height:1.65;
     display:flex;gap:9px;align-items:flex-start;
@@ -149,6 +158,11 @@
         <li>技能標籤採用平台共用分類（推論、主旨、文意理解⋯），供日後個人及科組統計使用。</li>
         <li>AI 建議的標籤須經內容審核後方會計入任何統計（故事 6）。</li>
       </ul>
+      <div class="release">
+        <div class="rel-head"><b>評語發還方式</b><span class="ped">教學法選項</span></div>
+        <label class="rel-opt"><input type="radio" name="rel" onclick="toast('評語將即時發還學生')"><span><b>即時發還</b><small>學生批改後立即看到所有評語</small></span></label>
+        <label class="rel-opt on"><input type="radio" name="rel" checked onclick="toast('評語暫緩發還 · 學生須先自行修訂')"><span><b>暫緩發還 — 先讓學生想</b><small>學生先自行修訂一稿，提交後才開放 AI 及教師評語——避免學生未經思考先看答案</small></span></label>
+      </div>
       <div class="sms"><span class="ok">✓</span>完成的分數會以事件方式自動送交校管系統核實入檔——批改工具與學生紀錄資料庫完全分離，互不影響。</div>
       <button class="finish" onclick="finishMarking()">完成並自動入檔</button>
     </aside>
