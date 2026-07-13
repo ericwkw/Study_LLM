@@ -70,6 +70,11 @@
   .toast.show{opacity:.94;}
   footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
   @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+
+  .role-banner{background:#faf1f3;border-bottom:1px solid #e5cdd4;color:var(--ec-maroon);
+    font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 34px;position:sticky;top:0;z-index:50;}
+  .nav-group h6{color:var(--ec-maroon) !important;}
+  .nav a.active{background:#faf1f3 !important;color:var(--ec-maroon) !important;}
 </style>
 </head>
 <body>
@@ -96,7 +101,9 @@
   </div>
 </aside>
 
-<main class="main">
+<main class="main" style="padding-top:0;">
+<div class="role-banner">領 導 ／ 科 組 層 級 — 科 主 任 視 圖</div>
+<div style="padding:26px 0 0;">
   <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
 
   <h1>中文科 · 科組統計</h1>
@@ -144,6 +151,7 @@
   </div>
 
   <footer class="note">EdCity 科組視圖 · 故事 7「The Department Picture」示意畫面 · 內部示範原型，僅供概念演示</footer>
+</div>
 </main>
 
 <div class="toast" id="toast"></div>

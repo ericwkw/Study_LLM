@@ -67,6 +67,11 @@
   .toast.show{opacity:.94;}
   footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
   @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+
+  .role-banner{background:#f1edfb;border-bottom:1px solid #ddd3f5;color:var(--ec-purple);
+    font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 34px;position:sticky;top:0;z-index:50;}
+  .nav-group h6{color:var(--ec-purple) !important;}
+  .nav a.active{background:#f1edfb !important;color:var(--ec-purple) !important;}
 </style>
 </head>
 <body>
@@ -93,7 +98,9 @@
   </div>
 </aside>
 
-<main class="main">
+<main class="main" style="padding-top:0;">
+<div class="role-banner">學 校 行 政 層 級 — 資 訊 科 技 統 籌 視 圖</div>
+<div style="padding:26px 0 0;">
   <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
 
   <h1>訂閱管理</h1>
@@ -158,6 +165,7 @@
   <div class="note-row">訂閱屆滿後，工具會自教師介面移除，但<b>已收集的標籤數據會以歷史紀錄形式保留</b>——續期與否不會摧毀教師的紀錄。教師介面（Apps／代理）中「校方已採購」標示即由此處的授權驅動。</div>
 
   <footer class="note">EdCity 訂閱管理 · 故事 4「The Subscription Drawer」示意畫面 · 內部示範原型，僅供概念演示</footer>
+</div>
 </main>
 
 <div class="toast" id="toast"></div>
