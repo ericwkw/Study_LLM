@@ -116,12 +116,12 @@
   <div class="page-head">
     <div>
       <h1>教學分組</h1>
-      <div class="sub">把你的班拆成小組，按需要指派不同的練習與教材。名單來自校管系統——你永遠不用重新輸入。</div>
+      <div class="sub">把班級分成小組，按需要指派不同的練習與教材。名單直接取自校管系統，毋須重新輸入。</div>
     </div>
     <div class="class-pick">📋 <b>中二乙班</b> · 中文 · 32 人</div>
   </div>
 
-  <div class="ownership">🔒 <b>分組只屬於你。</b>行政系統看不到，科組統計也不會用——這是你的教學工具，不是評核紀錄。學生轉班時會自動退出你的分組，毋須手動清理。</div>
+  <div class="ownership">🔒 <b>分組只屬於你：</b>行政系統看不到，科組統計也不會採用。這是教學工具，不是評核紀錄。學生轉班後會自動退出分組，毋須手動清理。</div>
 
   <div class="toolbar">
     <button class="btn" onclick="toast('原型示範：建立新分組')">＋ 新增分組</button>
@@ -131,7 +131,7 @@
 
   <div class="board" id="board"></div>
 
-  <div class="sync"><span class="ic">🔄</span><span><b>自動同步示例：</b>簡愛琳（Karen）上週由乙班轉到丙班——她已自動退出你的所有分組（下方顯示為灰色示意）。校管系統的名冊一更新，這裏就跟着更新，<b>零手動步驟</b>。</span></div>
+  <div class="sync"><span class="ic">🔄</span><span><b>自動同步示例：</b>簡愛琳（Karen）上週由乙班轉到丙班，系統已自動把她從所有分組移除（下方以灰色示意）。校管系統的名冊一經更新，這裏亦隨即更新，<b>毋須任何手動步驟</b>。</span></div>
 
   <footer class="note">EdCity 教學分組 · 故事 1「Teaching Groups」延伸示意畫面 · 內部示範原型，僅供概念演示</footer>
 </main>
@@ -139,9 +139,9 @@
 <div class="toast" id="toast"></div>
 <script>
 const GROUPS = [
-  {name:'增潤組', color:'var(--ec-purple)', goal:'進度較快——指派延伸閱讀與較深的寫作任務'},
-  {name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度——標準課業與練習'},
-  {name:'支援組', color:'var(--ec-green)', goal:'需要多些時間——你會親自帶這一組'},
+  {name:'增潤組', color:'var(--ec-purple)', goal:'進度較快，適合延伸閱讀與較深的寫作任務'},
+  {name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度，做標準課業與練習'},
+  {name:'支援組', color:'var(--ec-green)', goal:'需要多些時間，由你親自帶領'},
 ];
 let students = [
   {n:'王思穎', g:0},{n:'林一心', g:0},{n:'徐朗', g:0},
