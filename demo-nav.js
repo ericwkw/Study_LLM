@@ -25,6 +25,8 @@ const PAGES = [
     ['chat.html','AI 對話（科目助理）',''],
     ['agents.html','Apps／代理庫',''],
     ['marking.html','AI 批改（故事 1）','y'],
+    ['groups.html','教學分組','y'],
+    ['materials.html','教材準備（三大用例）','y'],
   ]},
   {group:'其他角色 — 故事場景', items:[
     ['dept.html','科主任統計視圖（故事 7）','y'],

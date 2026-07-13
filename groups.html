@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 教學分組 — 課堂層級（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .role-chip{display:inline-flex;align-items:center;gap:6px;font-size:.64rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border:1px solid #c4e5f5;border-radius:99px;padding:4px 10px;margin-top:9px;}
+  .nav{padding:14px 10px;flex:1;overflow-y:auto;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .nav a .ic{width:17px;height:17px;flex-shrink:0;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:26px 34px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
+  .class-pick{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;}
+  .class-pick b{color:var(--ec-blue-dark);}
+
+  .ownership{
+    margin:14px 0 20px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:#0c6b48;line-height:1.65;max-width:52em;
+  }
+
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .btn{border:none;border-radius:10px;padding:9px 16px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-2);font-weight:600;}
+  .hint-move{font-size:.7rem;color:var(--ink-3);}
+
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;align-items:start;}
+  .col{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .col .c-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .col .c-head .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .col .c-head b{font-size:.85rem;}
+  .col .c-head .n{margin-left:auto;font-size:.68rem;color:var(--ink-3);}
+  .col .c-goal{font-size:.68rem;color:var(--ink-3);margin-bottom:10px;line-height:1.5;}
+  .stu{
+    display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;
+    padding:7px 10px;font-size:.78rem;margin-bottom:6px;cursor:pointer;background:#fafcfd;
+  }
+  .stu:hover{border-color:var(--ec-blue);}
+  .stu .av{width:22px;height:22px;border-radius:50%;background:#e6f4fb;color:var(--ec-blue-dark);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0;}
+  .stu .mv{margin-left:auto;font-size:.62rem;color:var(--ink-3);}
+  .stu.left{opacity:.45;text-decoration:line-through;cursor:default;}
+  .stu.left .mv{display:none;}
+  .col .assign{
+    width:100%;margin-top:8px;border:1px dashed var(--line);background:transparent;border-radius:9px;
+    padding:8px;font-size:.72rem;color:var(--ink-2);cursor:pointer;font-family:inherit;
+  }
+  .col .assign:hover{border-color:var(--ec-blue);color:var(--ec-blue-dark);}
+
+  .sync{
+    margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 18px;
+    display:flex;gap:12px;align-items:flex-start;font-size:.78rem;color:var(--ink-2);line-height:1.65;
+  }
+  .sync .ic{font-size:1.1rem;flex-shrink:0;}
+  .sync b{color:var(--ink);}
+
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+    <div class="role-chip">🧑‍🏫 課堂層級 · 教師視圖</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>AI 工具</h6>
+      <a href="chat.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-9 8.36 8.5 8.5 0 01-3.4-.7L3 21l1.84-5.6A8.38 8.38 0 013.5 11.5a8.5 8.5 0 018.5-8.5 8.38 8.38 0 019 8.5z"/></svg>AI 對話</a>
+      <a href="agents.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>Apps／代理</a>
+      <a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>AI 工具</a>
+      <a href="marking.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>AI 批改</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>課堂管理</h6>
+      <a href="groups.html" class="active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>教學分組</a>
+      <a href="materials.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>教材準備</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">W</div>
+    <div class="meta"><b>Eric Wu</b><span>eric.wu@school.edu.hk</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
+
+  <div class="page-head">
+    <div>
+      <h1>教學分組</h1>
+      <div class="sub">把你的班拆成小組，按需要指派不同的練習與教材。名單來自校管系統——你永遠不用重新輸入。</div>
+    </div>
+    <div class="class-pick">📋 <b>中二乙班</b> · 中文 · 32 人</div>
+  </div>
+
+  <div class="ownership">🔒 <b>分組只屬於你。</b>行政系統看不到，科組統計也不會用——這是你的教學工具，不是評核紀錄。學生轉班時會自動退出你的分組，毋須手動清理。</div>
+
+  <div class="toolbar">
+    <button class="btn" onclick="toast('原型示範：建立新分組')">＋ 新增分組</button>
+    <button class="btn ghost" onclick="toast('原型示範：由上次測驗表現建議分組')">🪄 按近期表現建議分組</button>
+    <span class="hint-move">提示：點按學生可移至下一組（示意互動）</span>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <div class="sync"><span class="ic">🔄</span><span><b>自動同步示例：</b>簡愛琳（Karen）上週由乙班轉到丙班——她已自動退出你的所有分組（下方顯示為灰色示意）。校管系統的名冊一更新，這裏就跟着更新，<b>零手動步驟</b>。</span></div>
+
+  <footer class="note">EdCity 教學分組 · 故事 1「Teaching Groups」延伸示意畫面 · 內部示範原型，僅供概念演示</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+<script>
+const GROUPS = [
+  {name:'增潤組', color:'var(--ec-purple)', goal:'進度較快——指派延伸閱讀與較深的寫作任務'},
+  {name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度——標準課業與練習'},
+  {name:'支援組', color:'var(--ec-green)', goal:'需要多些時間——你會親自帶這一組'},
+];
+let students = [
+  {n:'王思穎', g:0},{n:'林一心', g:0},{n:'徐朗', g:0},
+  {n:'陳嘉欣', g:1},{n:'何梓晴', g:1},{n:'黃俊傑', g:1},{n:'吳詠芝', g:1},{n:'周天恩', g:1},
+  {n:'李俊希', g:2},{n:'鄭家朗', g:2},
+  {n:'簡愛琳', g:1, left:true},
+];
+function render(){
+  document.getElementById('board').innerHTML = GROUPS.map((grp,gi)=>{
+    const members = students.filter(s=>s.g===gi);
+    const active = members.filter(s=>!s.left).length;
+    return `<div class="col">
+      <div class="c-head"><span class="dot" style="background:${grp.color}"></span><b>${grp.name}</b><span class="n">${active} 人</span></div>
+      <div class="c-goal">${grp.goal}</div>
+      ${members.map(s=>`<div class="stu ${s.left?'left':''}" onclick="${s.left?'':'moveStu(\''+s.n+'\')'}">
+        <span class="av">${s.n[0]}</span>${s.n}${s.left?'（已轉班 · 自動退出）':''}<span class="mv">移組 ›</span>
+      </div>`).join('')}
+      <button class="assign" onclick="toast('原型示範：指派教材給「${grp.name}」')">📎 指派教材／練習給此組</button>
+    </div>`;
+  }).join('');
+}
+function moveStu(name){
+  const s = students.find(x=>x.n===name);
+  s.g = (s.g+1) % GROUPS.length;
+  render();
+  toast(name + ' → ' + GROUPS[s.g].name);
+}
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
+render();
+</script>
+<script src="usage-modal.js"></script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
