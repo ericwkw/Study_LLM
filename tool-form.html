@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity AI 工具 — 工具表單（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .role-chip{display:inline-flex;align-items:center;gap:6px;font-size:.64rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border:1px solid #c4e5f5;border-radius:99px;padding:4px 10px;margin-top:9px;}
+  .nav{padding:14px 10px;flex:1;overflow-y:auto;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:26px 34px 80px;}
+  .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 16px;cursor:pointer;font-family:inherit;text-decoration:none;}
+  .back:hover{border-color:var(--ec-blue);color:var(--ec-blue-dark);}
+  .balance{
+    display:inline-flex;align-items:center;gap:7px;font-size:.74rem;font-weight:700;color:var(--ec-blue-dark);
+    background:#e6f4fb;border:1px solid #c4e5f5;border-radius:99px;padding:7px 15px;cursor:pointer;
+  }
+  .balance b{font-size:.85rem;}
+
+  .form-card{max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 32px;box-shadow:0 4px 20px rgba(30,42,53,.05);}
+  .f-head{text-align:center;margin-bottom:20px;}
+  .f-head h1{font-size:1.35rem;font-weight:800;}
+  .f-head .purpose{font-size:.82rem;color:var(--ink-2);margin-top:6px;}
+  .cost-badge{
+    display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:.7rem;font-weight:700;color:#fff;
+    background:linear-gradient(100deg,var(--ec-blue),var(--ec-green));border-radius:99px;padding:4px 14px;
+  }
+  .f-label{font-size:.82rem;font-weight:700;margin:18px 0 8px;}
+  .f-label .opt{font-size:.68rem;color:var(--ink-3);font-weight:500;}
+  textarea{
+    width:100%;border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:.85rem;
+    font-family:inherit;outline:none;resize:vertical;min-height:110px;color:var(--ink);line-height:1.6;
+  }
+  textarea:focus{border-color:var(--ec-blue);}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip-opt{
+    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:99px;
+    padding:8px 16px;font-size:.78rem;color:var(--ink-2);cursor:pointer;font-family:inherit;
+  }
+  .chip-opt:hover{border-color:var(--ec-blue);}
+  .chip-opt.on{background:#e6f4fb;border-color:var(--ec-blue);color:var(--ec-blue-dark);font-weight:700;}
+  .chip-big{
+    flex:1;min-width:130px;text-align:center;border:1px solid var(--line);border-radius:13px;background:#fff;
+    padding:13px 10px;cursor:pointer;font-family:inherit;font-size:.8rem;color:var(--ink);
+  }
+  .chip-big small{display:block;font-size:.66rem;color:var(--ink-3);margin-top:3px;}
+  .chip-big.on{border-color:var(--ec-blue);background:#f4fafd;box-shadow:0 0 0 2px #e6f4fb;font-weight:700;}
+  .attach-note{font-size:.7rem;color:var(--ink-3);text-align:center;margin-top:10px;}
+  .cta{
+    width:100%;margin-top:22px;border:none;border-radius:13px;padding:14px;font-size:.92rem;font-weight:800;
+    cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(100deg,var(--ec-blue),var(--ec-green));
+  }
+  .cta:disabled{background:#e6ebf0;color:#8a97a3;cursor:default;}
+  .hitl{font-size:.7rem;color:var(--ink-3);text-align:center;margin-top:10px;line-height:1.6;}
+
+  .output{max-width:760px;margin:16px auto 0;background:#fff;border:1px solid #bfe8d7;border-radius:16px;padding:22px 24px;display:none;}
+  .output.show{display:block;}
+  .output .o-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .output .o-head b{font-size:.9rem;}
+  .output .o-tag{font-size:.62rem;font-weight:700;color:var(--ec-green);background:#effaf5;border:1px solid #bfe8d7;border-radius:99px;padding:3px 10px;}
+  .output ul{list-style:none;font-size:.8rem;color:var(--ink-2);line-height:1.8;}
+  .output ul li::before{content:"·";color:var(--ec-green);font-weight:800;margin-right:8px;}
+  .output .o-actions{display:flex;gap:9px;margin-top:14px;}
+  .o-btn{border:none;border-radius:10px;padding:9px 16px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .o-btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-2);font-weight:600;}
+
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+    <div class="role-chip">🧑‍🏫 課堂層級 · 教師視圖</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>AI 工具</h6>
+      <a href="chat.html">AI 對話</a>
+      <a href="agents.html">Apps／代理</a>
+      <a href="index.html" class="active">AI 工具</a>
+      <a href="marking.html">AI 批改</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>課堂管理</h6>
+      <a href="groups.html">教學分組</a>
+      <a href="materials.html">教材準備</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">W</div>
+    <div class="meta"><b>Eric Wu</b><span>eric.wu@school.edu.hk</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topline">
+    <a class="back" href="index.html">← 返回工具庫</a>
+    <span class="balance" onclick="openUsage()" title="查看用量與代幣">🪙 學習代幣餘額 <b id="bal">12,500</b></span>
+  </div>
+
+  <div class="form-card">
+    <div class="f-head">
+      <h1 id="toolName">工作紙生成器</h1>
+      <div class="purpose" id="toolDesc">按課文重點生成字詞、句式及理解練習工作紙，可調整深淺程度。</div>
+      <span class="cost-badge">🪙 每次生成 5 代幣 · 學校配額支付</span>
+    </div>
+
+    <div class="f-label">這份教材的主題或課文 *</div>
+    <textarea id="brief" placeholder="例如：中二《背影》第 3–4 段——重點練「細節描寫如何表達情感」，附 5 道短答題…"></textarea>
+
+    <div class="f-label">學段 <span class="opt">（選填）</span></div>
+    <div class="chips">
+      <button class="chip-opt on" onclick="toggleSolo(this)">🎒 小學</button>
+      <button class="chip-opt" onclick="toggleSolo(this)">🎓 中學</button>
+    </div>
+
+    <div class="f-label">為哪些教學分組生成？ <span class="opt">（選填 · 可多選 · 對應你的分組）</span></div>
+    <div class="chips">
+      <button class="chip-big" onclick="this.classList.toggle('on')">增潤組<small>較深 · 延伸提問</small></button>
+      <button class="chip-big on" onclick="this.classList.toggle('on')">核心組<small>標準程度</small></button>
+      <button class="chip-big" onclick="this.classList.toggle('on')">支援組<small>較淺 · 附提示鷹架</small></button>
+    </div>
+
+    <div class="f-label">題型偏好 <span class="opt">（選填 · 可多選）</span></div>
+    <div class="chips">
+      <button class="chip-opt on" onclick="this.classList.toggle('on')">選擇題</button>
+      <button class="chip-opt on" onclick="this.classList.toggle('on')">短答題</button>
+      <button class="chip-opt" onclick="this.classList.toggle('on')">填充題</button>
+      <button class="chip-opt" onclick="this.classList.toggle('on')">開放式問題（先寫再看評語）</button>
+    </div>
+
+    <div class="attach-note">📎 可附加參考檔案：支援 PDF、DOCX、JPG（最大 5MB）— 原型示意</div>
+
+    <button class="cta" id="genBtn" onclick="generate()">✨ 生成（5 代幣）</button>
+    <div class="hitl">生成內容為草稿，須經你審訂後方可派發或發佈——教師判斷永遠是最後一關。</div>
+  </div>
+
+  <div class="output" id="output">
+    <div class="o-head"><b>草稿已生成 — 待你審訂</b><span class="o-tag">示例輸出</span></div>
+    <ul>
+      <li>《背影》段落細讀工作紙（核心組版）— 共 2 頁</li>
+      <li>字詞理解 4 題（蹣跚、頹唐、瑣屑、躊躇）· 選擇題</li>
+      <li>細節描寫分析 3 題 · 短答（附評分要點）</li>
+      <li>技能標籤已預掛：推論、細節描寫 — 待批改後經審核計入</li>
+    </ul>
+    <div class="o-actions">
+      <button class="o-btn" onclick="toast('原型示範：開啟編輯器審訂草稿')">審訂草稿</button>
+      <button class="o-btn ghost" onclick="toast('原型示範：儲存到我的工作區')">儲存</button>
+      <button class="o-btn ghost" onclick="toast('原型示範：再生成一版（5 代幣）')">再生成</button>
+    </div>
+  </div>
+
+  <footer class="note">EdCity AI 工具表單 · 工具入口示意模板（所有工具卡共用此表單模式）· 內部示範原型，僅供概念演示</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+<script>
+/* read tool identity from URL (?n=名稱&d=描述) */
+const P = new URLSearchParams(location.search);
+if(P.get('n')) document.getElementById('toolName').textContent = P.get('n');
+if(P.get('d')) document.getElementById('toolDesc').textContent = P.get('d');
+if(P.get('n')) document.title = 'EdCity AI 工具 — ' + P.get('n');
+
+let balance = 12500;
+function toggleSolo(btn){
+  [...btn.parentElement.children].forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+}
+function generate(){
+  const brief = document.getElementById('brief').value.trim();
+  if(!brief){ toast('請先輸入主題或課文'); return; }
+  balance -= 5;
+  document.getElementById('bal').textContent = balance.toLocaleString('en-US');
+  document.getElementById('output').classList.add('show');
+  document.getElementById('output').scrollIntoView?.({behavior:'smooth'});
+  toast('已扣 5 代幣 · 餘額 ' + balance.toLocaleString('en-US'));
+}
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800);}
+</script>
+<script src="usage-modal.js"></script>
+<script src="demo-nav.js"></script>
+</body>
+</html>

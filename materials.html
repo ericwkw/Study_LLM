@@ -76,13 +76,17 @@
     font-size:.74rem;color:var(--ec-blue-dark);line-height:1.6;margin-bottom:16px;max-width:48em;
   }
 
-  /* UC1 validate */
-  .drop{
-    border:2px dashed var(--line);border-radius:13px;padding:20px;text-align:center;
-    font-size:.8rem;color:var(--ink-2);margin-bottom:14px;cursor:pointer;
+  /* UC1 validate — dual-mode entry (建立教材 pattern) */
+  .mode-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  @media (max-width:700px){.mode-row{grid-template-columns:1fr;}}
+  .mode-card{
+    text-align:left;background:#fff;border:1px solid var(--line);border-radius:13px;
+    padding:15px 17px;cursor:pointer;font-family:inherit;display:block;
   }
-  .drop:hover{border-color:var(--ec-blue);}
-  .drop small{display:block;font-size:.68rem;color:var(--ink-3);margin-top:4px;}
+  .mode-card .m-ic{font-size:1.25rem;display:block;margin-bottom:7px;}
+  .mode-card b{display:block;font-size:.84rem;color:var(--ink);margin-bottom:4px;}
+  .mode-card small{font-size:.7rem;color:var(--ink-3);line-height:1.5;display:block;}
+  .mode-card.on{border-color:var(--uc);background:color-mix(in srgb,var(--uc) 5%,white);box-shadow:0 0 0 2px color-mix(in srgb,var(--uc) 15%,white);}
   .mat{border:1px solid var(--line);border-radius:12px;padding:13px 15px;display:flex;gap:11px;align-items:center;margin-bottom:14px;}
   .mat .f-ic{font-size:1.3rem;}
   .mat b{font-size:.82rem;display:block;}
@@ -204,8 +208,16 @@
     <div class="p-sub">上載或選取你自己的教材——不論是在資源平台內建立，還是你多年來在平台外累積的 Word 檔——平台逐項檢查，並建議增潤方向。</div>
     <div class="official">🏛 <b>為何在這裏做：</b>平台獲教育局支持，對照的是官方課程框架與最新指引——「這份教材沒問題」由具公信力的地方說出來，才有份量。</div>
 
-    <div class="drop" onclick="toast('原型示範：上載教材（.docx / .pdf / .pptx）')">
-      ⬆️ 上載你的教材　<small>支援 Word、PDF、簡報 · 或從你的平台工作區選取</small>
+    <div class="f-label" style="font-size:.82rem;font-weight:700;margin-bottom:10px;">你的教材在哪裏？</div>
+    <div class="mode-row">
+      <button class="mode-card" onclick="setMode(this);toast('原型示範：從資源平台工作區選取')">
+        <span class="m-ic">🗂</span><b>從資源平台選取</b>
+        <small>你在平台內建立或儲存的教材——直接選取，毋須上載</small>
+      </button>
+      <button class="mode-card on" onclick="setMode(this);toast('原型示範：上載平台外檔案（.docx / .pdf / .pptx）')">
+        <span class="m-ic">⬆️</span><b>上載平台外檔案</b>
+        <small>你多年累積的 Word／PDF／簡報——上載後照樣把關，不會被重新生成</small>
+      </button>
     </div>
 
     <div class="mat">
@@ -277,6 +289,10 @@
 
 <div class="toast" id="toast"></div>
 <script>
+function setMode(btn){
+  [...btn.parentElement.children].forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+}
 function showUC(btn){
   document.querySelectorAll('.uc-tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');

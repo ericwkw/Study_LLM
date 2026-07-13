@@ -44,6 +44,44 @@
   .class-pick b{color:var(--ec-blue-dark);}
   .class-pick .chev{color:var(--ink-3);font-size:.65rem;}
 
+  /* ─── Setup stage (評改台 pattern) ─── */
+  .stage-chips{display:flex;gap:8px;margin:14px 0 18px;align-items:center;}
+  .stage-chip{font-size:.72rem;font-weight:700;border-radius:99px;padding:6px 14px;border:1px solid var(--line);color:var(--ink-3);background:#fff;}
+  .stage-chip.on{background:var(--ec-blue);border-color:var(--ec-blue);color:#fff;}
+  .stage-chip.done{color:var(--ec-green);border-color:#bfe8d7;background:#effaf5;}
+  .stage-arrow{color:var(--ink-3);font-size:.7rem;}
+  .setup{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;}
+  @media (max-width:1100px){.setup{grid-template-columns:1fr;}}
+  .drop-main{
+    border:2px dashed var(--line);border-radius:14px;padding:44px 20px;text-align:center;
+    font-size:.85rem;color:var(--ink-2);cursor:pointer;background:#fff;
+  }
+  .drop-main:hover{border-color:var(--ec-blue);}
+  .drop-main .d-ic{font-size:1.6rem;display:block;margin-bottom:8px;}
+  .drop-main small{display:block;font-size:.7rem;color:var(--ink-3);margin-top:5px;}
+  .drop-main.filled{border-style:solid;border-color:#bfe8d7;background:#f7fdf9;color:#0c6b48;cursor:default;}
+  .drop-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  @media (max-width:700px){.drop-row{grid-template-columns:1fr;}}
+  .drop-opt{
+    border:2px dashed var(--line);border-radius:12px;padding:18px 14px;text-align:center;
+    font-size:.76rem;color:var(--ink-2);cursor:pointer;background:#fff;
+  }
+  .drop-opt:hover{border-color:var(--ec-blue);}
+  .drop-opt b{display:block;font-size:.78rem;margin-bottom:3px;}
+  .drop-opt small{font-size:.66rem;color:var(--ink-3);}
+  .setup-rail{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;position:sticky;top:26px;}
+  .setup-rail h3{font-size:.9rem;font-weight:700;margin-bottom:12px;}
+  .rail-sect{font-size:.7rem;font-weight:700;color:var(--ink-3);letter-spacing:.06em;margin:14px 0 8px;}
+  .radio-opt{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;font-size:.78rem;}
+  .radio-opt:has(input:checked){border-color:#c4e5f5;background:#f4fafd;}
+  .radio-opt input{margin-top:3px;accent-color:var(--ec-blue);}
+  .radio-opt small{display:block;font-size:.66rem;color:var(--ink-3);margin-top:1px;}
+  .rail-row{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;padding:9px 0;border-top:1px solid #f2f6f8;}
+  .rail-row .val{font-size:.7rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border-radius:99px;padding:3px 10px;}
+  .start-btn{width:100%;margin-top:14px;border:none;border-radius:12px;padding:13px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(120deg,var(--ec-blue),var(--ec-green));color:#fff;}
+  .back-setup{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font-family:inherit;margin-bottom:14px;}
+  .back-setup:hover{border-color:var(--ec-blue);color:var(--ec-blue-dark);}
+
   /* teaching groups */
   .groups{display:flex;align-items:center;gap:8px;margin:18px 0 6px;flex-wrap:wrap;}
   .groups .g-label{font-size:.68rem;letter-spacing:.16em;color:var(--ec-maroon);font-weight:600;margin-right:4px;}
@@ -148,6 +186,45 @@
     <div class="class-pick">📋 中二乙班 · 中文 · <b>《背影》閱讀理解</b> <span class="chev">▼</span></div>
   </div>
 
+  <div class="stage-chips">
+    <span class="stage-chip on" id="chip1">① 設定評改</span>
+    <span class="stage-arrow">→</span>
+    <span class="stage-chip" id="chip2">② 批改與標籤</span>
+  </div>
+
+  <!-- ─── Stage 1: setup (評改台 pattern) ─── -->
+  <div id="stageSetup">
+    <div class="setup">
+      <div>
+        <div class="drop-main" id="dropMain" onclick="fillDrop()">
+          <span class="d-ic">⬆️</span>拖放一個或多個學生檔案，或按此選取
+          <small>支援 PDF、Word、相片掃描（自動辨識手寫）· 名單自動對應校管系統</small>
+        </div>
+        <div class="drop-row">
+          <div class="drop-opt" onclick="toast('原型示範：上載試題卷')"><b>上載試題卷（選填）</b><small>供 AI 對照題目批改</small></div>
+          <div class="drop-opt" onclick="toast('原型示範：上載評分準則')"><b>上載評分準則（選填）</b><small>校本準則優先於預設準則</small></div>
+        </div>
+      </div>
+      <aside class="setup-rail">
+        <h3>評改設定</h3>
+        <div class="rail-sect">回饋詳細程度</div>
+        <label class="radio-opt"><input type="radio" name="fb"><span>僅分數<small>只評分，不寫評語</small></span></label>
+        <label class="radio-opt"><input type="radio" name="fb"><span>簡短<small>每題一句重點</small></span></label>
+        <label class="radio-opt"><input type="radio" name="fb" checked><span>預設<small>分數＋評語＋技能標籤建議</small></span></label>
+        <label class="radio-opt"><input type="radio" name="fb"><span>自訂<small>按你的評改說明生成</small></span></label>
+        <div class="rail-sect">評語發還方式 <span style="font-weight:700;color:var(--ec-green);">教學法選項</span></div>
+        <label class="radio-opt"><input type="radio" name="rel2" onclick="toast('評語將即時發還學生')"><span>即時發還<small>批改後學生立即看到評語</small></span></label>
+        <label class="radio-opt"><input type="radio" name="rel2" checked onclick="toast('評語暫緩發還 · 學生須先自行修訂')"><span>暫緩發還 — 先讓學生想<small>學生先自行修訂一稿，提交後才開放評語</small></span></label>
+        <div class="rail-row"><span>滿分</span><span class="val">自動偵測</span></div>
+        <div class="rail-row"><span>評分結構</span><span class="val">按試題卷</span></div>
+        <button class="start-btn" id="startBtn" onclick="startMarking()">▷ 開始評改</button>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ─── Stage 2: results ─── -->
+  <div id="stageResults" style="display:none;">
+  <button class="back-setup" onclick="backToSetup()">← 返回設定</button>
   <div class="groups">
     <span class="g-label">教 學 分 組</span>
     <button class="gchip on" data-g="all" onclick="setGroup(this)">全班 <span class="n">32</span></button>
@@ -167,15 +244,15 @@
         <li>技能標籤採用平台共用分類（推論、主旨、文意理解⋯），供日後個人及科組統計使用。</li>
         <li>AI 建議的標籤須經內容審核後方會計入任何統計（故事 6）。</li>
       </ul>
-      <div class="release">
-        <div class="rel-head"><b>評語發還方式</b><span class="ped">教學法選項</span></div>
-        <label class="rel-opt"><input type="radio" name="rel" onclick="toast('評語將即時發還學生')"><span><b>即時發還</b><small>學生批改後立即看到所有評語</small></span></label>
-        <label class="rel-opt on"><input type="radio" name="rel" checked onclick="toast('評語暫緩發還 · 學生須先自行修訂')"><span><b>暫緩發還 — 先讓學生想</b><small>學生先自行修訂一稿，提交後才開放 AI 及教師評語——避免學生未經思考先看答案</small></span></label>
+      <div class="release" style="border-top:1px dashed var(--line);padding-top:12px;margin-top:14px;font-size:.72rem;color:var(--ink-2);">
+        評語發還：<b id="relEcho" style="color:var(--ec-green);">暫緩發還 — 先讓學生想</b>（於設定階段選擇）
       </div>
       <div class="sms"><span class="ok">✓</span>完成的分數會以事件方式自動送交校管系統核實入檔——批改工具與學生紀錄資料庫完全分離，互不影響。</div>
       <button class="finish" onclick="finishMarking()">完成並自動入檔</button>
     </aside>
   </div>
+
+  </div><!-- /stageResults -->
 
   <footer class="note">EdCity AI 批改 · 故事 1「The Marking Pile」示意畫面 · 內部示範原型，僅供概念演示</footer>
 </main>
@@ -212,6 +289,29 @@ function render(){
         <button class="skill" onclick="toast('原型示範：加入標籤')">＋</button>
       </div>
     </div>`).join('');
+}
+function fillDrop(){
+  const d=document.getElementById('dropMain');
+  d.classList.add('filled');
+  d.innerHTML='<span class="d-ic">✅</span>已加入 32 份學生作答（中二乙班）<small>名單已對應校管系統 · 無需重新輸入</small>';
+  toast('已加入 32 份學生檔案');
+}
+function startMarking(){
+  document.getElementById('stageSetup').style.display='none';
+  document.getElementById('stageResults').style.display='';
+  document.getElementById('chip1').className='stage-chip done';
+  document.getElementById('chip1').textContent='✓ 設定評改';
+  document.getElementById('chip2').className='stage-chip on';
+  const rel=[...document.querySelectorAll('input[name=rel2]')].findIndex(r=>r.checked);
+  document.getElementById('relEcho').textContent = rel===0 ? '即時發還' : '暫緩發還 — 先讓學生想';
+  toast('AI 已完成初批 · 請逐份覆核與調整');
+}
+function backToSetup(){
+  document.getElementById('stageResults').style.display='none';
+  document.getElementById('stageSetup').style.display='';
+  document.getElementById('chip1').className='stage-chip on';
+  document.getElementById('chip1').textContent='① 設定評改';
+  document.getElementById('chip2').className='stage-chip';
 }
 function finishMarking(){
   document.getElementById('progBar').style.width='100%';

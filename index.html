@@ -377,7 +377,7 @@ function applyFilters(){
     (!q || t.name.toLowerCase().includes(q) || t.en.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q))
   );
   grid.innerHTML = shown.map(t => `
-    <div class="card" style="--accent:${t.color}" tabindex="0" role="button" aria-label="${t.name}">
+    <div class="card" style="--accent:${t.color}" tabindex="0" role="button" aria-label="${t.name}" onclick="location.href='tool-form.html?n='+encodeURIComponent('${t.name}')+'&d='+encodeURIComponent('${t.desc}')">
       ${levelBadge(t)}
       <div class="top">
         <div class="tile">${IC[t.icon]}</div>
