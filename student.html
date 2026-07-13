@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 學生入口 — 故事 8：Karen 的個人視圖（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+  /* Simpler shell: top bar, no teacher sidebar */
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;align-items:center;gap:16px;}
+  .topbar img{height:34px;width:auto;}
+  .topbar .tag{font-size:.66rem;font-weight:700;color:var(--ec-purple);background:#f1edfb;border:1px solid #ddd3f5;border-radius:99px;padding:3px 10px;}
+  .topbar .who{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--ink-2);}
+  .topbar .who .avatar{width:32px;height:32px;border-radius:50%;background:var(--ec-purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:26px 20px 90px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.4rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;line-height:1.6;}
+  .privacy{
+    margin:14px 0 22px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
+    padding:11px 15px;font-size:.76rem;color:#0c6b48;line-height:1.6;
+  }
+
+  .prog-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;}
+  .prog-card h3{font-size:.92rem;font-weight:700;margin-bottom:14px;}
+  .skill-row{display:flex;align-items:center;gap:12px;margin-bottom:13px;}
+  .skill-row .nm{width:120px;font-size:.8rem;flex-shrink:0;}
+  .skill-row .bar{flex:1;height:9px;border-radius:99px;background:#eef3f6;overflow:hidden;}
+  .skill-row .bar i{display:block;height:100%;border-radius:99px;}
+  .skill-row .st{width:86px;text-align:right;font-size:.72rem;font-weight:700;flex-shrink:0;}
+  .g .bar i{background:var(--ec-green);} .g .st{color:var(--ec-green);}
+  .a .bar i{background:var(--ec-amber);} .a .st{color:#b07c10;}
+  .r .bar i{background:var(--ec-red);} .r .st{color:var(--ec-red);}
+
+  .rec-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;}
+  .rec-card h3{font-size:.92rem;font-weight:700;margin-bottom:4px;}
+  .rec-card .src{font-size:.7rem;color:var(--ink-3);margin-bottom:14px;}
+  .rec{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #f2f6f8;}
+  .rec .ic{width:36px;height:36px;border-radius:10px;background:#e6f4fb;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+  .rec b{font-size:.82rem;display:block;}
+  .rec small{font-size:.7rem;color:var(--ink-3);}
+  .rec .go{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 15px;font-size:.74rem;color:var(--ec-blue-dark);font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;}
+  .rec .go:hover{border-color:var(--ec-blue);}
+
+  .tutor{
+    background:#fff;border:1px dashed #e5a0a8;border-radius:16px;padding:20px;position:relative;
+  }
+  .tutor .gate-tag{display:inline-flex;align-items:center;gap:6px;font-size:.66rem;font-weight:700;color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;border-radius:99px;padding:4px 11px;margin-bottom:10px;}
+  .tutor h3{font-size:.92rem;font-weight:700;display:flex;align-items:center;gap:9px;}
+  .tutor p{font-size:.78rem;color:var(--ink-2);line-height:1.7;margin-top:8px;}
+  .tutor .consent{
+    margin-top:14px;background:#fafcfd;border:1px solid var(--line);border-radius:12px;padding:13px 15px;
+    display:flex;gap:11px;align-items:flex-start;font-size:.76rem;color:var(--ink-2);line-height:1.6;
+  }
+  .tutor .consent .cb{width:18px;height:18px;border:2px solid var(--ink-3);border-radius:5px;flex-shrink:0;margin-top:1px;}
+  .tutor .btn{margin-top:14px;border:none;border-radius:10px;padding:11px 18px;font-size:.8rem;font-weight:700;font-family:inherit;background:#e6ebf0;color:#8a97a3;cursor:not-allowed;}
+
+  footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+  <span class="tag">學生／家長入口 · 與教師系統分離</span>
+  <div class="who"><div class="avatar">K</div>Karen · 中二</div>
+</div>
+
+<div class="wrap">
+  <div class="ribbon">🟡 提案中 · 入口為設計方案，未建置（AI 導師部分另設 🔴 決策門檻）</div>
+
+  <h1>你的學習進度</h1>
+  <div class="sub">2025/26 下學期 · 中文科</div>
+  <div class="privacy">🔒 這裏只會顯示<b>你自己</b>的進度——沒有排名，沒有跟同學比較。這是刻意的設計，不是未做完的功能。</div>
+
+  <div class="prog-card">
+    <h3>技能進度</h3>
+    <div class="skill-row g"><span class="nm">閱讀理解 · 推論</span><div class="bar"><i style="width:72%"></i></div><span class="st">進步中 ▲</span></div>
+    <div class="skill-row g"><span class="nm">閱讀理解 · 主旨</span><div class="bar"><i style="width:64%"></i></div><span class="st">進步中 ▲</span></div>
+    <div class="skill-row a"><span class="nm">寫作 · 結構</span><div class="bar"><i style="width:48%"></i></div><span class="st">持平 ▶</span></div>
+    <div class="skill-row r"><span class="nm">文言字詞</span><div class="bar"><i style="width:31%"></i></div><span class="st">需加強 ▼</span></div>
+  </div>
+
+  <div class="rec-card">
+    <h3>給你的練習建議</h3>
+    <div class="src">由 EdCity AI 建議 · 針對「文言字詞」— 與老師使用同一個官方推薦引擎，只推薦免費官方資源</div>
+    <div class="rec"><div class="ic">📜</div><div><b>文言常用虛詞練習（一）</b><small>15 分鐘 · 官方免費資源</small></div><button class="go">開始</button></div>
+    <div class="rec"><div class="ic">🃏</div><div><b>文言字詞學習卡 — 中二選篇</b><small>10 分鐘 · 官方免費資源</small></div><button class="go">開始</button></div>
+    <div class="rec"><div class="ic">✍️</div><div><b>《背影》字詞重溫小測</b><small>8 分鐘 · 你老師發佈的練習</small></div><button class="go">開始</button></div>
+  </div>
+
+  <div class="tutor">
+    <div class="gate-tag">🔴 待決策 · 試點構想，尚未獲領導層批准</div>
+    <h3>💬 AI 導師即時對話（構想中）</h3>
+    <p>與 AI 導師即時對話練習——只限個別試點學校、單一科目。開始使用前，<b>必須先取得家長明確同意</b>（真正的同意步驟，不是收在條款裏的剔選框）；對話中如有內容被標示為需要關注，你學校的老師會在<b>當日內</b>看到並跟進。</p>
+    <div class="consent"><span class="cb"></span>家長／監護人同意書 — 待家長於家長端確認（此示意畫面不可操作）</div>
+    <button class="btn" disabled>暫未開放 · 待領導層風險決策</button>
+  </div>
+
+  <footer class="note">
+    EdCity 學生／家長入口 · 故事 8「Karen's Own View」示意畫面 · 內部示範原型，僅供概念演示<br>
+    政府《藍圖》將學生 AI 使用歸入課程路徑——此入口屬平台自選項目，無時間壓力，設計已備存待決。
+  </footer>
+</div>
+
+<script src="demo-nav.js"></script>
+</body>
+</html>

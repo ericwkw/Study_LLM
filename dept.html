@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 科組視圖 — 故事 7：科主任統計（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .nav{padding:14px 10px;flex:1;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-maroon);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:26px 34px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
+
+  .principle{
+    margin:16px 0 22px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
+    padding:12px 16px;font-size:.78rem;color:#0c6b48;line-height:1.65;max-width:52em;
+  }
+  .principle b{display:block;margin-bottom:2px;}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:22px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .stat .k{font-size:.72rem;color:var(--ink-3);margin-bottom:8px;}
+  .stat .v{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:9px;}
+  .stat .dir{font-size:.95rem;}
+  .up{color:var(--ec-green);} .flat{color:var(--ec-amber);} .down{color:var(--ec-red);}
+
+  h2{font-size:1rem;font-weight:700;margin:26px 0 12px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  th,td{text-align:left;padding:12px 16px;font-size:.82rem;border-bottom:1px solid var(--line);}
+  th{font-size:.7rem;letter-spacing:.08em;color:var(--ink-3);font-weight:600;background:#fafcfd;}
+  tr:last-child td{border-bottom:none;}
+  .trend{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.8rem;}
+
+  .trial{
+    margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;
+  }
+  .trial .t-ic{width:44px;height:44px;border-radius:12px;background:#f1edfb;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+  .trial .t-body{flex:1;min-width:240px;}
+  .trial b{font-size:.9rem;display:block;}
+  .trial p{font-size:.78rem;color:var(--ink-2);line-height:1.65;margin-top:5px;}
+  .trial .gate{font-size:.7rem;color:var(--ec-maroon);background:#faf1f3;border:1px solid #e5cdd4;border-radius:99px;padding:4px 11px;display:inline-block;margin-top:9px;}
+  .trial .btns{display:flex;gap:9px;flex-shrink:0;align-self:center;}
+  .btn{border:none;border-radius:10px;padding:10px 17px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-2);font-weight:600;}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>領導視圖</h6>
+      <a href="dept.html" class="active">📈 科組統計</a>
+      <a href="#" onclick="toast('原型示範：工具試用評估紀錄');return false;">🧪 工具試用評估</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>教師視圖</h6>
+      <a href="index.html">← 返回教師介面</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">李</div>
+    <div class="meta"><b>李主任</b><span>中文科科主任</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
+
+  <h1>中文科 · 科組統計</h1>
+  <div class="sub">全科五位教師的數據滙總 — 只顯示<b>趨勢方向</b>（進步／持平／回落），按年級及技能維度呈現。2025/26 下學期。</div>
+
+  <div class="principle">
+    <b>🛡️ 刻意的設計：不設教師排名</b>
+    排名比較會假設每位教師的評分尺度完全一致——這並不真確，也不公平。此視圖回答「新閱讀計劃是否見效」，而非「哪位教師的班進步最快」。跨教師校準數據的存取權限，仍待領導層決定。
+  </div>
+
+  <div class="cards">
+    <div class="stat"><div class="k">全科整體趨勢</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
+    <div class="stat"><div class="k">中一級</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
+    <div class="stat"><div class="k">中二級</div><div class="v flat"><span class="dir">▶</span>大致持平</div></div>
+    <div class="stat"><div class="k">中三級</div><div class="v down"><span class="dir">▼</span>需要關注</div></div>
+  </div>
+
+  <h2>技能維度趨勢（全科）</h2>
+  <table>
+    <thead><tr><th>技能維度</th><th>學期趨勢</th><th>備註</th></tr></thead>
+    <tbody>
+      <tr><td>閱讀理解 — 推論</td><td><span class="trend up">▲ 進步中</span></td><td>新閱讀計劃重點範疇</td></tr>
+      <tr><td>閱讀理解 — 主旨</td><td><span class="trend up">▲ 進步中</span></td><td>—</td></tr>
+      <tr><td>寫作 — 結構組織</td><td><span class="trend flat">▶ 大致持平</span></td><td>—</td></tr>
+      <tr><td>文言字詞</td><td><span class="trend down">▼ 需要關注</span></td><td>中三級回落較明顯</td></tr>
+    </tbody>
+  </table>
+
+  <h2>另一個崗位：工具試用評估</h2>
+  <div class="trial">
+    <div class="t-ic">🧪</div>
+    <div class="t-body">
+      <b>「智寫」寫作回饋工具 — 全科訂閱申請</b>
+      <p>供應商申請中文科全科採用。按管治規則，<b>全科訂閱須先經你實測評估</b>——以真實學生作文檢驗其回饋質素，再向資訊科技統籌（訂閱管理）提交建議。個別教師自行試用則毋須此步。</p>
+      <span class="gate">⏳ 待你評估 · 全科訂閱在此之前不會生效</span>
+    </div>
+    <div class="btns">
+      <button class="btn" onclick="toast('原型示範：開始一週實測評估')">開始評估</button>
+      <button class="btn ghost" onclick="toast('原型示範：查看供應商合規資料')">查看資料</button>
+    </div>
+  </div>
+
+  <footer class="note">EdCity 科組視圖 · 故事 7「The Department Picture」示意畫面 · 內部示範原型，僅供概念演示</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+<script>
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
+</script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
