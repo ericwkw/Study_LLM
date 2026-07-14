@@ -35,12 +35,28 @@
   .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   h1{font-size:1.5rem;font-weight:800;}
   .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
-  .class-pick{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;}
-  .class-pick b{color:var(--ec-blue-dark);}
+  .class-dd{position:relative;}
+  .class-btn{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;cursor:pointer;font-family:inherit;color:var(--ink);}
+  .class-btn b{color:var(--ec-blue-dark);}
+  .class-btn .car{font-size:.7rem;color:var(--ink-3);margin-left:2px;}
+  .class-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(20,30,40,.14);width:250px;padding:6px;display:none;z-index:40;}
+  .class-menu.show{display:block;}
+  .class-opt{display:flex;flex-direction:column;gap:2px;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:.8rem;color:var(--ink-2);}
+  .class-opt:hover{background:#f2f6f9;}
+  .class-opt.on{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .class-opt small{font-size:.68rem;color:var(--ink-3);font-weight:400;}
   .source-note{
     margin:14px 0 18px;background:#e6f4fb;border:1px solid #c4e5f5;border-radius:12px;
     padding:11px 15px;font-size:.76rem;color:var(--ec-blue-dark);line-height:1.65;max-width:52em;
   }
+
+  .stat-row{display:flex;gap:12px;margin:0 0 18px;flex-wrap:wrap;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 17px;font-size:.72rem;color:var(--ink-3);min-width:150px;}
+  .stat b{display:block;font-size:1.05rem;color:var(--ink);margin-bottom:2px;}
+  .stat.warn b{color:#b07c10;}
+
+  .empty-row td{padding:30px 16px;text-align:center;color:var(--ink-3);font-size:.8rem;line-height:1.75;}
+  .empty-row .lbtn{margin-top:10px;display:inline-flex;}
 
   .gchips{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
   .gchips .lbl{font-size:.68rem;letter-spacing:.16em;color:var(--ec-maroon);font-weight:600;margin-right:4px;}
@@ -112,10 +128,18 @@
       <h1>班級學習面貌</h1>
       <div class="sub">你批改時標記的技能標籤，經審核後在這裏匯總成<b>你自己班</b>的學習面貌——批改的每一分鐘，都變成看得見的教學依據。</div>
     </div>
-    <div class="class-pick">📋 <b>中二乙班</b> · 中文 · 32 人</div>
+    <div class="class-dd">
+      <button class="class-btn" id="classBtn" onclick="toggleClassMenu()">📋 <b id="classLabel">中二乙班</b><span id="classMeta">· 中文 · 32 人</span><span class="car">▾</span></button>
+      <div class="class-menu" id="classMenu">
+        <div class="class-opt on" data-c="2b" onclick="switchClass('2b')">中二乙班<small>中文 · 32 人 · 任教中</small></div>
+        <div class="class-opt" data-c="1c" onclick="switchClass('1c')">中一丙班<small>中文 · 29 人 · 本學期剛接手</small></div>
+      </div>
+    </div>
   </div>
 
   <div class="source-note">ℹ️ 數據來源：AI 批改與已對接工具回報的技能標籤，<b>全部經內容審核後</b>方會計入。只有你看到本班的完整面貌；科組只見趨勢方向，學生只見自己。</div>
+
+  <div class="stat-row" id="statRow"></div>
 
   <div class="gchips">
     <span class="lbl">按 分 組 檢 視</span>
@@ -131,7 +155,7 @@
     <tbody id="tbody"></tbody>
   </table>
 
-  <div class="impact">
+  <div class="impact" id="impactCard">
     <h3>🔎 一個看得見的因果：工作紙 v2 之後</h3>
     <p>你在 5 月底用「教材準備」為支援組加了分層提問版工作紙。之後四次練習，支援組在「推論」的穩固比率由 3/10 升至 6/10——樣本少，未足以下結論，但值得繼續觀察。</p>
     <div class="link-row">
@@ -141,36 +165,88 @@
     </div>
   </div>
 
-  <div class="caution">🌱 <b>提醒自己：</b>這個面貌用來安排下一步教學，不是用來評判學生。文言字詞落後的六位同學，需要的是不同的路徑，不是同一條路走快些。</div>
+  <div class="caution" id="cautionBox">🌱 <b>提醒自己：</b>這個面貌用來安排下一步教學，不是用來評判學生。文言字詞落後的六位同學，需要的是不同的路徑，不是同一條路走快些。</div>
 
   <footer class="note">EdCity 班級學習面貌 · 教師本班視圖（學生表現可視化 — 平台核心價值）· 內部示範原型，僅供概念演示</footer>
 </main>
 
 <div class="toast" id="toast"></div>
 <script>
-const DATA = {
-  all:{title:'技能面貌 · 全班（32 人）', rows:[
-    ['閱讀理解 · 推論','up','▲ 進步中','28 份樣本','新閱讀策略似乎見效——增潤組已可挑戰更深層提問'],
-    ['閱讀理解 · 主旨','up','▲ 進步中','26 份樣本','—'],
-    ['寫作 · 結構組織','flat','▶ 大致持平','19 份樣本','三個分組差異不大，可全班同步處理'],
-    ['文言字詞','down','▼ 需要關注','22 份樣本','困難集中在支援組及核心組六位同學'],
-  ]},
-  stretch:{title:'技能面貌 · 增潤組（9 人）', rows:[
-    ['閱讀理解 · 推論','up','▲ 穩固','9 份樣本','可加開放式提問——先寫再看評語'],
-    ['寫作 · 結構組織','up','▲ 進步中','7 份樣本','適合嘗試議論文結構'],
-    ['文言字詞','flat','▶ 大致持平','8 份樣本','—'],
-  ]},
-  core:{title:'技能面貌 · 核心組（17 人）', rows:[
-    ['閱讀理解 · 推論','up','▲ 進步中','15 份樣本','—'],
-    ['寫作 · 結構組織','flat','▶ 大致持平','10 份樣本','開頭段落是共同弱項'],
-    ['文言字詞','down','▼ 需要關注','12 份樣本','三位同學連續兩次未達穩固'],
-  ]},
-  support:{title:'技能面貌 · 支援組（6 人）', rows:[
-    ['閱讀理解 · 推論','up','▲ 進步中','4 份樣本','工作紙 v2 之後有起色（見下方）'],
-    ['寫作 · 結構組織','flat','▶ 大致持平','2 份樣本','樣本太少，暫不作判斷'],
-    ['文言字詞','down','▼ 需要關注','6 份樣本','建議配合筆順與詞語卡，從字入手'],
-  ]},
+const CLASS_DATA = {
+  '2b':{
+    label:'中二乙班', meta:'· 中文 · 32 人',
+    stats:[
+      {n:'96',l:'已批改樣本數（近六週）'},
+      {n:'92%',l:'標籤已審核比率'},
+      {n:'1',l:'覆蓋不足的技能維度', warn:true},
+    ],
+    hasImpact:true,
+    caution:'🌱 <b>提醒自己：</b>這個面貌用來安排下一步教學，不是用來評判學生。文言字詞落後的六位同學，需要的是不同的路徑，不是同一條路走快些。',
+    groups:{
+      all:{title:'技能面貌 · 全班（32 人）', rows:[
+        ['閱讀理解 · 推論','up','▲ 進步中','28 份樣本','新閱讀策略似乎見效——增潤組已可挑戰更深層提問'],
+        ['閱讀理解 · 主旨','up','▲ 進步中','26 份樣本','—'],
+        ['寫作 · 結構組織','flat','▶ 大致持平','19 份樣本','三個分組差異不大，可全班同步處理'],
+        ['文言字詞','down','▼ 需要關注','22 份樣本','困難集中在支援組及核心組六位同學'],
+      ]},
+      stretch:{title:'技能面貌 · 增潤組（9 人）', rows:[
+        ['閱讀理解 · 推論','up','▲ 穩固','9 份樣本','可加開放式提問——先寫再看評語'],
+        ['寫作 · 結構組織','up','▲ 進步中','7 份樣本','適合嘗試議論文結構'],
+        ['文言字詞','flat','▶ 大致持平','8 份樣本','—'],
+      ]},
+      core:{title:'技能面貌 · 核心組（17 人）', rows:[
+        ['閱讀理解 · 推論','up','▲ 進步中','15 份樣本','—'],
+        ['寫作 · 結構組織','flat','▶ 大致持平','10 份樣本','開頭段落是共同弱項'],
+        ['文言字詞','down','▼ 需要關注','12 份樣本','三位同學連續兩次未達穩固'],
+      ]},
+      support:{title:'技能面貌 · 支援組（6 人）', rows:[
+        ['閱讀理解 · 推論','up','▲ 進步中','4 份樣本','工作紙 v2 之後有起色（見下方）'],
+        ['寫作 · 結構組織','flat','▶ 大致持平','2 份樣本','樣本太少，暫不作判斷'],
+        ['文言字詞','down','▼ 需要關注','6 份樣本','建議配合筆順與詞語卡，從字入手'],
+      ]},
+    },
+  },
+  '1c':{
+    label:'中一丙班', meta:'· 中文 · 29 人',
+    stats:[
+      {n:'6',l:'已批改樣本數（本學期）'},
+      {n:'100%',l:'標籤已審核比率'},
+      {n:'4',l:'覆蓋不足的技能維度', warn:true},
+    ],
+    hasImpact:false,
+    caution:'🌱 <b>剛接手這班：</b>面貌會隨你批改累積建立，不會用「未夠分」來提早下判斷——這正是設計的用意。',
+    groups:{
+      all:{title:'技能面貌 · 全班（29 人）', rows:[]},
+      stretch:{title:'技能面貌 · 增潤組', rows:[]},
+      core:{title:'技能面貌 · 核心組', rows:[]},
+      support:{title:'技能面貌 · 支援組', rows:[]},
+    },
+  },
 };
+let currentClass='2b';
+function toggleClassMenu(){document.getElementById('classMenu').classList.toggle('show');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.class-dd')) document.getElementById('classMenu').classList.remove('show');
+});
+function switchClass(c){
+  currentClass=c;
+  const cd=CLASS_DATA[c];
+  document.getElementById('classLabel').textContent=cd.label;
+  document.getElementById('classMeta').textContent=cd.meta;
+  document.querySelectorAll('.class-opt').forEach(o=>o.classList.toggle('on',o.dataset.c===c));
+  document.getElementById('classMenu').classList.remove('show');
+  renderStats(cd.stats);
+  document.getElementById('impactCard').style.display=cd.hasImpact?'':'none';
+  document.getElementById('cautionBox').innerHTML=cd.caution;
+  document.querySelectorAll('.gchip').forEach(b=>b.classList.toggle('on',b.dataset.g==='all'));
+  render('all');
+  toast('已切換班別：'+cd.label);
+}
+function renderStats(stats){
+  document.getElementById('statRow').innerHTML = stats.map(s=>
+    `<div class="stat${s.warn?' warn':''}"><b>${s.n}</b>${s.l}</div>`
+  ).join('');
+}
 function setG(btn){
   document.querySelectorAll('.gchip').forEach(c=>c.classList.remove('on'));
   btn.classList.add('on');
@@ -178,14 +254,21 @@ function setG(btn){
   toast('已切換至：'+btn.textContent.trim());
 }
 function render(g){
-  const d = DATA[g];
+  const d = CLASS_DATA[currentClass].groups[g];
   document.getElementById('tblTitle').textContent = d.title;
+  if(d.rows.length===0){
+    document.getElementById('tbody').innerHTML =
+      `<tr class="empty-row"><td colspan="4">尚未累積足夠樣本，這裏會顯示技能面貌<br>
+       <a class="lbtn" href="marking.html">✍️ 開始批改這班 →</a></td></tr>`;
+    return;
+  }
   document.getElementById('tbody').innerHTML = d.rows.map(r=>
     `<tr><td>${r[0]}</td><td><span class="trend ${r[1]}">${r[2]}</span></td><td><span class="n-chip">${r[3]}</span></td><td style="font-size:.76rem;color:var(--ink-2);">${r[4]}</td></tr>`
   ).join('');
 }
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
+renderStats(CLASS_DATA['2b'].stats);
 render('all');
 </script>
 <script src="usage-modal.js"></script>
