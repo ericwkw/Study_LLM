@@ -27,11 +27,13 @@ const PAGES = [
     ['marking.html','AI 批改（故事 1）','y'],
     ['groups.html','教學分組','y'],
     ['materials.html','教材準備（三大用例）','y'],
+    ['insights.html','班級學習面貌（核心價值）','r'],
   ]},
   {group:'其他角色 — 故事場景', items:[
     ['dept.html','科主任統計視圖（故事 7）','y'],
     ['subscriptions.html','訂閱管理（故事 4）','y'],
     ['student.html','學生／家長入口（故事 8）','r'],
+    ['roster.html','校管系統名冊（故事 2）','y'],
   ]},
   {group:'平台營運與供應商', items:[
     ['tags.html','標籤審核與管理（故事 6）','r'],
