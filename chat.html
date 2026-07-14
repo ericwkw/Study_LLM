@@ -171,6 +171,22 @@
     font-size:.6rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;
     border-radius:6px;padding:2px 6px;
   }
+  .tool-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .tool-pills:empty{display:none;}
+  .tpill{
+    display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;color:var(--ink-2);
+    background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 6px 4px 12px;
+  }
+  .tpill .x{
+    width:16px;height:16px;border-radius:50%;border:none;background:#eef2f5;color:var(--ink-3);
+    font-size:.62rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-family:inherit;
+  }
+  .tpill .x:hover{background:var(--ec-red);color:#fff;}
+  .cbtn .tcount{
+    min-width:17px;height:17px;border-radius:99px;background:var(--ec-blue);color:#fff;
+    font-size:.62rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;
+  }
+  .cbtn.has-tools{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:700;}
   .spacer{flex:1;}
   .send{
     width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
@@ -310,6 +326,7 @@
   <!-- ───────── Composer ───────── -->
   <div class="composer-wrap">
     <div class="composer">
+      <div class="tool-pills" id="toolPills"></div>
       <textarea id="input" rows="1" placeholder="設計教案、評分準則或課堂活動…"></textarea>
       <div class="bar">
 
@@ -348,31 +365,31 @@
         <!-- Tools menu -->
         <button class="cbtn" id="btnTools" onclick="toggleMenu('menuTools',this)" aria-haspopup="true">
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-          工具 <span class="chev">▼</span>
+          工具 <span class="tcount" id="toolCount" style="display:none">0</span> <span class="chev">▼</span>
         </button>
         <div class="menu" id="menuTools" style="left:44px;">
           <div class="m-sect">啟用工具</div>
-          <div class="m-item on" onclick="toggleTool(this,'網上搜尋')">
+          <div class="m-item on" data-tool="網上搜尋" onclick="toggleTool(this,'網上搜尋')">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <span><b>網上搜尋</b><small>搜尋最新教學資源與資料</small></span>
             <span class="switch"></span>
           </div>
-          <div class="m-item on" onclick="toggleTool(this,'建立文件')">
+          <div class="m-item on" data-tool="建立文件" onclick="toggleTool(this,'建立文件')">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6"/></svg>
             <span><b>建立文件</b><small>生成工作紙、通告及教學文件</small></span>
             <span class="switch"></span>
           </div>
-          <div class="m-item" onclick="toggleTool(this,'製作簡報')">
+          <div class="m-item" data-tool="製作簡報" onclick="toggleTool(this,'製作簡報')">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             <span><b>製作簡報</b><small>生成可下載的 PPTX 課堂簡報</small></span>
             <span class="switch"></span>
           </div>
-          <div class="m-item" onclick="toggleTool(this,'視覺化')">
+          <div class="m-item" data-tool="視覺化" onclick="toggleTool(this,'視覺化')">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"/></svg>
             <span><b>視覺化</b><small>圖表、時間線及概念圖</small></span>
             <span class="switch"></span>
           </div>
-          <div class="m-item" onclick="toggleTool(this,'互動代理')">
+          <div class="m-item" data-tool="互動代理" onclick="toggleTool(this,'互動代理')">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>
             <span><b>互動代理</b><small>建立課堂互動小應用</small></span>
             <span class="switch"></span>
@@ -456,6 +473,22 @@ function setMode(m){
 function toggleTool(el, name){
   el.classList.toggle('on');
   toast((el.classList.contains('on')?'已啟用：':'已停用：') + name);
+  renderToolPills();
+}
+function removeTool(name){
+  const el = document.querySelector('#menuTools .m-item[data-tool="'+name+'"]');
+  if(el){ el.classList.remove('on'); }
+  toast('已停用：'+name);
+  renderToolPills();
+}
+function renderToolPills(){
+  const on = [...document.querySelectorAll('#menuTools .m-item.on')].map(i=>i.dataset.tool);
+  document.getElementById('toolPills').innerHTML = on.map(n=>
+    `<span class="tpill">${n}<button class="x" onclick="removeTool('${n}')" aria-label="停用 ${n}">✕</button></span>`).join('');
+  const c = document.getElementById('toolCount');
+  c.textContent = on.length;
+  c.style.display = on.length ? '' : 'none';
+  document.getElementById('btnTools').classList.toggle('has-tools', on.length>0);
 }
 function setModel(el, name){
   model = name;
@@ -526,6 +559,7 @@ function scrollBottom(){
   const sc = document.getElementById('chatScroll');
   sc.scrollTop = sc.scrollHeight;
 }
+renderToolPills();
 document.getElementById('input').addEventListener('keydown', e=>{
   if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); }
 });
