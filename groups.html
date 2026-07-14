@@ -59,6 +59,9 @@
     padding:7px 10px;font-size:.78rem;margin-bottom:6px;cursor:pointer;background:#fafcfd;
   }
   .stu:hover{border-color:var(--ec-blue);}
+  .stu[draggable=true]{cursor:grab;}
+  .stu.dragging{opacity:.4;}
+  .col.dragover{border-color:var(--ec-blue);box-shadow:0 0 0 2px #c4e5f5;background:#f7fbfe;}
   .stu .av{width:22px;height:22px;border-radius:50%;background:#e6f4fb;color:var(--ec-blue-dark);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0;}
   .stu .mv{margin-left:auto;font-size:.62rem;color:var(--ink-3);}
   .stu.left{opacity:.45;text-decoration:line-through;cursor:default;}
@@ -127,7 +130,7 @@
   <div class="toolbar">
     <button class="btn" onclick="toast('原型示範：建立新分組')">＋ 新增分組</button>
     <button class="btn ghost" onclick="toast('原型示範：由上次測驗表現建議分組')">🪄 按近期表現建議分組</button>
-    <span class="hint-move">提示：點按學生可移至下一組（示意互動）</span>
+    <span class="hint-move">提示：拖放學生到另一組，或點按移至下一組</span>
   </div>
 
   <div class="board" id="board"></div>
@@ -154,15 +157,39 @@ function render(){
   document.getElementById('board').innerHTML = GROUPS.map((grp,gi)=>{
     const members = students.filter(s=>s.g===gi);
     const active = members.filter(s=>!s.left).length;
-    return `<div class="col">
+    return `<div class="col" data-gi="${gi}" ondragover="dragOver(event)" ondragleave="this.classList.remove('dragover')" ondrop="dropStu(event,${gi})">
       <div class="c-head"><span class="dot" style="background:${grp.color}"></span><b>${grp.name}</b><span class="n">${active} 人</span></div>
       <div class="c-goal">${grp.goal}</div>
-      ${members.map(s=>`<div class="stu ${s.left?'left':''}" onclick="${s.left?'':'moveStu(\''+s.n+'\')'}">
+      ${members.map(s=>`<div class="stu ${s.left?'left':''}" ${s.left?'':'draggable="true" ondragstart="dragStu(event,\''+s.n+'\')" ondragend="this.classList.remove(\'dragging\')"'} onclick="${s.left?'':'moveStu(\''+s.n+'\')'}">
         <span class="av">${s.n[0]}</span>${s.n}${s.left?'（已轉班 · 自動退出）':''}<span class="mv">移組 ›</span>
       </div>`).join('')}
       <button class="assign" onclick="toast('原型示範：指派教材給「${grp.name}」')">📎 指派教材／練習給此組</button>
     </div>`;
   }).join('');
+}
+let dragName=null;
+function dragStu(ev,name){
+  dragName=name;
+  ev.dataTransfer.setData('text/plain',name);
+  ev.dataTransfer.effectAllowed='move';
+  ev.target.classList.add('dragging');
+}
+function dragOver(ev){
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect='move';
+  ev.currentTarget.classList.add('dragover');
+}
+function dropStu(ev,gi){
+  ev.preventDefault();
+  ev.currentTarget.classList.remove('dragover');
+  const name=ev.dataTransfer.getData('text/plain')||dragName;
+  if(!name) return;
+  const s=students.find(x=>x.n===name);
+  if(!s||s.left||s.g===gi) return;
+  s.g=gi;
+  render();
+  toast(name+' → '+GROUPS[gi].name);
+  dragName=null;
 }
 function moveStu(name){
   const s = students.find(x=>x.n===name);
