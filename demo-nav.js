@@ -27,6 +27,7 @@ const PAGES = [
     ['marking.html','AI 批改（故事 1）','y'],
     ['groups.html','教學分組','y'],
     ['materials.html','教材準備（三大用例）','y'],
+    ['material-library.html','教材庫（我的教材）','y'],
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],
   ]},
   {group:'其他角色 — 故事場景', items:[
