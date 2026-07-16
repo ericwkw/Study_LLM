@@ -91,6 +91,18 @@
   .rowarrow{flex:0 0 auto;display:flex;align-items:center;color:#c1550c;font-size:20px;font-weight:700;}
   .rowbox{flex:1;border:1px solid var(--line);border-radius:10px;padding:16px 20px;display:flex;align-items:center;font-size:16px;color:var(--ink2);background:#fafbfe;}
   .conclusion-line{font-size:18px;font-weight:700;color:var(--ink);margin-top:22px;line-height:1.5;}
+  .track-legend{display:flex;gap:18px;margin-bottom:22px;flex-wrap:wrap;font-size:13px;color:var(--ink2);}
+  .track-legend .k{display:flex;align-items:center;gap:6px;}
+  .track-legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .valuerow{display:flex;gap:16px;align-items:stretch;margin-bottom:16px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line);}
+  .valuerow:last-of-type{border-bottom:none;}
+  .actor-name{flex:0 0 130px;display:flex;align-items:center;font-weight:700;font-size:15.5px;color:var(--ink);}
+  .contribs{flex:1 1 400px;display:flex;flex-direction:column;gap:7px;justify-content:center;}
+  .contrib{font-size:13.5px;color:var(--ink2);display:flex;align-items:center;gap:9px;background:#fafbfe;border:1px solid var(--line);border-radius:8px;padding:7px 12px;line-height:1.35;}
+  .contrib .cicon{width:20px;height:20px;border-radius:50%;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:700;}
+  .c-blue .cicon{background:var(--blue);} .c-green .cicon{background:var(--green);} .c-purple .cicon{background:var(--purple);}
+  .valuearrow{flex:0 0 auto;display:flex;align-items:center;color:#c1550c;font-size:20px;font-weight:700;}
+  .combined{flex:0 0 260px;background:var(--ink);color:#fff;border-radius:10px;padding:14px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;line-height:1.45;}
 </style>
 </head>
 <body>
@@ -376,6 +388,66 @@
 <p class="conclusion-line">Together, the three tracks carry EdCity from a daily habit teachers rely on, to adoption every school can trust, to a form of belonging students actually stay for — one continuous story, not three separate products.<span class="fn">7</span></p>
 </div>
 
+<!-- INTEGRATED STRATEGY — USER VALUE -->
+<div class="slide">
+<div class="eyebrow">Integrated strategy — user value</div>
+<h1 style="font-size:30px;">The three tracks compound into one value story for every actor</h1>
+<p class="subtitle" style="margin-bottom:18px;">No single track carries the full value on its own — each actor's real benefit comes from all three working together.</p>
+<hr class="rule">
+
+<div class="track-legend">
+  <div class="k"><span class="dot" style="background:var(--blue);"></span>Track 1 — EdCity.ai</div>
+  <div class="k"><span class="dot" style="background:var(--green);"></span>Track 2 — EdMarket</div>
+  <div class="k"><span class="dot" style="background:var(--purple);"></span>Track 3 — Companionship</div>
+</div>
+
+<div class="valuerow">
+  <div class="actor-name">Teacher</div>
+  <div class="contribs">
+    <div class="contrib c-blue"><span class="cicon">1</span>Reclaims hours through one trusted daily companion for prep and marking</div>
+    <div class="contrib c-green"><span class="cicon">2</span>Vetted tools appear automatically — no extra evaluation burden</div>
+    <div class="contrib c-purple"><span class="cicon">3</span>Shares the load of nurturing curiosity, not just marking accuracy</div>
+  </div>
+  <div class="valuearrow">→</div>
+  <div class="combined">Focus on teaching, not administering — backed by tools they trust and a school that helps carry the human side of learning.</div>
+</div>
+
+<div class="valuerow">
+  <div class="actor-name">Student</div>
+  <div class="contribs">
+    <div class="contrib c-blue"><span class="cicon">1</span>Thinks before the answer arrives — builds real skill, not just completion</div>
+    <div class="contrib c-green"><span class="cicon">2</span>Learns with better, safer tools their teacher didn't have to vet alone</div>
+    <div class="contrib c-purple"><span class="cicon">3</span>Never faces a hard problem completely alone</div>
+  </div>
+  <div class="valuearrow">→</div>
+  <div class="combined">Builds real understanding, with better tools around them, and companions in the struggle — not just a scorecard at the end.</div>
+</div>
+
+<div class="valuerow">
+  <div class="actor-name">Parent</div>
+  <div class="contribs">
+    <div class="contrib c-blue"><span class="cicon">1</span>Gets real conversation starters, not just a number on a report</div>
+    <div class="contrib c-green"><span class="cicon">2</span>Trusts that whatever tool their child uses in class has been vetted</div>
+    <div class="contrib c-purple"><span class="cicon">3</span>Sees a child who's engaged and connected, not just scored</div>
+  </div>
+  <div class="valuearrow">→</div>
+  <div class="combined">Becomes a genuine partner in a child who is growing — not just performing.</div>
+</div>
+
+<div class="valuerow">
+  <div class="actor-name">School &amp; partners</div>
+  <div class="contribs">
+    <div class="contrib c-blue"><span class="cicon">1</span>Real usage data proves what's actually working in the classroom</div>
+    <div class="contrib c-green"><span class="cicon">2</span>One system to vet, approve, budget, and subscribe — no manual chasing</div>
+    <div class="contrib c-purple"><span class="cicon">3</span>Builds a reputation for developing whole learners, not just exam results</div>
+  </div>
+  <div class="valuearrow">→</div>
+  <div class="combined">Runs digital learning with confidence, and becomes the platform vendors and schools alike trust as the way in.</div>
+</div>
+
+<p class="conclusion-line">Value doesn't come from any one track — it comes from teachers, students, parents, and schools all standing on the same trusted platform at once.<span class="fn">8</span></p>
+</div>
+
 <div class="outcome-bar">
   <span class="ostar">★</span>
   <span>Expected outcome: a platform where teachers teach instead of administering, students think instead of copying, and every school in Hong Kong treats EdCity as the natural home for digital learning.</span>
@@ -384,6 +456,7 @@
 <div class="doc-footnotes">
 <b>About this document.</b> Built as a happy-path vision exercise (Eric, 2026-07-16) from the actor-journey/value-map synthesis in EdCity_Journeys_Value_Map.html. Each track now follows one consistent logic: <b>pain points</b> the actors face → <b>why those pain points matter</b> → <b>how EdCity resolves them</b> (or opens a new opportunity) → the <b>expected impact</b> each actor receives as a result. Numbered footnotes mark where a pain point or claim rests on assumption or extrapolation rather than field evidence — kept out of the main narrative by design, but present so nothing here is mistaken for a validated claim if this document travels beyond this conversation.
 <br><b>7</b> The "one continuous story" framing is a narrative device tying the three tracks together for presentation purposes — it does not imply the tracks are sequenced, dependent, or resourced as a single roadmap. Track 3 in particular remains entirely proposed (see footnote 6).
+<br><b>8</b> The "School & partners" row combines Admin/IT, Subject-lead, Principal, and Vendor into one composite view for space — their actual pain points, evidence tiers, and stakes differ per actor (see the individual Track 1/2 breakdowns above and EdCity_Journeys_Value_Map.html). Combined-value statements throughout this row are illustrative, not a claim that all four actors experience identical benefit.
 </div>
 
 </div>
