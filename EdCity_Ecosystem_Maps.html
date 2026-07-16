@@ -33,10 +33,15 @@
   .ring-label{font-size:15px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:8px;}
   .row{display:flex;flex-wrap:wrap;gap:10px;}
   .node{flex:1 1 190px;padding:10px 12px;border-radius:10px;background:var(--card);border:1px dashed var(--border-strong);}
-  .node.core{flex:1 1 220px;padding:12px 14px;}
+  .node.core{flex:1 1 260px;padding:12px 14px;}
   .node .t{font-size:16px;font-weight:600;}
   .node .d{font-size:15px;color:var(--text2);margin-top:2px;}
   .node .e{font-size:14px;margin-top:4px;}
+  .node .cap{list-style:none;margin:6px 0 0;padding:0;}
+  .node .cap li{font-size:15px;color:var(--text2);margin-top:4px;padding-left:14px;position:relative;line-height:1.4;}
+  .node .cap li::before{content:"–";position:absolute;left:0;color:var(--border-strong);}
+  .node .cap-group{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.02em;margin-top:10px;}
+  .node .cap-group:first-of-type{margin-top:8px;}
   .node.evidenced{background:var(--green-bg);border:1px solid var(--green-border);}
   .node.evidenced .t,.node.evidenced .e{color:var(--green);}
   .node.partial{background:var(--amber-bg);border:1px solid var(--amber-border);}
@@ -50,6 +55,8 @@
   .legend .sw.evidenced{background:var(--green-bg);border:1px solid var(--green-border);}
   .legend .sw.partial{background:var(--amber-bg);border:1px solid var(--amber-border);}
   .legend .sw.theorized{background:var(--card);border:1px dashed var(--border-strong);}
+  .legend .sw.confirmed{background:var(--accent-bg);border:1px solid var(--accent-border);}
+  .conf{color:var(--accent);font-weight:600;}
   table{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px;}
   th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
   th{font-weight:600;color:var(--text2);font-size:15px;text-transform:uppercase;letter-spacing:0.02em;}
@@ -57,6 +64,7 @@
   .dot-e{color:var(--green);font-weight:700;}
   .dot-p{color:var(--amber);font-weight:700;}
   .dot-t{color:var(--border-strong);}
+  sup.ind{font-size:9px;color:var(--amber);font-style:italic;margin-left:1px;}
   .count{font-weight:600;}
   .note{font-size:17px;color:var(--text2);line-height:1.6;margin-top:16px;background:var(--card2);padding:14px 16px;border-radius:10px;}
   .flow{display:flex;flex-direction:column;align-items:center;gap:0;}
@@ -94,49 +102,50 @@
 <h1>How the five maps connect</h1>
 <p class="subtitle">Same actors appear across multiple service maps — this table is the connective tissue the individual radial maps can't show on their own.</p>
 <table>
-<tr><th>Actor</th><th>AI Tools</th><th>SMS</th><th>Resources</th><th>EdMarket</th><th>Student map</th><th>Appears in</th></tr>
-<tr><td>Teacher</td><td class="dot dot-e">●</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="count">5 / 5</td></tr>
-<tr><td>Student</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td>center</td><td class="count">5 / 5</td></tr>
-<tr><td>Principal</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="count">4 / 5</td></tr>
-<tr><td>EDB</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="count">5 / 5</td></tr>
-<tr><td>Subject-lead</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-e">●</td><td class="dot dot-t">○</td><td class="count">4 / 5</td></tr>
-<tr><td>Admin / IT</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">3 / 5</td></tr>
-<tr><td>Parent / guardian</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">3 / 5</td></tr>
+<tr><th>Actor</th><th>EdCity.ai</th><th>SMS</th><th>Resources</th><th>EdMarket</th><th>Student map</th><th>Appears in</th></tr>
+<tr><td>Teacher (primary &amp; secondary)</td><td class="dot dot-p">◐</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-p">◐</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="count">5 / 5</td></tr>
+<tr><td>Student</td><td class="dot dot-t">○</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">— (center of this map)</td><td class="count">5 / 5</td></tr>
+<tr><td>EDB</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="count">5 / 5</td></tr>
+<tr><td>Admin / IT</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="count">5 / 5</td></tr>
+<tr><td>Subject-lead</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-e">●</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="count">4 / 5</td></tr>
+<tr><td>Principal</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="count">3 / 5</td></tr>
+<tr><td>Parent / guardian</td><td class="dot dot-t">○</td><td class="dot dot-t">○<sup class="ind">i</sup></td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">3 / 5</td></tr>
 <tr><td>Vendor (e.g. Sayo/AAIL)</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-e">●</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>EdMarket gatekeeper</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>Data-governance gatekeeper</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>EdCity content team</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>Academic / research partner</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>EdCity SMS team</td><td class="dot dot-t">—</td><td class="dot dot-p">◐</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
-<tr><td>Primary teacher</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="count">1 / 5</td></tr>
 <tr><td>Peers / classmates</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">1 / 5</td></tr>
 </table>
 <div class="legend">
   <div class="k"><span class="dot-e">●</span> Evidenced</div>
   <div class="k"><span class="dot-p">◐</span> Partly evidenced</div>
-  <div class="k"><span class="dot-t">○</span> Theorized</div>
+  <div class="k"><span class="dot-t">○</span> Theorized, not researched</div>
   <div class="k"><span class="dot-t">—</span> Not in this map</div>
+  <div class="k"><sup class="ind">i</sup> Indirect only — no direct system access</div>
 </div>
 <div class="note">
-Teacher, student, and EDB touch all five maps — genuinely cross-cutting actors, and the ones most exposed if the four services don't share data or design language. Principal and subject-lead are close behind at four. Everyone else is a single-service specialist (vendor, gatekeepers, content/SMS teams) — their needs are real but narrow, and probably shouldn't drive cross-service architecture decisions the way teacher/student/EDB needs should. This table is itself still mostly theorized outside the AI Tools and EdMarket maps — treat the "appears in" counts as a structural hypothesis to test, not a settled fact.
+This table covers human and organizational actors only — the systems themselves (EdCity.ai, School Management System) are on the Systems relationships tab. Teacher (primary &amp; secondary), student, EDB, and admin/IT touch all five maps — genuinely cross-cutting actors, and the ones most exposed if the four services don't share data or design language. Subject-lead is close behind at four. Everyone else is a single-service specialist (vendor, gatekeepers, content/SMS teams) — their needs are real but narrow, and probably shouldn't drive cross-service architecture decisions the way the cross-cutting actors' needs should. This table is itself still mostly theorized outside the EdCity.ai and EdMarket maps — treat the "appears in" counts as a structural hypothesis to test, not a settled fact.
 </div>
 </div>
 
 <div class="panel" id="systems">
 <h1>Digital Education Platform — systems relationships</h1>
-<p class="subtitle">Confirmed by Eric, not theorized — how data actually flows between the four built-out systems. Student/parent/guardian portal is parked; not shown.</p>
+<p class="subtitle">Confirmed system architecture, not theorized — how data actually flows between the four built-out systems. Student/parent/guardian portal is parked; not shown.</p>
 
 <div class="flow">
 <div class="sysbox hub"><div class="sn">DE Resources Platform</div><div class="sd">Entry point / container</div></div>
 
 <div class="connector"><span class="arrow">↓</span><span class="clabel">provides access to</span></div>
 
-<div class="sysrow">
-<div class="sysbox"><div class="sn">EdCity.ai</div><div class="sd">Teacher and student sides</div></div>
-<div class="sysbox"><div class="sn">EdMarket</div><div class="sd">Reached via EdCity.ai's tool section, not directly</div></div>
-</div>
+<div class="sysbox"><div class="sn">EdCity.ai</div><div class="sd">Teacher and student sides — the only system DE Resources Platform links to directly</div></div>
 
-<div class="connector"><span class="arrow">↓</span><span class="clabel">EdCity.ai and other EdCity services connect to School Management System in two distinct ways</span></div>
+<div class="connector"><span class="arrow">↓</span><span class="clabel">tool section provides access to</span></div>
+
+<div class="sysbox"><div class="sn">EdMarket</div><div class="sd">Reached only via EdCity.ai's tool section — not a direct link from DE Resources Platform</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">separately, EdCity.ai and other EdCity services connect to School Management System in two distinct ways</span></div>
 
 <div class="layerbox">
 <div class="layer"><div class="ln">Official records layer</div><div class="ld">→ one-directional: feeds official student rosters into EdCity.ai and other EdCity services. Not written back to.</div></div>
@@ -156,53 +165,83 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="ring-label">Ring 3 — furthest from daily use</div>
 <div class="row">
 <div class="node"><div class="t">Admin / IT</div><div class="d">Provisions accounts, PDPO compliance</div></div>
-<div class="node"><div class="t">Parent / guardian</div><div class="d">Views longitudinal progress</div></div>
-<div class="node"><div class="t">EDB</div><div class="d">Sets mandate, receives reports</div></div>
+<div class="node"><div class="t">Principal</div><div class="d">Indirect — receives efficiency reporting, not a frequent direct user</div></div>
+<div class="node"><div class="t">EDB</div><div class="d">Indirect only — sets mandate, receives aggregate reports</div></div>
 </div>
 <div class="ring2">
 <div class="ring-label">Ring 2</div>
 <div class="row">
-<div class="node"><div class="t">Primary teacher</div><div class="d">Simplified multi-subject assistant</div></div>
-<div class="node"><div class="t">Principal</div><div class="d">Reviews efficiency dashboard</div></div>
-<div class="node"><div class="t">Student</div><div class="d">Revises before AI reveal</div></div>
+<div class="node"><div class="t">Parent / guardian</div>
+<ul class="cap">
+<li>Receives weekly conversation-starter topics to discuss with their child</li>
+<li>Views child's longitudinal progress</li>
+</ul>
+<div class="e">Per prototype build (student.html parent view), not field-evidenced</div>
+</div>
+<div class="node"><div class="t">Student</div>
+<ul class="cap">
+<li>Attempts the assignment first; sees AI feedback only after the teacher releases it, including on open-ended items</li>
+<li>Chooses own practice based on mood/effort level (self-directed selection)</li>
+<li>Views own skill progress</li>
+</ul>
+<div class="e">Feedback-staging inferred from evidenced teacher-side finding; self-directed selection and progress-viewing per prototype build (student.html), not field-evidenced</div>
+</div>
+<div class="node"><div class="t">Subject-lead</div><div class="d">Reviews calibration, sets policy</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, daily use</div>
 <div class="row">
-<div class="node core evidenced"><div class="t">Secondary teacher</div><div class="d">Marks and stages AI feedback</div><div class="e">Evidenced (Ms. Chan)</div></div>
-<div class="node core"><div class="t">Subject-lead</div><div class="d">Reviews calibration, sets policy</div></div>
+<div class="node core partial"><div class="t">Teacher (primary &amp; secondary)</div>
+<div class="cap-group">Prep &amp; materials</div>
+<ul class="cap">
+<li>Prepares for class, generates and validates teaching materials against the official curriculum framework</li>
+<li>Collaborates cross-subject — invites colleagues from other subjects to co-review materials</li>
+</ul>
+<div class="cap-group">Assignments &amp; marking</div>
+<ul class="cap">
+<li>Generates assignments, including staged open-ended questions (student writes first, sees comment after)</li>
+<li>Marks assignments, stages AI feedback release</li>
+</ul>
+<div class="cap-group">Groups &amp; communication</div>
+<ul class="cap">
+<li>Creates and manages teaching groups; assigns materials by group</li>
+<li>Drafts admin / home-school communications</li>
+<li>Shares resources; browses and uses partner (vendor) tools via the tool library</li>
+</ul>
+<div class="cap-group">Insight</div>
+<ul class="cap">
+<li>Views class-level skill profile by learning tier (stretch / core / support), including causal before-after insight</li>
+</ul>
+<div class="e">Marking/staging and skill-profile capabilities evidenced for secondary teachers (Ms. Chan; Sayo vendor meeting); same footprint applied to primary teachers by inference, not yet field-evidenced at primary level. Rest of the capability list confirmed against the prototype build for both.</div>
 </div>
 </div>
 </div>
 </div>
-<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
 <div class="panel" id="sms">
 <div class="center"><span class="name">School Management System</span><span class="desc">EdConnect and EdData — legacy, security-first, internally maintained. Two distinct data layers: official records (one-way out) and student performance data (two-way, fed by EdCity.ai and other EdCity services) — see Systems relationships tab.</span></div>
 <div class="ring3">
-<div class="ring-label">Ring 3 — furthest from daily use</div>
+<div class="ring-label">Ring 3 — indirect, no direct system access</div>
 <div class="row">
 <div class="node"><div class="t">Student</div><div class="d">Subject of the record, no direct access</div></div>
-<div class="node"><div class="t">Parent / guardian</div><div class="d">May view record accuracy</div></div>
-<div class="node"><div class="t">EDB</div><div class="d">Unconfirmed future data link</div></div>
-</div>
-<div class="ring2">
-<div class="ring-label">Ring 2</div>
-<div class="row">
-<div class="node"><div class="t">Teacher</div><div class="d">Consumes roster / class-list data</div></div>
-<div class="node"><div class="t">Principal</div><div class="d">Oversees compliance, official records</div></div>
+<div class="node"><div class="t">Parent / guardian</div><div class="d">No direct access — sees record-derived info only via EdCity.ai</div></div>
+<div class="node"><div class="t">Teacher (primary &amp; secondary)</div><div class="d">No direct access — receives roster/record data via EdCity.ai, not from SMS directly</div></div>
+<div class="node"><div class="t">Principal</div><div class="d">No direct access — compliance visibility comes via EdCity.ai, not from SMS directly</div></div>
+<div class="node"><div class="t">EDB</div><div class="d">Indirect only — unconfirmed future data link, not a current system user</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, daily use</div>
 <div class="row">
 <div class="node core partial"><div class="t">Admin/IT</div><div class="d">Manually maintains student/school records — official records layer only</div><div class="e">Partly evidenced — data-currency risk named, JTBD inferred</div></div>
 <div class="node core partial"><div class="t">EdCity SMS team</div><div class="d">Maintains the legacy system internally — both layers</div><div class="e">Partly evidenced — ownership confirmed, actions inferred</div></div>
+<div class="node core"><div class="t">EdCity.ai (+ other EdCity services)</div><div class="d">Writes and reads student performance data — the only bidirectional connection into SMS; does not touch the official records layer</div><div class="e"><span class="conf">Confirmed system architecture, not theorized</span></div></div>
 </div>
 </div>
 </div>
-</div>
-<div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+<div class="legend"><div class="k"><span class="sw confirmed"></span>Confirmed system architecture</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
 <div class="panel" id="resources">
@@ -210,27 +249,32 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="ring3">
 <div class="ring-label">Ring 3 — furthest from daily use</div>
 <div class="row">
-<div class="node"><div class="t">Student</div><div class="d">Limited direct exposure to this content</div></div>
+<div class="node"><div class="t">Student</div><div class="d">No direct access — only indirect exposure via teacher-shared materials</div></div>
 <div class="node"><div class="t">Academic / research partner</div><div class="d">Contributes academic research content</div></div>
-<div class="node"><div class="t">EDB</div><div class="d">Aligns content to blueprint priorities</div></div>
+<div class="node"><div class="t">EDB</div><div class="d">Sets the mandate EdCity aligns its own content to — EDB doesn't use the platform directly</div></div>
 </div>
 <div class="ring2">
 <div class="ring-label">Ring 2</div>
 <div class="row">
 <div class="node"><div class="t">EdCity content team</div><div class="d">Produces news, updates, event listings</div></div>
-<div class="node"><div class="t">Principal</div><div class="d">Uses spotlight events for staff CPD planning</div></div>
 <div class="node"><div class="t">Admin/IT</div><div class="d">Distributes event / update info to staff</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, daily use</div>
 <div class="row">
-<div class="node core partial"><div class="t">Teacher</div><div class="d">Consumes eLAPF, EdAcademy, OQB/DES, STAR for prep and CPD</div><div class="e">Partly evidenced — general prep-tool use is evidenced, this platform's role is inferred</div></div>
+<div class="node core partial"><div class="t">Teacher (primary &amp; secondary)</div>
+<ul class="cap">
+<li>Consumes eLAPF, EdAcademy, OQB/DES, STAR for prep and CPD</li>
+<li>Accesses EdCity.ai, and through it EdMarket, from within this platform</li>
+</ul>
+<div class="e">Content-consumption partly evidenced (general prep-tool use); the EdCity.ai/EdMarket access path is <span class="conf">confirmed system architecture, not theorized</span></div>
+</div>
 <div class="node core"><div class="t">Subject-lead</div><div class="d">Curates / vets content for department</div></div>
 </div>
 </div>
 </div>
 </div>
-<div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+<div class="legend"><div class="k"><span class="sw confirmed"></span>Confirmed system architecture</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
 <div class="panel" id="edmarket">
@@ -240,14 +284,15 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="row">
 <div class="node"><div class="t">Data-governance gatekeeper</div><div class="d">Decides official-data access for vendors</div></div>
 <div class="node"><div class="t">Student</div><div class="d">Indirect beneficiary of vetted tools</div></div>
-<div class="node"><div class="t">EDB</div><div class="d">Blueprint alignment, conflict-of-interest oversight</div></div>
+<div class="node"><div class="t">EDB</div><div class="d">Indirect only — blueprint alignment, conflict-of-interest oversight, not a marketplace user</div></div>
 </div>
 <div class="ring2">
 <div class="ring-label">Ring 2</div>
 <div class="row">
 <div class="node"><div class="t">EdMarket gatekeeper</div><div class="d">Vets and lists vendor tools</div></div>
-<div class="node"><div class="t">Teacher</div><div class="d">Browses / requests marketplace tools</div></div>
+<div class="node"><div class="t">Teacher (primary &amp; secondary)</div><div class="d">Browses / requests marketplace tools</div></div>
 <div class="node"><div class="t">Principal</div><div class="d">Approves budget for vendor licensing</div></div>
+<div class="node partial"><div class="t">Admin / IT</div><div class="d">Approves and administers school-wide subscriptions to vetted tools — approval makes a tool auto-appear in the teacher interface, no separate account setup needed. Enforces that a subject-lead's full-department subscription request has a completed evaluation first.</div><div class="e">Confirmed against the prototype build (subscriptions.html)</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, transacts directly</div>
@@ -258,7 +303,7 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 </div>
 </div>
 </div>
-<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
 <div class="panel" id="student">
@@ -266,28 +311,48 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="ring3">
 <div class="ring-label">Ring 3 — furthest, indirect</div>
 <div class="row">
-<div class="node"><div class="t">Admin/IT</div><div class="d">Holds the student's official record</div></div>
-<div class="node"><div class="t">School Management System</div><div class="d">Stores the student as a record, no direct access</div></div>
-<div class="node"><div class="t">EDB</div><div class="d">Sets the mandate the student's schooling sits under</div></div>
+<div class="node"><div class="t">Admin/IT</div><div class="d">Holds the student's official record — indirect, no real-time contact with the student</div></div>
+<div class="node"><div class="t">School Management System</div><div class="d">Stores the official record plus performance data — the performance layer is fed by the student's own EdCity.ai activity, but the student has no direct access to SMS itself</div></div>
+<div class="node"><div class="t">EDB</div><div class="d">Sets the mandate the student's schooling sits under — indirect, no direct contact</div></div>
 </div>
 <div class="ring2">
 <div class="ring-label">Ring 2</div>
 <div class="row">
-<div class="node"><div class="t">Parent / guardian</div><div class="d">Views progress, supports at home</div></div>
-<div class="node"><div class="t">EdCity.ai</div><div class="d">Delivers staged feedback and resources, and is where the student has their own entry point for assignments/exercises — that activity is what feeds School Management System's performance-data layer</div></div>
-<div class="node"><div class="t">Subject-lead</div><div class="d">Shapes grading consistency the student experiences</div></div>
+<div class="node"><div class="t">Parent / guardian</div>
+<ul class="cap">
+<li>Receives weekly conversation-starter topics to discuss with their child</li>
+<li>Views child's longitudinal progress</li>
+</ul>
+<div class="e">Per prototype build (student.html parent view), not field-evidenced</div>
+</div>
+<div class="node"><div class="t">Subject-lead</div><div class="d">Shapes grading consistency the student experiences — indirect, via the teacher, not direct contact with the student</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, daily</div>
 <div class="row">
-<div class="node core partial"><div class="t">Teacher</div><div class="d">Stages AI feedback so the student thinks before seeing it</div><div class="e">Partly evidenced — student-side mirror of the marking-workflow finding</div></div>
+<div class="node core partial"><div class="t">Teacher (primary &amp; secondary)</div>
+<ul class="cap">
+<li>Marks assignments and stages AI feedback release, including on open-ended written work</li>
+<li>Places the student into differentiated teaching groups</li>
+</ul>
+<div class="e">Marking/staging partly evidenced — student-side mirror of the marking-workflow finding; grouping per prototype build, not field-evidenced</div>
+</div>
+<div class="node core partial"><div class="t">EdCity.ai</div>
+<ul class="cap">
+<li>Student attempts the assignment first; sees AI feedback only after the teacher releases it, including on open-ended items</li>
+<li>Chooses own practice based on mood/effort level</li>
+<li>Views own skill progress</li>
+<li>This activity is what feeds School Management System's performance-data layer</li>
+</ul>
+<div class="e">Per prototype build (student.html); feedback-staging inferred from the evidenced teacher-side finding</div>
+</div>
 <div class="node core"><div class="t">Peers / classmates</div><div class="d">Companionship in the pursuit, not just solo learning</div></div>
 </div>
 </div>
 </div>
 </div>
 <div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
-<div class="note">The "Peers / classmates" node comes from Eric's education belief system (companionship in the pursuit), not from field evidence about students — a different kind of theorized than the rest.</div>
+<div class="note">The "Peers / classmates" node reflects a design principle — companionship in the pursuit of learning — rather than field evidence about students, a different kind of theorized than the rest.</div>
 </div>
 
 </main>
