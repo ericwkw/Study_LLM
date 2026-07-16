@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Positioning — Draft Tracks</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --ink:#0d1b3e; --ink2:#4a5170; --ink3:#8890a8;
+    --blue:#1550d8; --blue-bg:#e8effd; --blue-line:#c3d3f7;
+    --green:#0f8a52; --green-bg:#e6f6ee; --green-line:#bfe6d3;
+    --purple:#6a2ed6; --purple-bg:#efe6fc; --purple-line:#d7c3f5;
+    --card:#ffffff; --line:#e2e6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 32px 80px;}
+  .banner{background:#fff8e6;border:1px solid #f0d98c;color:#7a5b00;font-size:14.5px;padding:12px 18px;border-radius:10px;margin-bottom:28px;line-height:1.5;}
+  .banner b{font-weight:700;}
+  .slide{background:var(--card);border-radius:20px;padding:36px 40px;margin-bottom:32px;box-shadow:0 1px 3px rgba(13,27,62,0.06);}
+  h1{font-size:34px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+  .subtitle{font-size:17px;color:var(--ink2);margin:0 0 26px;}
+  h2.areas-label{font-size:15px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
+  .areas{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;}
+  .area{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .area .icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;}
+  .area .n{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .area .d{font-size:13.5px;color:var(--ink2);line-height:1.4;}
+  .a-blue{background:var(--blue-bg);} .a-blue .icon{background:var(--blue);color:#fff;}
+  .a-green{background:var(--green-bg);} .a-green .icon{background:var(--green);color:#fff;}
+  .a-purple{background:var(--purple-bg);} .a-purple .icon{background:var(--purple);color:#fff;}
+  .a-gray{background:#f1f2f6;} .a-gray .icon{background:var(--ink3);color:#fff;}
+  .insight-row{display:flex;gap:20px;align-items:stretch;margin-bottom:26px;flex-wrap:wrap;}
+  .insight-box{flex:0 0 260px;background:var(--blue-bg);border:1px solid var(--blue-line);border-radius:14px;padding:18px;}
+  .insight-box .tag{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+  .insight-box .txt{font-size:15px;font-weight:600;color:var(--ink);line-height:1.4;}
+  .funnel{flex:1;background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .fstep{text-align:center;flex:1;min-width:80px;}
+  .fstep .ic{width:44px;height:44px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:19px;margin:0 auto 6px;}
+  .fstep .fn{font-size:12.5px;font-weight:700;color:var(--ink2);}
+  .farrow{color:var(--ink3);font-size:16px;flex:0 0 auto;}
+  .gaps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .gap{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .gap .gt{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:6px;}
+  .gap .gn{font-size:15.5px;font-weight:700;margin-bottom:5px;}
+  .gap .gd{font-size:13.5px;color:var(--ink2);line-height:1.45;}
+  .gap.blue{background:var(--blue-bg);} .gap.blue .gt{color:var(--blue);}
+  .gap.green{background:var(--green-bg);} .gap.green .gt{color:var(--green);}
+  .gap.purple{background:var(--purple-bg);} .gap.purple .gt{color:var(--purple);}
+
+  .track-head{display:flex;align-items:center;gap:14px;margin-bottom:2px;}
+  .track-badge{font-size:13px;font-weight:700;color:#fff;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .track-badge.blue{background:var(--blue);} .track-badge.green{background:var(--green);} .track-badge.purple{background:var(--purple);}
+  .track-title{font-size:26px;font-weight:800;margin:0;}
+  .track-sub{font-size:15.5px;color:var(--ink2);margin:4px 0 24px;}
+  .grid3{display:grid;grid-template-columns:220px 1fr 240px;gap:22px;align-items:start;}
+  @media(max-width:920px){.grid3{grid-template-columns:1fr;}}
+  .side-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .side-box .st{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .side-box ul{margin:0;padding-left:16px;}
+  .side-box li{font-size:13.5px;color:var(--ink2);margin-bottom:6px;line-height:1.4;}
+  .approach{border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .approach .at{font-size:14px;font-weight:700;text-align:center;margin-bottom:4px;}
+  .approach .as{font-size:16px;font-weight:700;text-align:center;margin-bottom:18px;}
+  .steps{display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .step{flex:1;min-width:110px;text-align:center;}
+  .step .sic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 8px;color:#fff;font-weight:700;}
+  .step .sn{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .step .sd{font-size:12px;color:var(--ink2);line-height:1.35;}
+  .sarrow{color:var(--ink3);font-size:16px;align-self:center;margin-top:20px;}
+  .impact-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;}
+  .impact-box .it{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .impact-box .id{font-size:12.5px;color:var(--ink2);line-height:1.4;}
+  .success{margin-top:20px;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .success .lbl{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;color:#fff;padding:8px 14px;border-radius:20px;flex:0 0 auto;}
+  .success .items{display:flex;gap:22px;flex-wrap:wrap;flex:1;}
+  .success .item{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;}
+  .tierline{display:flex;gap:14px;margin-top:16px;font-size:12.5px;color:var(--ink2);flex-wrap:wrap;}
+  .tierline .k{display:flex;align-items:center;gap:5px;}
+  .tierdot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .td-e{background:var(--green);} .td-p{background:#c98a12;} .td-t{background:var(--ink3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="banner"><b>Draft positioning options</b> — derived from the actor-journey/value-map synthesis (EdCity_Journeys_Value_Map.html), 2026-07-16. Not committed roadmap or product architecture. Evidence tiers from that document carry through here; nothing here should be read as validated beyond what's tagged.</div>
+
+<div class="slide">
+<h1>EdCity Positioning</h1>
+<p class="subtitle">Three draft tracks for framing product value, built from the actor-journey synthesis — not a launch plan.</p>
+
+<h2 class="areas-label">The Four Systems</h2>
+<div class="areas">
+  <div class="area a-blue"><div class="icon">◆</div><div class="n">EdCity.ai</div><div class="d">Teacher &amp; student assistant — center of gravity in the value map.</div></div>
+  <div class="area a-green"><div class="icon">▲</div><div class="n">EdMarket</div><div class="d">Vendor marketplace — real value, but B2B-shaped.</div></div>
+  <div class="area a-gray"><div class="icon">●</div><div class="n">DE Resources Platform</div><div class="d">Entry point &amp; content — reads as infrastructure.</div></div>
+  <div class="area a-gray"><div class="icon">●</div><div class="n">School Mgmt System</div><div class="d">Data foundation — reads as infrastructure.</div></div>
+</div>
+
+<div class="insight-row">
+  <div class="insight-box">
+    <div class="tag">OUR KEY INSIGHT</div>
+    <div class="txt">The challenge is no longer proving AI has value to teachers. The challenge is deciding what EdCity is actually <em>for</em> — and who beyond the classroom that value should visibly reach.</div>
+  </div>
+  <div class="funnel">
+    <div class="fstep"><div class="ic">✎</div><div class="fn">Need</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">⚠</div><div class="fn">Friction</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">◆</div><div class="fn">EdCity interaction</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">✓</div><div class="fn">Outcome</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">★</div><div class="fn">Sustained value</div></div>
+  </div>
+</div>
+
+<h2 class="areas-label">Three Gaps in the Current Value Story</h2>
+<div class="gaps">
+  <div class="gap purple">
+    <div class="gt">Gap 1 · Unaddressed value</div>
+    <div class="gn">Companionship in learning</div>
+    <div class="gd">Named in EdCity's own belief system, but zero mechanism exists anywhere in the build today for peers or shared struggle.</div>
+  </div>
+  <div class="gap green">
+    <div class="gt">Gap 2 · Narrow reach</div>
+    <div class="gn">EdMarket's value doesn't touch the mission</div>
+    <div class="gd">Real value for vendor, subject-lead, Admin/IT, Principal — but none of these are the teacher/student actors EdCity exists for.</div>
+  </div>
+  <div class="gap blue">
+    <div class="gt">Gap 3 · Thin evidence</div>
+    <div class="gn">Primary teacher &amp; governance actors</div>
+    <div class="gd">Primary teacher, EDB, both gatekeepers, content/SMS/academic partner rows are inference or invention, not research.</div>
+  </div>
+</div>
+</div>
+
+<!-- TRACK 1 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge blue">◆ Track 1</span></div>
+<h2 class="track-title">EdCity.ai as the Core Value Engine</h2>
+<p class="track-sub">Positioning EdCity.ai as the primary product, with the other three systems as supporting infrastructure around it.</p>
+
+<div class="grid3">
+  <div>
+    <div class="side-box">
+      <div class="st">🔍 Why (current observation)</div>
+      <ul>
+        <li>Teacher AI adoption is already solved — the real gap is keeping students thinking, not introducing the tool.</li>
+        <li>Generic AI marking doesn't match pedagogy without staged release.</li>
+        <li>EdCity.ai is the only service with real evidence behind more than one actor relationship.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Highest-confidence value in the whole map</li>
+        <li>Matches the confirmed architecture chain (Resources → EdCity.ai → EdMarket)</li>
+        <li>Directly serves the two mission-critical actors: teacher, student</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">OUR STRATEGIC APPROACH</div>
+    <div class="as">Position EdCity.ai as the Product</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--blue);">1</div><div class="sn">Prep &amp; materials</div><div class="sd">Generate, validate, co-review across subjects</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">2</div><div class="sn">Staged assignments</div><div class="sd">Student attempts first, sees feedback after release</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">3</div><div class="sn">Marking &amp; insight</div><div class="sd">Tier-aware class insight, causal before/after</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">4</div><div class="sn">Groups &amp; comms</div><div class="sd">Differentiated groups, home-school drafts</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">5</div><div class="sn">Marketplace bridge</div><div class="sd">Tool-section access into EdMarket</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="impact-box"><div class="it">For teachers</div><div class="id">Prep/marking time saved without losing rigor</div></div>
+    <div class="impact-box"><div class="it">For students</div><div class="id">Thinking preserved by design, not policy alone</div></div>
+    <div class="impact-box"><div class="it">For parents</div><div class="id">Progress data turned into an actual conversation</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">One clear flagship product to lead with</div></div>
+  </div>
+</div>
+
+<div class="success blue" style="background:var(--blue-bg);">
+  <div class="lbl" style="background:var(--blue);">📊 Validation criteria</div>
+  <div class="items">
+    <div class="item">Staged-feedback usage rate</div>
+    <div class="item">Teacher-reported prep time saved</div>
+    <div class="item">Marking-calibration trust (no mechanism yet — flagged gap)</div>
+    <div class="item">Parent conversation-topic engagement</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-e"></span>Evidenced: secondary-teacher marking/staging, skill-profile insight</div>
+  <div class="k"><span class="tierdot td-p"></span>Partial: primary-teacher parity, parent/student prototype behavior</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: calibration-trust mechanism (not yet designed)</div>
+</div>
+</div>
+
+<!-- TRACK 2 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge green">▲ Track 2</span></div>
+<h2 class="track-title">EdMarket as Enabling Infrastructure</h2>
+<p class="track-sub">Real, evidenced value — but positioned as B2B plumbing behind EdCity.ai, not a headline value prop.</p>
+
+<div class="grid3">
+  <div>
+    <div class="side-box">
+      <div class="st">🔍 Why (current observation)</div>
+      <ul>
+        <li>Vendor relationship and subject-lead purchasing influence are the best-evidenced findings in the whole map.</li>
+        <li>Admin/IT's subscription-approval role is prototype-confirmed.</li>
+        <li>Every actor here is a school-operations or partner role, not teacher/student.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Leading with EdMarket risks framing EdCity as a marketplace, not a learning product</li>
+        <li>But under-selling it wastes real, confirmed value for schools and vendors</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">OUR STRATEGIC APPROACH</div>
+    <div class="as">Frame as the Trust Layer Behind EdCity.ai</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--green);">1</div><div class="sn">Vet</div><div class="sd">Gatekeeper reviews vendor tools</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">2</div><div class="sn">Influence</div><div class="sd">Subject-lead shapes purchase decisions</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">3</div><div class="sn">Approve budget</div><div class="sd">Principal signs off on licensing</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">4</div><div class="sn">Subscribe</div><div class="sd">Admin/IT approves department-wide access</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">5</div><div class="sn">Auto-appear</div><div class="sd">Tool surfaces inside EdCity.ai, no setup</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="impact-box"><div class="it">For vendors</div><div class="id">Distribution + credibility via a trusted channel</div></div>
+    <div class="impact-box"><div class="it">For subject-leads</div><div class="id">Real influence over what their department uses</div></div>
+    <div class="impact-box"><div class="it">For Admin/IT</div><div class="id">Lower operational overhead on approved tools</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Ecosystem credibility without diluting the core product story</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--green-bg);">
+  <div class="lbl" style="background:var(--green);">📊 Validation criteria</div>
+  <div class="items">
+    <div class="item">Vendor listing-to-purchase conversion</div>
+    <div class="item">Subscription-approval turnaround time</div>
+    <div class="item">Department evaluation completion rate before subscribe</div>
+    <div class="item">Vetting throughput vs. quality (no mechanism yet — flagged gap)</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-e"></span>Evidenced: vendor relationship, subject-lead influence (Sayo)</div>
+  <div class="k"><span class="tierdot td-p"></span>Partial: Admin/IT subscription workflow</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: gatekeeper vetting process, data-governance criteria</div>
+</div>
+</div>
+
+<!-- TRACK 3 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge purple">★ Track 3</span></div>
+<h2 class="track-title">Companionship &amp; Beyond-Exam Learning</h2>
+<p class="track-sub">A named, currently-unaddressed opportunity — proposed direction only, nothing here is built or scoped yet.</p>
+
+<div class="grid3">
+  <div>
+    <div class="side-box">
+      <div class="st">🔍 Why (current observation)</div>
+      <ul>
+        <li>All current AI interaction is 1:1 (student ↔ EdCity.ai) — no peer-facing mechanism exists.</li>
+        <li>Teaching groups are teacher-assigned, not peer-driven or social.</li>
+        <li>This is the clearest gap between EdCity's stated mission and its shipped product.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>As a gov-funded body, success isn't exam performance alone — joy and sustained engagement are coequal goals</li>
+        <li>Real differentiator if EdCity wants to lead with "more than exam performance"</li>
+        <li>Currently pure aspiration, not a shipped capability — flagged so it isn't mistaken for one</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">OUR STRATEGIC APPROACH (proposed, unscoped)</div>
+    <div class="as">Explore a Companionship Layer</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--purple);">1</div><div class="sn">Diagnose</div><div class="sd">Where does solo AI use crowd out peer learning?</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">2</div><div class="sn">Pilot concept</div><div class="sd">Small peer-visible practice or shared-struggle feature</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">3</div><div class="sn">Test with real students</div><div class="sd">Field-validate before any build commitment</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">4</div><div class="sn">Decide</div><div class="sd">Scope only if evidence supports it</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="impact-box"><div class="it">For students</div><div class="id">Learning framed as shared pursuit, not solo compliance</div></div>
+    <div class="impact-box"><div class="it">For parents</div><div class="id">Reinforces support, not just performance tracking</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Distinct mission-aligned positioning vs. generic AI-tutor vendors</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--purple-bg);">
+  <div class="lbl" style="background:var(--purple);">📊 Validation criteria (proposed only)</div>
+  <div class="items">
+    <div class="item">Evidence of demand from real student/teacher research</div>
+    <div class="item">Sustained (not event-based) engagement, if piloted</div>
+    <div class="item">No metric exists today — this track has none until research happens</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-t"></span>Entirely theorized — belief-driven, zero field evidence or built mechanism. Do not scope work against this without research first.</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
