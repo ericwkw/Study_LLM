@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Positioning — Vision Tracks</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --ink:#0d1b3e; --ink2:#4a5170; --ink3:#8890a8;
+    --blue:#1550d8; --blue-bg:#e8effd; --blue-line:#c3d3f7;
+    --green:#0f8a52; --green-bg:#e6f6ee; --green-line:#bfe6d3;
+    --purple:#6a2ed6; --purple-bg:#efe6fc; --purple-line:#d7c3f5;
+    --card:#ffffff; --line:#e2e6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 32px 60px;}
+  .slide{background:var(--card);border-radius:20px;padding:36px 40px;margin-bottom:32px;box-shadow:0 1px 3px rgba(13,27,62,0.06);}
+  h1{font-size:36px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+  .subtitle{font-size:18px;color:var(--ink2);margin:0 0 26px;line-height:1.4;}
+  h2.areas-label{font-size:15px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
+  .areas{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;}
+  .area{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .area .icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;}
+  .area .n{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .area .d{font-size:13.5px;color:var(--ink2);line-height:1.4;}
+  .a-blue{background:var(--blue-bg);} .a-blue .icon{background:var(--blue);color:#fff;}
+  .a-green{background:var(--green-bg);} .a-green .icon{background:var(--green);color:#fff;}
+  .a-gray{background:#f1f2f6;} .a-gray .icon{background:var(--ink3);color:#fff;}
+  .insight-row{display:flex;gap:20px;align-items:stretch;margin-bottom:26px;flex-wrap:wrap;}
+  .insight-box{flex:0 0 280px;background:var(--blue-bg);border:1px solid var(--blue-line);border-radius:14px;padding:18px;}
+  .insight-box .tag{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+  .insight-box .txt{font-size:16px;font-weight:600;color:var(--ink);line-height:1.45;}
+  .funnel{flex:1;background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .fstep{text-align:center;flex:1;min-width:80px;}
+  .fstep .ic{width:44px;height:44px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:19px;margin:0 auto 6px;}
+  .fstep .fn{font-size:12.5px;font-weight:700;color:var(--ink2);}
+  .farrow{color:var(--ink3);font-size:16px;flex:0 0 auto;}
+  .gaps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .gap{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .gap .gt{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:6px;}
+  .gap .gn{font-size:15.5px;font-weight:700;margin-bottom:5px;}
+  .gap .gd{font-size:13.5px;color:var(--ink2);line-height:1.45;}
+  .gap.blue{background:var(--blue-bg);} .gap.blue .gt{color:var(--blue);}
+  .gap.green{background:var(--green-bg);} .gap.green .gt{color:var(--green);}
+  .gap.purple{background:var(--purple-bg);} .gap.purple .gt{color:var(--purple);}
+
+  .track-head{display:flex;align-items:center;gap:14px;margin-bottom:2px;}
+  .track-badge{font-size:13px;font-weight:700;color:#fff;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .track-badge.blue{background:var(--blue);} .track-badge.green{background:var(--green);} .track-badge.purple{background:var(--purple);}
+  .track-title{font-size:28px;font-weight:800;margin:0;letter-spacing:-0.01em;}
+  .track-sub{font-size:16px;color:var(--ink2);margin:4px 0 24px;line-height:1.4;}
+  .grid3{display:grid;grid-template-columns:230px 1fr 250px;gap:22px;align-items:start;}
+  @media(max-width:920px){.grid3{grid-template-columns:1fr;}}
+  .colhead{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;text-align:center;}
+  .side-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .side-box .st{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .side-box ul{margin:0;padding-left:16px;}
+  .side-box li{font-size:13.5px;color:var(--ink2);margin-bottom:6px;line-height:1.45;}
+  .approach{border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .approach .at{font-size:14px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--ink2);}
+  .approach .as{font-size:17px;font-weight:700;text-align:center;margin-bottom:18px;}
+  .steps{display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .step{flex:1;min-width:110px;text-align:center;}
+  .step .sic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 8px;color:#fff;font-weight:700;}
+  .step .sn{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .step .sd{font-size:12px;color:var(--ink2);line-height:1.4;}
+  .sarrow{color:var(--ink3);font-size:16px;align-self:center;margin-top:20px;}
+  .impact-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;}
+  .impact-box .it{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .impact-box .id{font-size:13px;color:var(--ink2);line-height:1.45;}
+  .success{margin-top:20px;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .success .lbl{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;color:#fff;padding:8px 14px;border-radius:20px;flex:0 0 auto;}
+  .success .items{display:flex;gap:22px;flex-wrap:wrap;flex:1;}
+  .success .item{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;}
+  .fn{vertical-align:super;font-size:10px;color:var(--ink3);font-weight:700;cursor:default;}
+  .footnotes{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.6;}
+  .footnotes b{color:var(--ink2);}
+  .outcome-bar{background:var(--ink);color:#fff;border-radius:16px;padding:24px 30px;display:flex;align-items:center;gap:20px;font-size:17px;font-weight:600;line-height:1.4;}
+  .outcome-bar .ostar{font-size:26px;flex:0 0 auto;}
+  .doc-footnotes{background:#fff;border-radius:16px;padding:20px 30px;margin-top:16px;font-size:12.5px;color:var(--ink3);line-height:1.7;}
+  .doc-footnotes b{color:var(--ink2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="slide">
+<h1>EdCity — The Platform Hong Kong Schools Build On</h1>
+<p class="subtitle">Three tracks for what EdCity becomes at full scale — and the value each actor gets from it.</p>
+
+<h2 class="areas-label">The Four Systems</h2>
+<div class="areas">
+  <div class="area a-blue"><div class="icon">◆</div><div class="n">EdCity.ai</div><div class="d">The learning companion every classroom runs on.</div></div>
+  <div class="area a-green"><div class="icon">▲</div><div class="n">EdMarket</div><div class="d">The trust engine behind every tool a school adopts.</div></div>
+  <div class="area a-gray"><div class="icon">●</div><div class="n">DE Resources Platform</div><div class="d">The front door to everything EdCity offers.</div></div>
+  <div class="area a-gray"><div class="icon">●</div><div class="n">School Mgmt System</div><div class="d">The record of truth every service draws from.</div></div>
+</div>
+
+<div class="insight-row">
+  <div class="insight-box">
+    <div class="tag">OUR KEY INSIGHT</div>
+    <div class="txt">The challenge is no longer proving AI belongs in the classroom. The challenge is building the platform teachers trust, students love, and every school in Hong Kong treats as the natural home for digital learning.</div>
+  </div>
+  <div class="funnel">
+    <div class="fstep"><div class="ic">⚠</div><div class="fn">Pain point</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">❤</div><div class="fn">Stakes</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">◆</div><div class="fn">EdCity resolves it</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">✓</div><div class="fn">Impact</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="ic">★</div><div class="fn">Habit</div></div>
+  </div>
+</div>
+
+<h2 class="areas-label">Three Frontiers</h2>
+<div class="gaps">
+  <div class="gap purple">
+    <div class="gt">Frontier 1</div>
+    <div class="gn">No student learns alone</div>
+    <div class="gd">Companionship and curiosity become as central to the platform as marks and mastery.<span class="fn">1</span></div>
+  </div>
+  <div class="gap green">
+    <div class="gt">Frontier 2</div>
+    <div class="gn">One trusted channel, every school</div>
+    <div class="gd">EdMarket becomes the default way Hong Kong schools discover and adopt EdTech.<span class="fn">2</span></div>
+  </div>
+  <div class="gap blue">
+    <div class="gt">Frontier 3</div>
+    <div class="gn">Every actor, one connected system</div>
+    <div class="gd">Teachers, students, schools, vendors, and government all draw from the same trusted foundation.<span class="fn">3</span></div>
+  </div>
+</div>
+</div>
+
+<!-- TRACK 1 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge blue">◆ Track 1</span></div>
+<h2 class="track-title">EdCity.ai — The Learning Companion Every Classroom Runs On</h2>
+<p class="track-sub">Not another AI tool teachers try once. The platform every school defaults to, the way they default to a textbook or a timetable.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Teachers lose real hours to prep and marking, under constant time pressure.<span class="fn">4</span></li>
+        <li>AI feedback shown too early lets students skip the thinking an assignment was meant to build.</li>
+        <li>Students are tempted to use AI as a shortcut to the answer, not a tool for learning.</li>
+        <li>Parents receive progress numbers with no sense of what to actually do with them.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Time lost to admin is time not spent teaching</li>
+        <li>A shortcut taken today is a skill never built — and it compounds every year</li>
+        <li>If AI erodes what a mark actually means, trust — and adoption — stalls exactly where it matters most</li>
+        <li>Parents disconnected from real progress can't meaningfully support their child at home</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW EDCITY.AI RESOLVES IT</div>
+    <div class="as">Build the Habit, Not Just the Feature</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--blue);">1</div><div class="sn">Prep &amp; materials</div><div class="sd">Generate and validate, across subjects, in minutes</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">2</div><div class="sn">Staged assignments</div><div class="sd">Students think first, feedback arrives on the teacher's terms</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">3</div><div class="sn">Marking &amp; insight</div><div class="sd">Class-wide understanding, not just individual scores</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">4</div><div class="sn">Groups &amp; comms</div><div class="sd">Every student reached at the right level, automatically</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">5</div><div class="sn">Marketplace bridge</div><div class="sd">The right specialist tool, one click away</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For teachers</div><div class="id">Reclaim hours every week for the teaching that actually matters</div></div>
+    <div class="impact-box"><div class="it">For students</div><div class="id">Build real understanding, not just the right answer</div></div>
+    <div class="impact-box"><div class="it">For parents</div><div class="id">Become a genuine partner in their child's learning, not a bystander reading a scorecard</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Own the platform every school in Hong Kong is judged against</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--blue-bg);">
+  <div class="lbl" style="background:var(--blue);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">Daily/weekly active use by teachers</div>
+    <div class="item">Time reclaimed on prep and marking</div>
+    <div class="item">Staged-feedback adoption rate</div>
+    <div class="item">Parent engagement with progress conversations</div>
+  </div>
+</div>
+<div class="footnotes">
+<b>1</b> Companionship as a design priority reflects EdCity's own stated mission and belief system, not a validated user need yet.
+<b>2</b> "Default channel" framing is aspirational; today's evidence covers one vendor relationship, not a market-wide pattern.
+<b>3</b> The fully connected system spans architecture that is confirmed by design but not yet built or tested end-to-end.
+<b>4</b> Pain points drawn from early school-visit conversations and one vendor relationship; broader validation across more schools and subjects is ongoing.
+</div>
+</div>
+
+<!-- TRACK 2 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge green">▲ Track 2</span></div>
+<h2 class="track-title">EdMarket — The Trust Engine Behind Every Tool Schools Adopt</h2>
+<p class="track-sub">The channel that turns "which AI tool should we even trust" into a solved problem for every school in Hong Kong.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Vendors struggle to get credible distribution into schools without deep existing relationships.<span class="fn">5</span></li>
+        <li>Subject-leads have real purchasing influence but no systematic way to evaluate tools consistently.</li>
+        <li>Admin/IT manages subscriptions and enforcement manually, one request at a time.</li>
+        <li>Schools risk adopting unproven tools — or missing good ones — without a trusted vetting layer.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Without a trusted channel, good tools stay small and weak ones spread unchecked</li>
+        <li>Manual, ad hoc vetting means risk and inconsistency scale with every new tool on the market</li>
+        <li>Every hour Admin/IT spends on manual subscription work is an hour not spent on higher-value support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW EDMARKET RESOLVES IT</div>
+    <div class="as">Make Trust the Default, Not the Exception</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--green);">1</div><div class="sn">Vet</div><div class="sd">Every tool reviewed before it's listed</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">2</div><div class="sn">Influence</div><div class="sd">Subject-leads shape what fits their department</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">3</div><div class="sn">Approve</div><div class="sd">Budget and licensing signed off with confidence</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">4</div><div class="sn">Subscribe</div><div class="sd">School-wide access, one decision</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">5</div><div class="sn">Auto-appear</div><div class="sd">Live inside EdCity.ai, no setup required</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For vendors</div><div class="id">Reach every school in Hong Kong through one trusted channel</div></div>
+    <div class="impact-box"><div class="it">For subject-leads</div><div class="id">Real say over what shapes their department's teaching</div></div>
+    <div class="impact-box"><div class="it">For Admin/IT</div><div class="id">Approve once, provisioned everywhere</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Become the de facto standard for EdTech procurement in Hong Kong</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--green-bg);">
+  <div class="lbl" style="background:var(--green);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">Vendor listings converting to school adoption</div>
+    <div class="item">Time from request to live subscription</div>
+    <div class="item">Repeat purchasing across departments</div>
+    <div class="item">School satisfaction with vetted tools</div>
+  </div>
+</div>
+<div class="footnotes">
+<b>5</b> Pain points and vendor/subject-lead relationship drawn from one confirmed vendor relationship (Sayo/AAIL); the vetting and data-governance process itself is a proposed design, not yet built or tested.
+</div>
+</div>
+
+<!-- TRACK 3 -->
+<div class="slide">
+<div class="track-head"><span class="track-badge purple">★ Track 3</span></div>
+<h2 class="track-title">A School Where No Student Learns Alone</h2>
+<p class="track-sub">EdCity's next frontier: making sure every student has companions in the pursuit, not just a tool that answers their questions.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Students interact with AI largely alone — there's no peer-facing dimension to how they learn today.<span class="fn">6</span></li>
+        <li>Teaching groups are assigned by teachers, not shaped by students' own curiosity or connection.</li>
+        <li>A platform focused only on marks and mastery risks losing what makes learning worth sustaining.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Learning attempted in isolation is harder to sustain — motivation fades faster without shared effort</li>
+        <li>Optimizing only for scores risks producing compliance, not the joy and curiosity central to EdCity's own mission</li>
+        <li>This is the one dimension of learning no generic AI-tutor product is built to address</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW EDCITY RESOLVES IT (PROPOSED)</div>
+    <div class="as">Design Companionship In, Not Bolt It On</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--purple);">1</div><div class="sn">Diagnose</div><div class="sd">Where solo AI use crowds out shared learning</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">2</div><div class="sn">Pilot</div><div class="sd">A small, real feature for shared struggle and curiosity</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">3</div><div class="sn">Test</div><div class="sd">With real students, in real classrooms</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">4</div><div class="sn">Scale</div><div class="sd">Into the platform every student grows up learning on</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For students</div><div class="id">Never face a hard problem completely alone</div></div>
+    <div class="impact-box"><div class="it">For parents</div><div class="id">See a child who's excited to learn, not just one who's scored well</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">A genuine point of distinction — the platform that developed whole learners, not just test-takers</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--purple-bg);">
+  <div class="lbl" style="background:var(--purple);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">Sustained engagement over time, not just event participation</div>
+    <div class="item">Student-reported sense of connection and curiosity</div>
+    <div class="item">Adoption of any piloted peer feature</div>
+  </div>
+</div>
+<div class="footnotes">
+<b>6</b> This entire track — pain points, stakes, and resolution — is a proposed direction based on EdCity's mission and belief system. No field research or prototype exists yet for any part of it; treat every claim here as a vision to validate, not a built capability.
+</div>
+</div>
+
+<div class="outcome-bar">
+  <span class="ostar">★</span>
+  <span>Expected outcome: a platform where teachers teach instead of administering, students think instead of copying, and every school in Hong Kong treats EdCity as the natural home for digital learning.</span>
+</div>
+
+<div class="doc-footnotes">
+<b>About this document.</b> Built as a happy-path vision exercise (Eric, 2026-07-16) from the actor-journey/value-map synthesis in EdCity_Journeys_Value_Map.html. Each track now follows one consistent logic: <b>pain points</b> the actors face → <b>why those pain points matter</b> → <b>how EdCity resolves them</b> (or opens a new opportunity) → the <b>expected impact</b> each actor receives as a result. Numbered footnotes mark where a pain point or claim rests on assumption or extrapolation rather than field evidence — kept out of the main narrative by design, but present so nothing here is mistaken for a validated claim if this document travels beyond this conversation.
+</div>
+
+</div>
+</body>
+</html>
