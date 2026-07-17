@@ -126,7 +126,7 @@
   <div class="k"><sup class="ind">i</sup> Indirect only — no direct system access</div>
 </div>
 <div class="note">
-This table covers human and organizational actors only — the systems themselves (EdCity.ai, School Management System) are on the Systems relationships tab. Teacher (primary &amp; secondary), student, EDB, and admin/IT touch all five maps — genuinely cross-cutting actors, and the ones most exposed if the four services don't share data or design language. Subject-lead is close behind at four. Everyone else is a single-service specialist (vendor, gatekeepers, content/SMS teams) — their needs are real but narrow, and probably shouldn't drive cross-service architecture decisions the way the cross-cutting actors' needs should. This table is itself still mostly theorized outside the EdCity.ai and EdMarket maps — treat the "appears in" counts as a structural hypothesis to test, not a settled fact.
+Covers human and organizational actors only — the systems themselves are on the Systems relationships tab. Teacher, student, EDB, and admin/IT touch all five maps — the genuinely cross-cutting actors most exposed if services don't share data or design language. Subject-lead is close behind at four. Everyone else is a single-service specialist (vendor, gatekeepers, content/SMS teams) — real needs, but narrow, and shouldn't drive cross-service architecture the way the cross-cutting actors' needs should. Mostly theorized outside the EdCity.ai and EdMarket maps — treat "appears in" counts as a hypothesis, not settled fact.
 </div>
 </div>
 
@@ -155,7 +155,7 @@ This table covers human and organizational actors only — the systems themselve
 </div>
 
 <div class="note">
-DE Resources Platform is the entry point that provides access to EdCity.ai; EdMarket access is mediated through EdCity.ai's tool section rather than a direct link from DE Resources Platform. School Management System is not one relationship — its official-records layer only pushes data out, while its performance-data layer both receives and returns data. Collapsing these into a single generic connection would lose that distinction.
+DE Resources Platform is the entry point to EdCity.ai; EdMarket is reached only through EdCity.ai's tool section, not a direct link. School Management System is two relationships, not one: its official-records layer only pushes data out, while its performance-data layer both receives and returns data.
 </div>
 </div>
 
@@ -180,11 +180,11 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 </div>
 <div class="node"><div class="t">Student</div>
 <ul class="cap">
-<li>Attempts the assignment first; sees AI feedback only after the teacher releases it, including on open-ended items</li>
+<li>Engages with a mechanism designed to encourage active thinking before receiving AI help, including on open-ended items</li>
 <li>Chooses own practice based on mood/effort level (self-directed selection)</li>
 <li>Views own skill progress</li>
 </ul>
-<div class="e">Feedback-staging inferred from evidenced teacher-side finding; self-directed selection and progress-viewing per prototype build (student.html), not field-evidenced</div>
+<div class="e">Thinking-preservation mechanism inferred from evidenced teacher-side finding; self-directed selection and progress-viewing per prototype build (student.html), not field-evidenced</div>
 </div>
 <div class="node"><div class="t">Subject-lead</div><div class="d">Reviews calibration, sets policy</div></div>
 </div>
@@ -199,8 +199,8 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 </ul>
 <div class="cap-group">Assignments &amp; marking</div>
 <ul class="cap">
-<li>Generates assignments, including staged open-ended questions (student writes first, sees comment after)</li>
-<li>Marks assignments, stages AI feedback release</li>
+<li>Generates assignments using a mechanism that encourages students to think before receiving AI help</li>
+<li>Marks assignments with the same thinking-first approach</li>
 </ul>
 <div class="cap-group">Groups &amp; communication</div>
 <ul class="cap">
@@ -212,7 +212,7 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <ul class="cap">
 <li>Views class-level skill profile by learning tier (stretch / core / support), including causal before-after insight</li>
 </ul>
-<div class="e">Marking/staging and skill-profile capabilities evidenced for secondary teachers (Ms. Chan; Sayo vendor meeting); same footprint applied to primary teachers by inference, not yet field-evidenced at primary level. Rest of the capability list confirmed against the prototype build for both.</div>
+<div class="e">Marking and skill-profile capabilities evidenced for secondary teachers (Ms. Chan; Sayo vendor meeting); same footprint applied to primary by inference, not yet field-evidenced there. Rest of the list confirmed against the prototype build for both.</div>
 </div>
 </div>
 </div>
@@ -292,7 +292,7 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="node"><div class="t">EdMarket gatekeeper</div><div class="d">Vets and lists vendor tools</div></div>
 <div class="node"><div class="t">Teacher (primary &amp; secondary)</div><div class="d">Browses / requests marketplace tools</div></div>
 <div class="node"><div class="t">Principal</div><div class="d">Approves budget for vendor licensing</div></div>
-<div class="node partial"><div class="t">Admin / IT</div><div class="d">Approves and administers school-wide subscriptions to vetted tools — approval makes a tool auto-appear in the teacher interface, no separate account setup needed. Enforces that a subject-lead's full-department subscription request has a completed evaluation first.</div><div class="e">Confirmed against the prototype build (subscriptions.html)</div></div>
+<div class="node partial"><div class="t">Admin / IT</div><div class="d">Approves and administers subscriptions to vetted tools — approval auto-enables a tool for teachers, no separate setup. Requires a completed evaluation before a subject-lead's department-wide request.</div><div class="e">Confirmed against the prototype build (subscriptions.html)</div></div>
 </div>
 <div class="ring1">
 <div class="ring-label">Ring 1 — closest, transacts directly</div>
@@ -312,7 +312,7 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="ring-label">Ring 3 — furthest, indirect</div>
 <div class="row">
 <div class="node"><div class="t">Admin/IT</div><div class="d">Holds the student's official record — indirect, no real-time contact with the student</div></div>
-<div class="node"><div class="t">School Management System</div><div class="d">Stores the official record plus performance data — the performance layer is fed by the student's own EdCity.ai activity, but the student has no direct access to SMS itself</div></div>
+<div class="node"><div class="t">School Management System</div><div class="d">Stores the official record plus performance data — fed by the student's own EdCity.ai activity, but no direct student access</div></div>
 <div class="node"><div class="t">EDB</div><div class="d">Sets the mandate the student's schooling sits under — indirect, no direct contact</div></div>
 </div>
 <div class="ring2">
@@ -332,19 +332,19 @@ DE Resources Platform is the entry point that provides access to EdCity.ai; EdMa
 <div class="row">
 <div class="node core partial"><div class="t">Teacher (primary &amp; secondary)</div>
 <ul class="cap">
-<li>Marks assignments and stages AI feedback release, including on open-ended written work</li>
+<li>Marks assignments using a mechanism that encourages active thinking, including on open-ended written work</li>
 <li>Places the student into differentiated teaching groups</li>
 </ul>
-<div class="e">Marking/staging partly evidenced — student-side mirror of the marking-workflow finding; grouping per prototype build, not field-evidenced</div>
+<div class="e">Partly evidenced — student-side mirror of the marking-workflow finding; grouping per prototype build, not field-evidenced</div>
 </div>
 <div class="node core partial"><div class="t">EdCity.ai</div>
 <ul class="cap">
-<li>Student attempts the assignment first; sees AI feedback only after the teacher releases it, including on open-ended items</li>
+<li>Engages with a mechanism designed to encourage active thinking before AI help arrives, including on open-ended items</li>
 <li>Chooses own practice based on mood/effort level</li>
 <li>Views own skill progress</li>
-<li>This activity is what feeds School Management System's performance-data layer</li>
+<li>This activity feeds School Management System's performance-data layer</li>
 </ul>
-<div class="e">Per prototype build (student.html); feedback-staging inferred from the evidenced teacher-side finding</div>
+<div class="e">Per prototype build (student.html); thinking-preservation mechanism inferred from the evidenced teacher-side finding</div>
 </div>
 <div class="node core"><div class="t">Peers / classmates</div><div class="d">Companionship in the pursuit, not just solo learning</div></div>
 </div>
