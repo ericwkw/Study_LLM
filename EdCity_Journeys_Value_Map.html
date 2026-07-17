@@ -94,70 +94,70 @@
 
 <div id="intro">
 <h1>Actor journeys &amp; value mapping</h1>
-<p class="subtitle">For each of the 15 actors in the EdCity ecosystem: their journey (need &rarr; friction &rarr; EdCity interaction &rarr; outcome), the pain points behind that friction, and which EdCity service(s) address it. Per Eric's direction (2026-07-16): journeys are built as <strong>happy-path proposals</strong>, not field research — fabrication is explicitly accepted here so every actor has a complete picture to design against. Each actor is still tagged by evidence tier so it's clear which parts are grounded and which are invented for planning purposes.</p>
+<p class="subtitle">For each of the 15 EdCity actors: their journey (need &rarr; friction &rarr; EdCity interaction &rarr; outcome), pain points, and which service(s) address them. Journeys are happy-path proposals, not field research — evidence tiers mark what’s grounded versus invented for planning.</p>
 <div class="legend">
   <div class="k"><span class="sw e"></span> Evidenced — real field/vendor research or confirmed prototype behavior</div>
   <div class="k"><span class="sw p"></span> Partly evidenced — real underlying fact, specifics inferred or extrapolated</div>
-  <div class="k"><span class="sw t"></span> Theorized — happy-path proposal, no research behind it, built for this exercise</div>
+  <div class="k"><span class="sw t"></span> Theorized — happy-path proposal, no research behind it</div>
 </div>
-<div class="note">Services referenced: <code class="svcname">EdCity.ai</code> <code class="svcname">SMS</code> <code class="svcname">DE Resources Platform</code> <code class="svcname">EdMarket</code> <code class="svcname">Student/parent portal</code> (name only, not built). Naming and system relationships follow the confirmed glossary and architecture used across the EdCity ecosystem maps.</div>
-<div class="note"><strong>Scoping note (added 2026-07-16):</strong> "Staged feedback release" appears in several rows below as the "how addressed" answer to thinking-preservation pain points (Secondary teacher, Student). It is the one evidenced/prototype-confirmed tactic tested so far — not a validated claim that it's the best or only way to keep students thinking before AI helps. Other plausible tactics (Socratic prompting, self-assessment gates, effort-scaled hints, peer review before AI review) are equally unexplored. Downstream documents built from this map should not treat staged feedback as the definitive mechanism for the broader "preserve student thinking" principle.</div>
+<div class="note">Services: <code class="svcname">EdCity.ai</code> <code class="svcname">SMS</code> <code class="svcname">DE Resources Platform</code> <code class="svcname">EdMarket</code> <code class="svcname">Student/parent portal</code> (name only, not built). Naming follows the confirmed glossary used across the EdCity ecosystem maps.</div>
+<div class="note"><strong>On “staged feedback”:</strong> where it appears below, it’s the one evidenced example of a thinking-preservation tactic — not the only or definitive mechanism. Other tactics (Socratic prompting, self-assessment gates, effort-scaled hints, peer review before AI review) are equally plausible and equally unexplored.</div>
 </div>
 
 <section class="actor" id="secondary-teacher">
 <div class="actor-head"><h2>Secondary teacher</h2><span class="tier evidenced">Evidenced</span></div>
-<p class="subtitle">Anchor persona — Ms. Chan, from school-visit and vendor-meeting findings.</p>
+<p class="subtitle">Anchor persona — Ms. Chan, from school-visit and vendor findings.</p>
 <h3>Journey</h3>
 <div class="journey">
-<div class="stage"><div class="sn">Need</div><div class="sd">Prep a lesson and assignment fast, under real time pressure, without losing rigor</div></div>
+<div class="stage"><div class="sn">Need</div><div class="sd">Prep lessons and assignments fast, under time pressure, without losing rigor</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Already uses generic AI tools ad hoc — adoption isn't the problem, trust and pedagogy fit are</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Already uses generic AI ad hoc — adoption isn’t the problem, trust and pedagogy fit are</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Generates materials/assignments in EdCity.ai, stages AI feedback release so students think first, marks with tier-aware insight</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Generates materials and assignments in EdCity.ai; uses thinking-first design (staged feedback is today’s example) so students engage before AI helps; marks with tier-aware insight</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Saves prep time <em>and</em> keeps students doing the thinking, not just consuming answers</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Saves prep time while keeping students thinking, not just consuming answers</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
-<li><strong>Students using AI to skip thinking, not to learn</strong> — the dominant concern, not tool adoption itself. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
-<li><strong>Generic AI marking doesn't match pedagogy</strong> — e.g. full AI feedback on a composition undercuts the point of the exercise if shown too early. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
-<li><strong>Calibration risk</strong> — trusting AI marking without a way to verify it matches the teacher's own standard. <span class="tier partial" style="font-size:11px;">partial</span></li>
+<li><strong>Students using AI to skip thinking, not to learn</strong> — the dominant concern, not tool adoption. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+<li><strong>Generic AI marking doesn’t match pedagogy</strong> — full feedback shown too early can undercut an exercise’s purpose. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+<li><strong>Calibration risk</strong> — no way to verify AI marking matches a teacher’s own standard. <span class="tier partial" style="font-size:11px;">partial</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
-<tr><td>Skip-thinking risk</td><td>EdCity.ai</td><td>Staged feedback release — student attempts first, sees AI comment only after teacher release, including open-ended items</td><td><span class="svctag e">evidenced</span></td></tr>
+<tr><td>Skip-thinking risk</td><td>EdCity.ai</td><td>One evidenced example: staged feedback release (attempt first, AI comment after release, including open-ended items). Other thinking-preservation tactics are unexplored.</td><td><span class="svctag e">evidenced</span></td></tr>
 <tr><td>Pedagogy-fit marking</td><td>EdCity.ai</td><td>Assignment-creation toggle stages open-ended questions the same way as marking</td><td><span class="svctag p">partial</span></td></tr>
-<tr><td>Calibration risk</td><td>EdCity.ai</td><td>Not yet addressed — no calibration-check mechanism identified</td><td><span class="svctag t">gap, theorized</span></td></tr>
+<tr><td>Calibration risk</td><td>EdCity.ai</td><td>Not addressed — no calibration-check mechanism identified</td><td><span class="svctag t">gap, theorized</span></td></tr>
 <tr><td>Cross-subject prep time</td><td>EdCity.ai + DE Resources Platform</td><td>Cross-subject collaboration invites; prep content library (eLAPF, EdAcademy, OQB/DES, STAR)</td><td><span class="svctag p">partial</span></td></tr>
 </table>
 </section>
 
 <section class="actor" id="primary-teacher">
 <div class="actor-head"><h2>Primary teacher</h2><span class="tier partial">Partly evidenced</span></div>
-<p class="subtitle">Same capability footprint as secondary teacher by inference — not directly field-evidenced.</p>
+<p class="subtitle">Same capability footprint as secondary teacher by inference — not field-evidenced.</p>
 <h3>Journey</h3>
 <div class="journey">
-<div class="stage"><div class="sn">Need</div><div class="sd">Age-appropriate prep and assignments, more scaffolding-heavy than secondary</div></div>
+<div class="stage"><div class="sn">Need</div><div class="sd">Age-appropriate prep and assignments, more scaffolding than secondary</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Assumed similar to secondary — time pressure, trust in AI marking — but with younger students, foundational-skill stakes are higher</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Assumed similar to secondary — time pressure, trust in AI marking — but foundational-skill stakes are higher for younger students</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Same EdCity.ai capability set as secondary: prep, staged assignments/marking, groups, insight</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Same EdCity.ai capability set as secondary: prep, thinking-first assignments/marking, groups, insight</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Assumed same time-saving + thinking-preserving value, unconfirmed at primary level</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Assumed same time-saving and thinking-preserving value, unconfirmed at primary level</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
-<li><strong>Whether staged-feedback and skill-tier insight patterns still make sense at primary level</strong> — untested assumption carried over from secondary evidence. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
-<li><strong>Foundational-skill risk</strong> — if AI does too much scaffolding, early literacy/numeracy foundations may not form properly. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+<li><strong>Whether thinking-preservation design and skill-tier insight still fit primary level</strong> — untested, carried over from secondary evidence. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+<li><strong>Foundational-skill risk</strong> — too much AI scaffolding may hinder early literacy/numeracy. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
 <tr><td>Untested primary fit</td><td>EdCity.ai</td><td>Same toolset as secondary; no primary-specific adaptation identified yet</td><td><span class="svctag t">theorized</span></td></tr>
-<tr><td>Foundational-skill risk</td><td>EdCity.ai</td><td>Not addressed — open design question, not a built mitigation</td><td><span class="svctag t">gap, theorized</span></td></tr>
+<tr><td>Foundational-skill risk</td><td>EdCity.ai</td><td>Not addressed — open design question</td><td><span class="svctag t">gap, theorized</span></td></tr>
 </table>
-<div class="note">This is the actor most in need of direct field validation before further build investment — everything here is inference from secondary-teacher evidence.</div>
+<div class="note">Most in need of direct field validation before further build investment — everything here is inferred from secondary-teacher evidence.</div>
 </section>
 
 <section class="actor" id="subject-lead">
@@ -168,14 +168,14 @@
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">Friction today</div><div class="sd">Hard to verify AI marking calibration across teachers without manual spot-checks</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Reviews calibration and sets policy in EdCity.ai; vets and requests marketplace tools in EdMarket; curates DE Resources Platform content for the department</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Reviews calibration and sets policy in EdCity.ai; vets and requests tools in EdMarket; curates DE Resources Platform content</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Consistent grading standard across the department; real influence on vendor tool selection</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Consistent grading standard across the department; real influence on vendor selection</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
 <li><strong>Marking-consistency oversight is manual today</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
-<li><strong>Evaluating vendor tools before a full-department subscription is a real gatekeeping responsibility</strong>. <span class="tier partial" style="font-size:11px;">partial, prototype-confirmed</span></li>
+<li><strong>Evaluating vendor tools before a full-department subscription</strong> — a real gatekeeping responsibility. <span class="tier partial" style="font-size:11px;">partial, prototype-confirmed</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
@@ -192,11 +192,11 @@
 <div class="journey">
 <div class="stage"><div class="sn">Need</div><div class="sd">Complete assignments, get useful feedback, stay motivated — not just get answers</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Easy access to AI risks becoming a shortcut around actually thinking; risk of mastery-only framing draining joy/curiosity</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Easy AI access risks becoming a thinking shortcut; mastery-only framing risks draining joy/curiosity</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Attempts work first, sees AI feedback only after teacher release; picks practice by mood/effort; sees own skill progress</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Attempts work first, sees AI feedback after release — one thinking-preservation mechanism; picks practice by mood/effort; sees own skill progress</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Thinking preserved by design; self-directed practice choice supports sustained engagement, not just compliance</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Thinking preserved by design; self-directed practice supports sustained engagement, not just compliance</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
@@ -206,7 +206,7 @@
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
-<tr><td>Answer-shortcut risk</td><td>EdCity.ai</td><td>Staged feedback release forces attempt-first behavior</td><td><span class="svctag p">partial</span></td></tr>
+<tr><td>Answer-shortcut risk</td><td>EdCity.ai</td><td>Staged feedback release is one mechanism forcing attempt-first behavior; other tactics remain unexplored</td><td><span class="svctag p">partial</span></td></tr>
 <tr><td>Motivation/engagement</td><td>EdCity.ai</td><td>Mood/effort-based practice picker; skill-progress view</td><td><span class="svctag p">partial, prototype-confirmed</span></td></tr>
 <tr><td>Companionship in learning</td><td>EdCity.ai (peer feature, not built)</td><td>No current mechanism — see Peers/classmates below</td><td><span class="svctag t">gap, theorized</span></td></tr>
 </table>
@@ -216,18 +216,18 @@
 <div class="actor-head"><h2>Parent / guardian</h2><span class="tier partial">Partly evidenced</span></div>
 <h3>Journey</h3>
 <div class="journey">
-<div class="stage"><div class="sn">Need</div><div class="sd">Stay meaningfully connected to their child's learning without becoming another marker/teacher</div></div>
+<div class="stage"><div class="sn">Need</div><div class="sd">Stay meaningfully connected to their child’s learning without becoming another marker/teacher</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Progress reports are often numbers without context — hard to know what to actually talk about at home</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Progress reports are often numbers without context — hard to know what to talk about at home</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Receives weekly conversation-starter topics; views child's longitudinal progress via EdCity.ai's parent view</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Receives weekly conversation-starter topics; views child’s longitudinal progress via EdCity.ai’s parent view</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Concrete, low-effort way to engage at home that reinforces the child's sense of being supported, not surveilled</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">A concrete, low-effort way to engage at home that reinforces support, not surveillance</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
-<li><strong>Doesn't know what to ask/discuss beyond "how was school"</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
-<li><strong>Progress data alone doesn't translate into a supportive conversation</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+<li><strong>Doesn’t know what to ask/discuss beyond “how was school”</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+<li><strong>Progress data alone doesn’t translate into a supportive conversation</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
@@ -256,9 +256,9 @@
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
-<tr><td>Missing companionship dimension</td><td>None yet</td><td>Open design space — teaching groups (EdCity.ai) are teacher-assigned, not peer-driven social features</td><td><span class="svctag t">gap, theorized</span></td></tr>
+<tr><td>Missing companionship dimension</td><td>None yet</td><td>Open design space — teaching groups (EdCity.ai) are teacher-assigned, not peer-driven</td><td><span class="svctag t">gap, theorized</span></td></tr>
 </table>
-<div class="note">This is the clearest "identified but unaddressed" value gap in the current build — worth flagging distinctly in positioning discussions rather than treating it as covered by existing group features.</div>
+<div class="note">The clearest “identified but unaddressed” value gap in the current build — worth flagging distinctly rather than treating it as covered by existing group features.</div>
 </section>
 
 <section class="actor" id="admin-it">
@@ -267,9 +267,9 @@
 <div class="journey">
 <div class="stage"><div class="sn">Need</div><div class="sd">Keep official records current, provision accounts, manage vendor subscriptions without manual overhead</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Manual record maintenance risks data-currency drift; subscription approval today is a manual, easy-to-miss gate</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Manual record maintenance risks data-currency drift; subscription approval is a manual, easy-to-miss gate</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Maintains official records in SMS; approves/administers EdMarket subscriptions, distributes DE Resources Platform updates</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Maintains official records in SMS; approves/administers EdMarket subscriptions; distributes DE Resources Platform updates</div></div>
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">Outcome</div><div class="sd">Approved tools auto-appear for teachers with no separate account setup — lower operational overhead</div></div>
 </div>
@@ -291,9 +291,9 @@
 <div class="actor-head"><h2>Principal</h2><span class="tier theorized">Theorized (indirect everywhere except EdMarket budget)</span></div>
 <h3>Journey</h3>
 <div class="journey">
-<div class="stage"><div class="sn">Need</div><div class="sd">School-wide oversight and accountability without needing to operate any system directly</div></div>
+<div class="stage"><div class="sn">Need</div><div class="sd">School-wide oversight and accountability without operating any system directly</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Friction today</div><div class="sd">Relies entirely on others' summaries and dashboards — no direct system contact</div></div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Relies entirely on others’ summaries and dashboards — no direct system contact</div></div>
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Receives efficiency reporting via EdCity.ai; approves vendor-licensing budget in EdMarket — the one direct touchpoint</div></div>
 <div class="arrow-sep">&rarr;</div>
@@ -301,7 +301,7 @@
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
-<li><strong>No direct visibility — dependent on secondhand reporting</strong>. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+<li><strong>No direct visibility</strong> — dependent on secondhand reporting. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
@@ -319,18 +319,18 @@
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">Friction today</div><div class="sd">Needs subject-lead/panel-head buy-in to actually get purchased and used</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Submits tools to EdMarket, runs CPD events, maintains existing EdCity relationship</div></div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Submits tools to EdMarket, maintains existing EdCity relationship</div></div>
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">Outcome</div><div class="sd">School-wide subscription and adoption via subject-lead influence and Admin/IT approval</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
-<li><strong>Purchasing decisions run through subject-lead influence, not a direct sale</strong>. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+<li><strong>Purchasing runs through subject-lead influence, not a direct sale</strong>. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
 </ul>
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
-<tr><td>Distribution/credibility</td><td>EdMarket</td><td>Listing, CPD events, existing relationship</td><td><span class="svctag e">evidenced</span></td></tr>
+<tr><td>Distribution/credibility</td><td>EdMarket</td><td>Listing, existing relationship</td><td><span class="svctag e">evidenced</span></td></tr>
 </table>
 </section>
 
@@ -344,7 +344,7 @@
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Vets and lists vendor tools in EdMarket</div></div>
 <div class="arrow-sep">&rarr;</div>
-<div class="stage"><div class="sn">Outcome</div><div class="sd">Schools trust what's listed without needing to vet independently</div></div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Schools trust what’s listed without needing to vet independently</div></div>
 </div>
 <h3>Pain points</h3>
 <ul class="pain">
@@ -353,7 +353,7 @@
 <h3>Service mapping</h3>
 <table class="svc">
 <tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
-<tr><td>Vetting throughput</td><td>EdMarket</td><td>No specific mechanism identified — assumed manual review process</td><td><span class="svctag t">theorized</span></td></tr>
+<tr><td>Vetting throughput</td><td>EdMarket</td><td>No specific mechanism identified — assumed manual review</td><td><span class="svctag t">theorized</span></td></tr>
 </table>
 </section>
 
@@ -361,7 +361,7 @@
 <div class="actor-head"><h2>Data-governance gatekeeper</h2><span class="tier theorized">Theorized</span></div>
 <h3>Journey</h3>
 <div class="journey">
-<div class="stage"><div class="sn">Need</div><div class="sd">Ensure vendor tools don't misuse official student data</div></div>
+<div class="stage"><div class="sn">Need</div><div class="sd">Ensure vendor tools don’t misuse official student data</div></div>
 <div class="arrow-sep">&rarr;</div>
 <div class="stage"><div class="sn">Friction today</div><div class="sd">Vendor data requests are hard to evaluate consistently at scale</div></div>
 <div class="arrow-sep">&rarr;</div>
@@ -474,7 +474,7 @@
 
 <section class="actor" id="value-map">
 <div class="actor-head"><h2>Value &amp; positioning map</h2></div>
-<p class="subtitle">Synthesis across all 15 journeys: which service is the primary value-driver ("hero service") for each actor, and how strong the underlying evidence is.</p>
+<p class="subtitle">Synthesis across all 15 journeys: which service is the primary value-driver (“hero service”) for each actor, and how strong the underlying evidence is.</p>
 <table class="matrix">
 <tr><th>Actor</th><th>Hero service</th><th>Primary value delivered</th><th>Evidence tier</th></tr>
 <tr><td>Secondary teacher</td><td>EdCity.ai</td><td>Preserves student thinking while cutting prep/marking time</td><td>Evidenced</td></tr>
@@ -496,11 +496,11 @@
 
 <h3>What this suggests for positioning</h3>
 <ul class="pain">
-<li><strong>EdCity.ai is the real center of gravity.</strong> It's the hero service for 5 of the 15 actors, and it's the only service with genuinely evidenced value (not just theorized) beyond a single relationship. Positioning EdCity.ai as the primary product — with DE Resources Platform, SMS, and EdMarket as supporting infrastructure around it — matches both the confirmed architecture (DE Resources Platform → EdCity.ai → EdMarket) and where the actual evidence lives.</li>
-<li><strong>EdMarket's value is real but narrow and B2B-shaped</strong> — it matters enormously to vendor, subject-lead, Admin/IT, and Principal, but none of those are the actors EdCity's mission is ultimately about (teachers and students). Good candidate for "enabling infrastructure" positioning rather than a headline value prop.</li>
-<li><strong>DE Resources Platform and SMS currently read as infrastructure, not value drivers</strong> — every actor's relationship to them is either indirect or thinly evidenced. That's not necessarily wrong (they may be meant as plumbing), but it means neither should anchor an external-facing value narrative on its own.</li>
-<li><strong>The one clearly identified, currently-unaddressed value gap is peer/companionship learning</strong> — flagged by the belief system (joy/companionship as coequal to exam performance) but with zero current mechanism anywhere in the build. This is a real candidate differentiator if EdCity wants to lean into "more than exam performance" positioning, but right now it's aspirational, not shipped.</li>
-<li><strong>Primary teacher and the entire governance/partner column (EDB, gatekeepers, content/SMS/academic partner) are the thinnest evidence in the whole map.</strong> Treat the "hero service" assignments for those rows as working hypotheses for design, not validated claims — before any of them drive roadmap or positioning decisions, they need real research the way secondary-teacher and vendor findings already have.</li>
+<li><strong>EdCity.ai is the center of gravity.</strong> Hero service for 5 of 15 actors, and the only service with genuinely evidenced value beyond a single relationship. Positioning it as the primary product — with DE Resources Platform, SMS, and EdMarket as supporting infrastructure — matches both the confirmed architecture (DE Resources Platform &rarr; EdCity.ai &rarr; EdMarket) and where the evidence actually lives.</li>
+<li><strong>EdMarket’s value is real but narrow and B2B-shaped</strong> — it matters most to vendor, subject-lead, Admin/IT, and Principal, none of whom are EdCity’s mission-critical actors (teachers, students). A better fit for “enabling infrastructure” positioning than a headline value prop.</li>
+<li><strong>DE Resources Platform and SMS read as infrastructure, not value drivers</strong> — every actor’s relationship to them is indirect or thinly evidenced. Not necessarily wrong, but neither should anchor an external-facing value narrative alone.</li>
+<li><strong>The clearest unaddressed value gap is peer/companionship learning</strong> — named by the belief system (joy/companionship as coequal to exam performance), with zero current mechanism in the build. A real candidate differentiator for “more than exam performance” positioning, but aspirational, not shipped.</li>
+<li><strong>Primary teacher and the entire governance/partner column (EDB, gatekeepers, content/SMS/academic partner) are the thinnest evidence in the map.</strong> Treat their “hero service” assignments as working hypotheses, not validated claims — they need real research before driving roadmap or positioning decisions, the way secondary-teacher and vendor findings already have.</li>
 </ul>
 </section>
 
