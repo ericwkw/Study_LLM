@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Positioning — Teacher-First Direction</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --ink:#0d1b3e; --ink2:#4a5170; --ink3:#8890a8;
+    --blue:#1550d8; --blue-bg:#e8effd; --blue-line:#c3d3f7;
+    --green:#0f8a52; --green-bg:#e6f6ee; --green-line:#bfe6d3;
+    --purple:#6a2ed6; --purple-bg:#efe6fc; --purple-line:#d7c3f5;
+    --card:#ffffff; --line:#e2e6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 32px 60px;}
+  .slide{background:var(--card);border-radius:20px;padding:36px 40px;margin-bottom:32px;box-shadow:0 1px 3px rgba(13,27,62,0.06);}
+  h1{font-size:36px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+  .subtitle{font-size:18px;color:var(--ink2);margin:0 0 26px;line-height:1.4;}
+  .banner{background:#fdece0;color:#c1550c;font-size:13px;font-weight:700;padding:8px 16px;border-radius:20px;display:inline-block;margin-bottom:18px;}
+  h2.areas-label{font-size:15px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
+  .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;}
+  .area{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .area .icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;}
+  .area .n{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .area .d{font-size:13.5px;color:var(--ink2);line-height:1.4;}
+  .a-blue{background:var(--blue-bg);} .a-blue .icon{background:var(--blue);color:#fff;}
+  .a-green{background:var(--green-bg);} .a-green .icon{background:var(--green);color:#fff;}
+  .a-purple{background:var(--purple-bg);} .a-purple .icon{background:var(--purple);color:#fff;}
+  .insight-row{display:flex;gap:20px;align-items:stretch;margin-bottom:26px;flex-wrap:wrap;}
+  .insight-box{flex:1 1 320px;background:var(--blue-bg);border:1px solid var(--blue-line);border-radius:14px;padding:18px;}
+  .insight-box .tag{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+  .insight-box .txt{font-size:16px;font-weight:600;color:var(--ink);line-height:1.45;}
+  .dep-box{flex:1 1 260px;background:#f1f2f6;border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dep-box .tag{display:inline-block;background:var(--ink3);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+  .dep-box .txt{font-size:14.5px;color:var(--ink2);line-height:1.5;}
+  .out-of-scope{background:#fafbfe;border:1px dashed var(--ink3);border-radius:14px;padding:18px 20px;margin-top:8px;}
+  .out-of-scope .ot{font-size:13px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:8px;}
+  .out-of-scope ul{margin:0;padding-left:18px;}
+  .out-of-scope li{font-size:14px;color:var(--ink2);margin-bottom:5px;line-height:1.5;}
+
+  .track-head{display:flex;align-items:center;gap:14px;margin-bottom:2px;}
+  .track-badge{font-size:13px;font-weight:700;color:#fff;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .track-badge.blue{background:var(--blue);} .track-badge.green{background:var(--green);} .track-badge.purple{background:var(--purple);}
+  .track-title{font-size:28px;font-weight:800;margin:0;letter-spacing:-0.01em;}
+  .track-sub{font-size:16px;color:var(--ink2);margin:4px 0 24px;line-height:1.4;}
+  .grid3{display:grid;grid-template-columns:230px 1fr 250px;gap:22px;align-items:start;}
+  @media(max-width:920px){.grid3{grid-template-columns:1fr;}}
+  .colhead{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;text-align:center;}
+  .side-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .side-box .st{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .side-box ul{margin:0;padding-left:16px;}
+  .side-box li{font-size:13.5px;color:var(--ink2);margin-bottom:6px;line-height:1.45;}
+  .approach{border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .approach .at{font-size:14px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--ink2);}
+  .approach .as{font-size:17px;font-weight:700;text-align:center;margin-bottom:18px;}
+  .steps{display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .step{flex:1;min-width:110px;text-align:center;}
+  .step .sic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 8px;color:#fff;font-weight:700;}
+  .step .sn{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .step .sd{font-size:12px;color:var(--ink2);line-height:1.4;}
+  .sarrow{color:var(--ink3);font-size:16px;align-self:center;margin-top:20px;}
+  .impact-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;}
+  .impact-box .it{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .impact-box .id{font-size:13px;color:var(--ink2);line-height:1.45;}
+  .success{margin-top:20px;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .success .lbl{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;color:#fff;padding:8px 14px;border-radius:20px;flex:0 0 auto;}
+  .success .items{display:flex;gap:22px;flex-wrap:wrap;flex:1;}
+  .success .item{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;}
+  .fn{vertical-align:super;font-size:10px;color:var(--ink3);font-weight:700;cursor:default;}
+  .footnotes{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.6;}
+  .footnotes b{color:var(--ink2);}
+  .tierline{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);}
+  .tierline .k{display:flex;align-items:center;gap:6px;}
+  .tierdot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .td-e{background:var(--green);} .td-p{background:#c98a1f;} .td-t{background:var(--ink3);}
+  .outcome-bar{background:var(--ink);color:#fff;border-radius:16px;padding:24px 30px;display:flex;align-items:center;gap:20px;font-size:17px;font-weight:600;line-height:1.4;}
+  .outcome-bar .ostar{font-size:26px;flex:0 0 auto;}
+  .doc-footnotes{background:#fff;border-radius:16px;padding:20px 30px;margin-top:16px;font-size:12.5px;color:var(--ink3);line-height:1.7;}
+  .doc-footnotes b{color:var(--ink2);}
+  .eyebrow{font-size:12.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+  .rule{border:none;border-top:1px solid var(--line);margin:18px 0 26px;}
+  .conclusion-line{font-size:18px;font-weight:700;color:var(--ink);margin-top:22px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="slide">
+<div class="banner">Draft strategic direction — not committed roadmap</div>
+<h1>EdCity for Teachers — Safe, Confident, Practical AI</h1>
+<p class="subtitle">A bet on depth over breadth: own the teacher relationship completely before spreading across students, parents, and companionship. How might HKEdCity help teachers use AI safely, confidently, and practically through curriculum-aligned tools, resources, and training?</p>
+
+<h2 class="areas-label">Three Pillars</h2>
+<div class="areas">
+  <div class="area a-blue"><div class="icon">🛡</div><div class="n">Safely</div><div class="d">Data handling and content safeguards a teacher can trust without having to check.</div></div>
+  <div class="area a-green"><div class="icon">✓</div><div class="n">Confidently</div><div class="d">Onboarding and guidance that removes the fear of using AI wrong in front of a class.</div></div>
+  <div class="area a-purple"><div class="icon">◆</div><div class="n">Practically</div><div class="d">Curriculum-aligned tools that save real prep and marking time, evidenced today.</div></div>
+</div>
+
+<div class="insight-row">
+  <div class="insight-box">
+    <div class="tag">OUR STRATEGIC BET</div>
+    <div class="txt">Teachers are the highest-leverage relationship EdCity has: the only actor with real, multi-system evidence behind them, and the shortest path to a daily habit. Rather than build a thinner layer for four different actors at once, this direction commits to owning the teacher relationship completely first — the platform every teacher trusts before it tries to be everything to everyone.<span class="fn">1</span></div>
+  </div>
+  <div class="dep-box">
+    <div class="tag">DEPENDENCY, NOT PRODUCT SCOPE</div>
+    <div class="txt">Training (workshops, certification, in-context coaching) is real, but delivered by a separate team. This document scopes the product — tools and resources. “Confidently” partly depends on that parallel workstream landing; it isn’t something this product builds alone.</div>
+  </div>
+</div>
+
+<div class="out-of-scope">
+  <div class="ot">The focus this direction chooses, on purpose</div>
+  <ul>
+    <li>One actor, done completely, rather than four actors served partially — marking/feedback still reaches students technically, but the product is built and marketed for the teacher using it, not the student receiving it.</li>
+    <li>Parent-facing surfaces (conversation-starter topics, progress views) are cut for the same reason — not because they cost more, but because a single-actor story is a sharper one to tell.</li>
+    <li>Companionship / peer-learning stays parked — it was already the most speculative track, and this direction doesn’t need it to be complete.</li>
+  </ul>
+</div>
+</div>
+
+<!-- PILLAR: SAFELY -->
+<div class="slide">
+<div class="track-head"><span class="track-badge blue">🛡 Safely</span></div>
+<h2 class="track-title">Safety a Teacher Doesn't Have to Verify Themselves</h2>
+<p class="track-sub">The precondition for everything else — a teacher won’t build a daily habit around a tool they're unsure is compliant or appropriate.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Teachers can't independently verify whether an AI tool handles student data in line with PDPO, or what happens to content once it leaves the classroom.</li>
+        <li>Generic AI output carries real risk of inappropriate or inaccurate content reaching students unfiltered.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>A single compliance incident undermines trust in the whole platform, not just one feature</li>
+        <li>Teachers who don't trust the safety layer under-adopt quietly, without ever raising the concern</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS PILLAR RESOLVES IT</div>
+    <div class="as">Build Safety In, Not Bolt It On<span class="fn">2</span></div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--blue);">1</div><div class="sn">PDPO-aware handling</div><div class="sd">Student data governed under EdCity’s existing SMS constraints, not a separate policy</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">2</div><div class="sn">Content filtering</div><div class="sd">Guardrails on generated material before it reaches a student</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">3</div><div class="sn">Curriculum grounding</div><div class="sd">Output validated against the official framework, not open-ended generation</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For teachers</div><div class="id">Adopt without needing to personally audit every output</div></div>
+    <div class="impact-box"><div class="it">For schools</div><div class="id">A defensible compliance posture to point to, not an informal one</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Safety becomes the reason schools trust EdCity over an unvetted consumer AI tool</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--blue-bg);">
+  <div class="lbl" style="background:var(--blue);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">A documented, testable safety mechanism exists (not yet true today)</div>
+    <div class="item">Zero data-handling incidents reported</div>
+    <div class="item">Teacher-reported trust in output appropriateness</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-t"></span>Theorized: PDPO handling and content filtering as claimed EdCity capabilities — neither is built or evidenced yet</div>
+</div>
+<div class="footnotes">
+<b>1</b> This bet also happens to align well with the Blueprint mandate’s educator-capacity-building framing, per Eric’s read of it — a welcome overlap, not the reason for the direction.
+<b>2</b> This entire pillar is currently theorized. Do not present “safely” as a built or validated capability in any stakeholder-facing version of this document until PDPO handling and content filtering are specified and confirmed.
+</div>
+</div>
+
+<!-- PILLAR: CONFIDENTLY -->
+<div class="slide">
+<div class="track-head"><span class="track-badge green">✓ Confidently</span></div>
+<h2 class="track-title">Confidence Built Into the First Five Minutes</h2>
+<p class="track-sub">Adoption stalls less on capability and more on a teacher’s fear of using AI wrong in front of a class — this pillar removes that fear at the point of first use.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>A teacher’s first AI experience is often generic and disconnected from their actual subject and grade — nothing about it says “this was made for me.”</li>
+        <li>Without guidance, teachers default to ad hoc use rather than a considered practice, which is exactly the gap already evidenced at the secondary level.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>A bad first experience is disproportionately costly — it sets whether a teacher tries again at all</li>
+        <li>Confidence, not capability, is usually the real blocker to daily use</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS PILLAR RESOLVES IT</div>
+    <div class="as">Guided, Curriculum-Specific, Fast</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--green);">1</div><div class="sn">Guided onboarding</div><div class="sd">Subject and grade selected up front, not generic</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">2</div><div class="sn">Pre-validated templates</div><div class="sd">A working starting point, not a blank prompt box</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">3</div><div class="sn">In-product guidance</div><div class="sd">Contextual help at the moment of use</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">4</div><div class="sn">Training (separate team)</div><div class="sd">Workshops and certification extend confidence beyond the product itself</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For teachers</div><div class="id">First successful use in minutes, not after a struggle</div></div>
+    <div class="impact-box"><div class="it">For subject-leads</div><div class="id">A consistent standard of use to point new teachers toward</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">Confidence becomes something the product actively builds, not something left to chance</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--green-bg);">
+  <div class="lbl" style="background:var(--green);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">Time to first successful assignment generated</div>
+    <div class="item">Return use within the first two weeks</div>
+    <div class="item">Teacher-reported confidence, pre/post onboarding</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-p"></span>Partial: guided onboarding and templates are a plausible extension of the existing prototype, not yet built or tested</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: training program itself — scope, delivery model, and ownership sit outside this product line</div>
+</div>
+</div>
+
+<!-- PILLAR: PRACTICALLY -->
+<div class="slide">
+<div class="track-head"><span class="track-badge purple">◆ Practically</span></div>
+<h2 class="track-title">Curriculum-Aligned Tools That Save Real Time</h2>
+<p class="track-sub">The strongest-evidenced pillar of this direction — this is what EdCity.ai already does for teachers, with the framing narrowed to teacher-only.</p>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Teachers lose real hours to prep and marking, under constant time pressure.<span class="fn">3</span></li>
+        <li>Generic AI marking doesn’t always match a teacher’s own pedagogy or standard.</li>
+        <li>No systematic way to verify marking calibration across a department.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Time lost to admin is time not spent teaching</li>
+        <li>If AI marking drifts from a teacher’s real standard, trust in the tool erodes fast</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS PILLAR RESOLVES IT</div>
+    <div class="as">Curriculum-Grounded, Not Generic</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--purple);">1</div><div class="sn">Prep &amp; materials</div><div class="sd">Generated and validated against the official curriculum framework</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">2</div><div class="sn">Marking &amp; feedback</div><div class="sd">A mechanism to encourage active student thinking; released through the teacher, not marketed as a student feature</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">3</div><div class="sn">Calibration &amp; insight</div><div class="sd">Class-level insight for the teacher; department-wide calibration remains a named gap</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">4</div><div class="sn">Resource library</div><div class="sd">DE Resources Platform content for prep, matched to subject and grade</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For teachers</div><div class="id">Prep and marking time saved without losing rigor</div></div>
+    <div class="impact-box"><div class="it">For subject-leads</div><div class="id">A consistent, curriculum-grounded standard across the department</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">The single most evidenced capability in the platform, now the headline of a focused direction</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--purple-bg);">
+  <div class="lbl" style="background:var(--purple);">📊 What we'll watch</div>
+  <div class="items">
+    <div class="item">Teacher-reported prep and marking time saved</div>
+    <div class="item">Materials generated and used per teacher per week</div>
+    <div class="item">Marking-calibration trust (no mechanism yet — flagged gap)</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-e"></span>Evidenced: secondary-teacher prep and marking (Ms. Chan; Sayo vendor meeting)</div>
+  <div class="k"><span class="tierdot td-p"></span>Partial: primary-teacher parity, applied by inference, not field-evidenced there</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: department-wide calibration mechanism</div>
+</div>
+<div class="footnotes">
+<b>3</b> Pain points drawn from early school-visit conversations and one vendor relationship; broader validation across more schools and subjects is ongoing.
+</div>
+</div>
+
+<!-- THE MISSION THIS DIRECTION SERVES -->
+<div class="slide">
+<div class="eyebrow">The mission this direction serves</div>
+<h1 style="font-size:30px;">Reach every student by making every teacher unstoppable first</h1>
+<hr class="rule">
+<p style="font-size:16px;color:var(--ink2);line-height:1.6;max-width:820px;">EdCity’s belief that no student learns alone, and that joy and continuous learning matter as much as exam performance, doesn’t disappear here — it’s the reason this direction leads with teachers. A teacher who trusts EdCity completely reaches every student in the room, every day; that’s a wider and faster path to the mission than building four thinner products in parallel. The marking/feedback mechanism keeps doing its job of encouraging real thinking — it’s simply the teacher’s tool to wield, not a separate student-facing product to maintain alongside it.</p>
+<p style="font-size:16px;color:var(--ink2);line-height:1.6;max-width:820px;margin-top:14px;">The case to make to EDB and school leadership is exactly this: the fastest way to serve students at scale is to make their teachers safe, confident, and practically effective with AI first — everything else compounds from there.</p>
+</div>
+
+<div class="outcome-bar">
+  <span class="ostar">★</span>
+  <span>Expected outcome: teachers who trust the platform enough to build their daily practice around it — safely, confidently, and practically — reaching every student through the one relationship EdCity can own completely.</span>
+</div>
+
+<div class="doc-footnotes">
+<b>About this document.</b> Built (2026-07-20) as a fourth strategic-direction document, separate from the three-track EdCity.ai/EdMarket/Companionship family in EdCity_Positioning_Vision_Tight.html. Makes the case for a single-actor (teacher-only) direction as a deliberate bet on depth over breadth, structured around three pillars — Safely, Confidently, Practically — mirroring the reference format used across the positioning document family. Draws its evidenced content from the teacher sections of EdCity_Journeys_Value_Map.html; the Safely pillar is currently theorized end to end and should not be presented as a built capability until specified and confirmed.
+</div>
+
+</div>
+</body>
+</html>
