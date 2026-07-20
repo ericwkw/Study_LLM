@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Ecosystem Maps — Enablement Layer</title>
+<style>
+  :root{
+    --bg:#fafaf8; --card:#ffffff; --card2:#f4f2ec; --card3:#eceae2;
+    --border:#ddd9cc; --border-strong:#c9c4b2;
+    --text:#1a1a2e; --text2:#5c5c56; --text-muted:#8a8a80;
+    --accent:#008BD1; --accent-bg:#e6f4fb; --accent-border:#8fc9ea;
+    --green:#1a7a4c; --green-bg:#e6f5ec; --green-border:#8fd0ac;
+    --amber:#95630a; --amber-bg:#faefdb; --amber-border:#e8bd6f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .layout{display:flex;min-height:100vh;}
+  nav{width:300px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  nav .brand{padding:0 24px 20px;font-size:20px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:12px;}
+  nav .brand span{display:block;font-size:15px;font-weight:400;color:var(--text-muted);margin-top:2px;}
+  nav button{display:block;width:100%;text-align:left;padding:12px 24px;line-height:1.4;background:none;border:none;font-size:17px;color:var(--text2);cursor:pointer;border-left:3px solid transparent;}
+  nav button:hover{background:var(--card2);}
+  nav button.active{background:var(--accent-bg);color:var(--accent);border-left-color:var(--accent);font-weight:600;}
+  main{flex:1;padding:36px 40px;max-width:920px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  h1{font-size:26px;font-weight:600;margin:0 0 4px;}
+  .subtitle{font-size:17px;color:var(--text2);margin:0 0 24px;}
+  .bet-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:16px 18px;margin-bottom:22px;font-size:16px;color:var(--text);line-height:1.6;}
+  .group{background:var(--card2);border-radius:16px;padding:18px 20px;margin-bottom:16px;}
+  .group-label{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:10px;}
+  .cap{list-style:none;margin:0;padding:0;}
+  .cap li{font-size:16px;color:var(--text2);margin-top:6px;padding-left:16px;position:relative;line-height:1.45;}
+  .cap li::before{content:"–";position:absolute;left:0;color:var(--border-strong);}
+  .e-tag{font-size:14px;margin-top:8px;color:var(--text-muted);}
+  .center{text-align:center;margin-bottom:14px;}
+  .center .name{font-size:20px;font-weight:600;color:var(--accent);}
+  .center .desc{font-size:16px;color:var(--text2);display:block;}
+  .legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;}
+  .legend .k{display:flex;align-items:center;gap:6px;font-size:16px;color:var(--text2);}
+  .legend .sw{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .legend .sw.evidenced{background:var(--green-bg);border:1px solid var(--green-border);}
+  .legend .sw.partial{background:var(--amber-bg);border:1px solid var(--amber-border);}
+  .legend .sw.theorized{background:var(--card);border:1px dashed var(--border-strong);}
+  .legend .sw.confirmed{background:var(--accent-bg);border:1px solid var(--accent-border);}
+  .conf{color:var(--accent);font-weight:600;}
+  table{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px;}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+  th{font-weight:600;color:var(--text2);font-size:15px;text-transform:uppercase;letter-spacing:0.02em;}
+  .dot-e{color:var(--green);font-weight:700;}
+  .dot-p{color:var(--amber);font-weight:700;}
+  .dot-t{color:var(--border-strong);}
+  .note{font-size:17px;color:var(--text2);line-height:1.6;margin-top:16px;background:var(--card2);padding:14px 16px;border-radius:10px;}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <div class="brand">EdCity ecosystem maps<span>Enablement layer, July 2026</span></div>
+  <button data-panel="overview" class="active">The layer behind the teacher</button>
+  <button data-panel="governance">Governance &amp; Oversight</button>
+  <button data-panel="ops">Platform Operations</button>
+  <button data-panel="marketplace">Marketplace &amp; Supply</button>
+</nav>
+<main>
+
+<div class="panel active" id="overview">
+<h1>The layer behind the teacher</h1>
+<p class="subtitle">Eight actors, none of whom touch a classroom directly, grouped into the three functions that make the teacher relationship possible.</p>
+<div class="bet-box">A teacher’s trust is only as solid as what’s holding it up. This map goes deep on the three functions that hold it up — governance, operations, and marketplace supply — the same way the teacher map goes deep on the teacher’s own moments.</div>
+<table>
+<tr><th>Function</th><th>Actors</th><th>What it makes possible for the teacher</th></tr>
+<tr><td>Governance &amp; Oversight</td><td>EDB, Principal, data-governance gatekeeper</td><td>A safety claim the teacher can actually rely on, not just hear</td></tr>
+<tr><td>Platform Operations</td><td>Admin/IT, EdCity SMS team, EdCity content team</td><td>Records, subscriptions, and content that stay correct without the teacher noticing</td></tr>
+<tr><td>Marketplace &amp; Supply</td><td>EdMarket gatekeeper, Vendor</td><td>A tool library the teacher can browse with confidence</td></tr>
+</table>
+<div class="note">
+Every panel below groups its actors by what they jointly enable, not by individual actor rings — the point of this map is depth on three functions, not breadth across eight actors treated separately.
+</div>
+</div>
+
+<div class="panel" id="governance">
+<div class="center"><span class="name">Governance &amp; Oversight</span><span class="desc">EDB, Principal, data-governance gatekeeper — the chain behind every safety claim</span></div>
+
+<div class="group">
+<div class="group-label">EDB</div>
+<ul class="cap">
+<li>Sets the mandate the whole platform aligns to</li>
+<li>Receives aggregate compliance reports across all four systems</li>
+</ul>
+<div class="e-tag">Theorized — indirect relationship, unconfirmed future data link, not a current system user</div>
+</div>
+
+<div class="group">
+<div class="group-label">Principal</div>
+<ul class="cap">
+<li>Receives efficiency reporting via EdCity.ai — indirect, aggregate only</li>
+<li>Approves vendor-licensing budget in EdMarket — the one direct, hands-on touchpoint</li>
+</ul>
+<div class="e-tag">Theorized, except budget approval — confirmed against the prototype build</div>
+</div>
+
+<div class="group">
+<div class="group-label">Data-governance gatekeeper</div>
+<ul class="cap">
+<li>Decides official-data access for every vendor listed in EdMarket</li>
+</ul>
+<div class="e-tag">Theorized — proposed process, not yet built or tested</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="ops">
+<div class="center"><span class="name">Platform Operations</span><span class="desc">Admin/IT, EdCity SMS team, EdCity content team — the layer that keeps everything correct</span></div>
+
+<div class="group">
+<div class="group-label">Admin / IT</div>
+<ul class="cap">
+<li>Maintains official student and school records — official-records layer only</li>
+<li>Approves and administers EdMarket subscriptions — approval auto-enables a tool for teachers, no separate setup</li>
+<li>Enforces that a subject-lead’s full-department subscription request has a completed evaluation first</li>
+</ul>
+<div class="e-tag">Partly evidenced — data-currency risk named; subscription flow confirmed against the prototype build (subscriptions.html)</div>
+</div>
+
+<div class="group">
+<div class="group-label">EdCity SMS team</div>
+<ul class="cap">
+<li>Maintains the legacy School Management System internally — both the official-records and performance-data layers</li>
+</ul>
+<div class="e-tag">Partly evidenced — ownership confirmed, day-to-day actions inferred</div>
+</div>
+
+<div class="group">
+<div class="group-label">EdCity content team</div>
+<ul class="cap">
+<li>Produces news, updates, and event listings on DE Resources Platform</li>
+</ul>
+<div class="e-tag">Theorized — role confirmed, usage-driven content strategy not yet evidenced</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="marketplace">
+<div class="center"><span class="name">Marketplace &amp; Supply</span><span class="desc">EdMarket gatekeeper, Vendor — what makes a listed tool worth trusting</span></div>
+
+<div class="group">
+<div class="group-label">EdMarket gatekeeper</div>
+<ul class="cap">
+<li>Vets and lists vendor tools in EdMarket before a teacher ever sees them</li>
+</ul>
+<div class="e-tag">Theorized — role confirmed, vetting process itself not yet built or tested</div>
+</div>
+
+<div class="group">
+<div class="group-label">Vendor (e.g. Sayo/AAIL)</div>
+<ul class="cap">
+<li>Submits tools to EdMarket, maintains an existing EdCity relationship</li>
+<li>Reaches schools through subject-lead influence and Admin/IT approval, not a direct sale</li>
+</ul>
+<div class="e-tag">Evidenced (Sayo vendor meeting)</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+</main>
+</div>
+<script>
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+    location.hash = btn.dataset.panel;
+  });
+});
+if(location.hash){
+  const id = location.hash.slice(1);
+  const btn = document.querySelector('nav button[data-panel="'+id+'"]');
+  if(btn) btn.click();
+}
+</script>
+</body>
+</html>

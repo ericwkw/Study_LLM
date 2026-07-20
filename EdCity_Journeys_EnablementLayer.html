@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Enablement Layer Journeys</title>
+<style>
+  :root{
+    --bg:#fafaf8; --card:#ffffff; --card2:#f4f2ec; --card3:#eceae2;
+    --border:#ddd9cc; --border-strong:#c9c4b2;
+    --text:#1a1a2e; --text2:#5c5c56; --text-muted:#8a8a80;
+    --accent:#008BD1; --accent-bg:#e6f4fb; --accent-border:#8fc9ea;
+    --green:#1a7a4c; --green-bg:#e6f5ec; --green-border:#8fd0ac;
+    --amber:#95630a; --amber-bg:#faefdb; --amber-border:#e8bd6f;
+    --gray:#6b6b63; --gray-bg:#f0efe9; --gray-border:#cfcabb;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .layout{display:flex;min-height:100vh;}
+  nav{width:300px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  nav .brand{padding:0 24px 20px;font-size:19px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:8px;}
+  nav .brand span{display:block;font-size:14px;font-weight:400;color:var(--text-muted);margin-top:2px;}
+  nav .grp{padding:14px 24px 4px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;}
+  nav a{display:block;padding:6px 24px;font-size:15px;color:var(--text2);text-decoration:none;border-left:3px solid transparent;}
+  nav a:hover{background:var(--card2);color:var(--accent);}
+  main{flex:1;padding:36px 48px;max-width:960px;}
+  h1{font-size:26px;font-weight:600;margin:0 0 4px;}
+  .subtitle{font-size:16px;color:var(--text2);margin:0 0 20px;line-height:1.5;}
+  section.persona{border-top:1px solid var(--border);padding-top:32px;margin-top:32px;scroll-margin-top:20px;}
+  section.persona:first-of-type{border-top:none;}
+  .persona-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .persona-head h2{font-size:23px;margin:0;}
+  .tier{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.02em;}
+  .tier.evidenced{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+  .tier.partial{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+  .tier.theorized{background:var(--gray-bg);color:var(--gray);border:1px dashed var(--gray-border);}
+  .persona-sub{font-size:15.5px;color:var(--text2);margin:6px 0 22px;line-height:1.55;max-width:760px;}
+  .moment{background:var(--card2);border-radius:14px;padding:20px 22px;margin-bottom:18px;}
+  .moment-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .moment-head h3{font-size:17px;margin:0;color:var(--text);}
+  h4.sec{font-size:12.5px;text-transform:uppercase;letter-spacing:0.03em;color:var(--text-muted);margin:14px 0 6px;}
+  .journey{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;}
+  .stage{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;flex:1 1 150px;}
+  .stage .sn{font-weight:600;font-size:12.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.02em;}
+  .stage .sd{margin-top:2px;color:var(--text2);}
+  .arrow-sep{align-self:center;color:var(--border-strong);font-size:16px;}
+  ul.pain{margin:4px 0 0;padding-left:18px;}
+  ul.pain li{font-size:14.5px;color:var(--text2);margin-top:5px;line-height:1.5;}
+  table.svc{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  table.svc th,table.svc td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+  table.svc th{font-weight:600;color:var(--text2);font-size:12.5px;text-transform:uppercase;letter-spacing:0.02em;}
+  .svctag{font-size:12px;font-weight:600;padding:1px 6px;border-radius:10px;white-space:nowrap;}
+  .svctag.e{background:var(--green-bg);color:var(--green);}
+  .svctag.p{background:var(--amber-bg);color:var(--amber);}
+  .svctag.t{background:var(--gray-bg);color:var(--gray);}
+  .note{font-size:15px;color:var(--text2);line-height:1.6;margin-top:14px;background:var(--card3);padding:12px 14px;border-radius:10px;}
+  .legend{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap;font-size:14px;color:var(--text2);}
+  .legend .k{display:flex;align-items:center;gap:6px;}
+  .legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;}
+  .legend .sw.e{background:var(--green-bg);border:1px solid var(--green-border);}
+  .legend .sw.p{background:var(--amber-bg);border:1px solid var(--amber-border);}
+  .legend .sw.t{background:var(--gray-bg);border:1px dashed var(--gray-border);}
+  code.svcname{background:var(--accent-bg);color:var(--accent);padding:1px 5px;border-radius:5px;font-size:13px;font-family:inherit;font-weight:600;}
+  .bet-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:16px 18px;margin:16px 0 24px;font-size:15.5px;color:var(--text);line-height:1.6;}
+  .valuegrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;}
+  .valuecard{background:var(--card2);border-radius:12px;padding:16px;}
+  .valuecard .vt{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:6px;}
+  .valuecard .vd{font-size:14.5px;color:var(--text2);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <div class="brand">Enablement layer journeys<span>A deep dive, July 2026</span></div>
+  <a href="#intro">How to read this</a>
+  <div class="grp">Governance &amp; Oversight</div>
+  <a href="#edb">EDB — sector confidence</a>
+  <a href="#principal">Principal — school confidence</a>
+  <a href="#datagov">Data-governance gatekeeper</a>
+  <div class="grp">Platform Operations</div>
+  <a href="#adminit-records">Admin/IT — records</a>
+  <a href="#adminit-subs">Admin/IT — subscriptions</a>
+  <a href="#smsteam">EdCity SMS team</a>
+  <a href="#contentteam">EdCity content team</a>
+  <div class="grp">Marketplace &amp; Supply</div>
+  <a href="#gatekeeper">EdMarket gatekeeper</a>
+  <a href="#vendor-list">Vendor — listing</a>
+  <a href="#vendor-adopt">Vendor — earning adoption</a>
+  <div class="grp">Synthesis</div>
+  <a href="#value">What this layer buys the platform</a>
+</nav>
+<main>
+
+<div id="intro">
+<h1>Enablement layer journeys — a deep dive</h1>
+<p class="subtitle">Eight actors, none of them a teacher, mapped with the same depth given to the teacher relationship — because the teacher’s trust depends entirely on this layer holding.</p>
+<div class="legend">
+  <div class="k"><span class="sw e"></span> Evidenced — real field/vendor research or confirmed prototype behavior</div>
+  <div class="k"><span class="sw p"></span> Partly evidenced — real underlying fact, specifics inferred or extrapolated</div>
+  <div class="k"><span class="sw t"></span> Theorized — happy-path proposal, no research behind it</div>
+</div>
+<div class="note">Services: <code class="svcname">EdCity.ai</code> <code class="svcname">DE Resources Platform</code> <code class="svcname">EdMarket</code> <code class="svcname">School Management System</code>. Naming follows the confirmed glossary used across the EdCity ecosystem maps.</div>
+</div>
+
+<!-- GOVERNANCE -->
+<section class="persona" id="edb">
+<div class="persona-head"><h2>EDB</h2><span class="tier theorized">Theorized</span></div>
+<p class="persona-sub">Indirect everywhere — sets the mandate the platform aligns to, but isn’t a system user.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Sector confidence</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Confirm schools are aligned to the Blueprint mandate, without operating any system directly</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Mandate compliance is hard to verify without direct system access</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Receives aggregate reports across all four systems, indirectly</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Confidence the sector is complying, without operational involvement</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Indirect visibility</td><td>EdCity.ai + others</td><td>Aggregate reporting across all four systems</td><td><span class="svctag t">theorized</span></td></tr>
+</table>
+</div>
+</section>
+
+<section class="persona" id="principal">
+<div class="persona-head"><h2>Principal</h2><span class="tier theorized">Theorized (indirect everywhere except budget)</span></div>
+<p class="persona-sub">Relies entirely on secondhand reporting — with one real, direct touchpoint.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>School confidence</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">School-wide oversight and accountability without operating any system directly</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Relies entirely on others' summaries and dashboards — no direct system contact</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Receives efficiency reporting via EdCity.ai; approves vendor-licensing budget in EdMarket — the one direct touchpoint</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Confidence in school performance without operational burden</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Indirect visibility</td><td>EdCity.ai</td><td>Efficiency reporting, aggregate only</td><td><span class="svctag t">theorized</span></td></tr>
+<tr><td>Budget accountability</td><td>EdMarket</td><td>Approves vendor licensing budget — the one real, direct involvement</td><td><span class="svctag t">theorized</span></td></tr>
+</table>
+</div>
+</section>
+
+<section class="persona" id="datagov">
+<div class="persona-head"><h2>Data-governance gatekeeper</h2><span class="tier theorized">Theorized</span></div>
+<p class="persona-sub">The one actor deciding whether a vendor gets access to official student data.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Consistent, defensible decisions</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Ensure vendor tools don’t misuse official student data</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Vendor data requests are hard to evaluate consistently at scale</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Decides official-data access for vendors in EdMarket</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Consistent, defensible data-access decisions across all listed vendors</div></div>
+</div>
+</div>
+</section>
+
+<!-- PLATFORM OPERATIONS -->
+<section class="persona" id="adminit-records">
+<div class="persona-head"><h2>Admin / IT</h2><span class="tier partial">Partly evidenced</span></div>
+<p class="persona-sub">Two distinct moments: keeping records current, and gatekeeping subscriptions.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Record maintenance</h3><span class="tier partial" style="font-size:11px;">partial</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Keep official records current without manual overhead</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Manual record maintenance risks data-currency drift</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Maintains official records in the School Management System</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Records every other service can trust</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Record currency</td><td>School Management System</td><td>Manual maintenance today — no automation identified</td><td><span class="svctag t">gap, theorized</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="adminit-subs">
+<div class="moment-head"><h3>Subscription gatekeeping</h3><span class="tier partial" style="font-size:11px;">partial, prototype-confirmed</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Manage vendor subscriptions without manual overhead per teacher</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Subscription approval is a manual, easy-to-miss gate</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Approves and administers EdMarket subscriptions; enforces that a department-wide request has a completed evaluation first</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Approved tools auto-appear for every teacher, no separate account setup</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Subscription gatekeeping</td><td>EdMarket</td><td>Approval auto-provisions the tool to teachers; requires completed evaluation for department-wide requests</td><td><span class="svctag p">partial, prototype-confirmed</span></td></tr>
+</table>
+</div>
+</section>
+
+<section class="persona" id="smsteam">
+<div class="persona-head"><h2>EdCity SMS team</h2><span class="tier partial">Partly evidenced</span></div>
+<p class="persona-sub">Keeps the legacy system reliable while newer EdCity services depend on its data.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Two data layers, kept correct at once</h3><span class="tier partial" style="font-size:11px;">partial</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Keep the legacy SMS reliable while newer EdCity services depend on its data</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Legacy system maintenance while both official-records and performance-data layers need to stay correct</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Maintains both SMS data layers internally</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">EdCity.ai and other services can trust the roster/performance data they depend on</div></div>
+</div>
+</div>
+</section>
+
+<section class="persona" id="contentteam">
+<div class="persona-head"><h2>EdCity content team</h2><span class="tier theorized">Theorized</span></div>
+<p class="persona-sub">Keeps DE Resources Platform current — without a clear signal of what teachers actually want.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Content that gets used</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Keep DE Resources Platform content current, relevant, and used</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Hard to know what content teachers actually want without direct usage signal</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Produces news, updates, event listings on DE Resources Platform</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Content stays relevant and gets used, not just published</div></div>
+</div>
+</div>
+</section>
+
+<!-- MARKETPLACE & SUPPLY -->
+<section class="persona" id="gatekeeper">
+<div class="persona-head"><h2>EdMarket gatekeeper</h2><span class="tier theorized">Theorized</span></div>
+<p class="persona-sub">Balances vendor pressure to list quickly against thorough vetting.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Trustworthy vetting</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Keep the marketplace trustworthy — only vetted, quality tools get listed</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Balancing vendor pressure to list quickly against thorough vetting</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Vets and lists vendor tools in EdMarket</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Schools trust what’s listed without needing to vet independently</div></div>
+</div>
+</div>
+</section>
+
+<section class="persona" id="vendor-list">
+<div class="persona-head"><h2>Vendor (e.g. Sayo/AAIL)</h2><span class="tier evidenced">Evidenced</span></div>
+<p class="persona-sub">Two moments: getting listed, and earning real adoption once listed.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>Listing &amp; credibility</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Distribution into schools, credibility, ongoing relationship with EdCity</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Needs subject-lead/panel-head buy-in to actually get purchased and used</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Submits tools to EdMarket, maintains existing EdCity relationship</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">A listed, credible presence in the marketplace</div></div>
+</div>
+</div>
+
+<div class="moment" id="vendor-adopt">
+<div class="moment-head"><h3>Earning adoption</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Turn a listing into real, school-wide use</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Purchasing runs through subject-lead influence, not a direct sale</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Earns subject-lead influence and Admin/IT approval</div></div>
+<div class="arrow-sep">→</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">School-wide subscription and adoption</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Distribution/credibility</td><td>EdMarket</td><td>Listing, existing relationship</td><td><span class="svctag e">evidenced</span></td></tr>
+</table>
+</div>
+</section>
+
+<!-- SYNTHESIS -->
+<div id="value">
+<section class="persona">
+<div class="persona-head"><h2>What this layer buys the platform</h2></div>
+<div class="bet-box">Eleven distinct moments, eight actors, none of them a teacher — mapped in full because the teacher relationship can’t be trusted any further than this layer actually holds.</div>
+
+<div class="valuegrid">
+  <div class="valuecard"><div class="vt">Governance &amp; oversight</div><div class="vd">A chain that can back up a safety claim, not just state one — still mostly theorized, worth building out first.</div></div>
+  <div class="valuecard"><div class="vt">Platform operations</div><div class="vd">Records, subscriptions, and content that stay correct without a teacher ever noticing the work behind it.</div></div>
+  <div class="valuecard"><div class="vt">Marketplace &amp; supply</div><div class="vd">A vetting relationship already evidenced with one real vendor — the clearest proof point in this entire map.</div></div>
+</div>
+</section>
+</div>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Positioning — The Enablement Layer</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --ink:#0d1b3e; --ink2:#4a5170; --ink3:#8890a8;
+    --blue:#1550d8; --blue-bg:#e8effd; --blue-line:#c3d3f7;
+    --green:#0f8a52; --green-bg:#e6f6ee; --green-line:#bfe6d3;
+    --purple:#6a2ed6; --purple-bg:#efe6fc; --purple-line:#d7c3f5;
+    --card:#ffffff; --line:#e2e6f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 32px 60px;}
+  .slide{background:var(--card);border-radius:20px;padding:36px 40px;margin-bottom:32px;box-shadow:0 1px 3px rgba(13,27,62,0.06);}
+  h1{font-size:36px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+  .subtitle{font-size:18px;color:var(--ink2);margin:0 0 26px;line-height:1.4;}
+  .banner{background:#fdece0;color:#c1550c;font-size:13px;font-weight:700;padding:8px 16px;border-radius:20px;display:inline-block;margin-bottom:18px;}
+  h2.areas-label{font-size:15px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
+  .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;}
+  .area{border-radius:14px;padding:18px;border:1px solid var(--line);}
+  .area .icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px;}
+  .area .n{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .area .d{font-size:13.5px;color:var(--ink2);line-height:1.4;}
+  .a-blue{background:var(--blue-bg);} .a-blue .icon{background:var(--blue);color:#fff;}
+  .a-green{background:var(--green-bg);} .a-green .icon{background:var(--green);color:#fff;}
+  .a-purple{background:var(--purple-bg);} .a-purple .icon{background:var(--purple);color:#fff;}
+  .insight-row{display:flex;gap:20px;align-items:stretch;margin-bottom:26px;flex-wrap:wrap;}
+  .insight-box{flex:1 1 100%;background:var(--blue-bg);border:1px solid var(--blue-line);border-radius:14px;padding:18px;}
+  .insight-box .tag{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+  .insight-box .txt{font-size:16px;font-weight:600;color:var(--ink);line-height:1.45;}
+
+  .track-head{display:flex;align-items:center;gap:14px;margin-bottom:2px;}
+  .track-badge{font-size:13px;font-weight:700;color:#fff;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .track-badge.blue{background:var(--blue);} .track-badge.green{background:var(--green);} .track-badge.purple{background:var(--purple);}
+  .track-title{font-size:28px;font-weight:800;margin:0;letter-spacing:-0.01em;}
+  .track-sub{font-size:16px;color:var(--ink2);margin:4px 0 24px;line-height:1.4;}
+  .grid3{display:grid;grid-template-columns:250px 1fr 250px;gap:22px;align-items:start;}
+  @media(max-width:920px){.grid3{grid-template-columns:1fr;}}
+  .colhead{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;text-align:center;}
+  .side-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .side-box .st{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .side-box ul{margin:0;padding-left:16px;}
+  .side-box li{font-size:13.5px;color:var(--ink2);margin-bottom:6px;line-height:1.45;}
+  .approach{border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .approach .at{font-size:14px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--ink2);}
+  .approach .as{font-size:17px;font-weight:700;text-align:center;margin-bottom:18px;}
+  .steps{display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap;}
+  .step{flex:1;min-width:120px;text-align:center;}
+  .step .sic{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 8px;color:#fff;font-weight:700;}
+  .step .sn{font-size:13px;font-weight:700;margin-bottom:3px;}
+  .step .sd{font-size:11.5px;color:var(--ink2);line-height:1.4;}
+  .sarrow{color:var(--ink3);font-size:16px;align-self:center;margin-top:18px;}
+  .impact-box{background:#fafbfe;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;}
+  .impact-box .it{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .impact-box .id{font-size:13px;color:var(--ink2);line-height:1.45;}
+  .success{margin-top:20px;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .success .lbl{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;color:#fff;padding:8px 14px;border-radius:20px;flex:0 0 auto;}
+  .success .items{display:flex;gap:22px;flex-wrap:wrap;flex:1;}
+  .success .item{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;}
+  .fn{vertical-align:super;font-size:10px;color:var(--ink3);font-weight:700;cursor:default;}
+  .footnotes{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.6;}
+  .footnotes b{color:var(--ink2);}
+  .tierline{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);}
+  .tierline .k{display:flex;align-items:center;gap:6px;}
+  .tierdot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .td-e{background:var(--green);} .td-p{background:#c98a1f;} .td-t{background:var(--ink3);}
+  .outcome-bar{background:var(--ink);color:#fff;border-radius:16px;padding:24px 30px;display:flex;align-items:center;gap:20px;font-size:17px;font-weight:600;line-height:1.4;}
+  .outcome-bar .ostar{font-size:26px;flex:0 0 auto;}
+  .doc-footnotes{background:#fff;border-radius:16px;padding:20px 30px;margin-top:16px;font-size:12.5px;color:var(--ink3);line-height:1.7;}
+  .doc-footnotes b{color:var(--ink2);}
+  .eyebrow{font-size:12.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+  .rule{border:none;border-top:1px solid var(--line);margin:18px 0 26px;}
+  .actorline{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .actorchip{font-size:12.5px;font-weight:600;color:var(--ink2);background:#fafbfe;border:1px solid var(--line);border-radius:20px;padding:5px 12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="slide">
+<div class="banner">Draft strategic direction — the enablement layer behind EdCity for Teachers</div>
+<h1>The Enablement Layer — What Makes Teacher-First Real</h1>
+<p class="subtitle">How might HKEdCity build the governance, operations, and marketplace foundation that lets teachers use AI safely, confidently, and practically? The actors below don’t touch a classroom directly — they’re what makes it possible for the ones who do.</p>
+
+<h2 class="areas-label">Three Functions</h2>
+<div class="areas">
+  <div class="area a-blue"><div class="icon">⚖</div><div class="n">Governance &amp; Oversight</div><div class="d">EDB, Principal, data-governance gatekeeper — the chain that makes a safety claim actually defensible.</div></div>
+  <div class="area a-green"><div class="icon">⚙</div><div class="n">Platform Operations</div><div class="d">Admin/IT, EdCity SMS team, EdCity content team — the invisible work that keeps every teacher-facing capability running.</div></div>
+  <div class="area a-purple"><div class="icon">▲</div><div class="n">Marketplace &amp; Supply</div><div class="d">EdMarket gatekeeper, Vendor — what makes sure every tool a teacher finds is actually worth finding.</div></div>
+</div>
+
+<div class="insight-row">
+  <div class="insight-box">
+    <div class="tag">WHY THIS LAYER</div>
+    <div class="txt">A teacher’s trust in EdCity is only as real as the layer behind it. Safety claims need a governance chain that can back them up; a fast marking tool needs a records system that stays current; a trustworthy marketplace needs someone actually vetting it. This direction builds that foundation deliberately, with the same depth given to the teacher relationship itself.</div>
+  </div>
+</div>
+</div>
+
+<!-- PILLAR: GOVERNANCE & OVERSIGHT -->
+<div class="slide">
+<div class="track-head"><span class="track-badge blue">⚖ Governance &amp; Oversight</span></div>
+<h2 class="track-title">The Chain That Makes Safety Real, Not Just Claimed</h2>
+<p class="track-sub">Every "safely" claim a teacher hears rests on this chain actually holding.</p>
+<div class="actorline">
+  <span class="actorchip">EDB</span>
+  <span class="actorchip">Principal</span>
+  <span class="actorchip">Data-governance gatekeeper</span>
+</div>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Mandate compliance is hard to verify without direct system access.<span class="fn">1</span></li>
+        <li>A school principal relies entirely on secondhand reporting, with no direct system contact.</li>
+        <li>Vendor data requests are hard to evaluate consistently once the marketplace scales past a handful of tools.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>Without a real oversight chain, a "safely" claim is just a sentence, not a system</li>
+        <li>A principal who can’t see what’s happening can’t back the platform with confidence to their own staff</li>
+        <li>Inconsistent data-access decisions compound into real exposure the moment the marketplace grows</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS FUNCTION RESOLVES IT</div>
+    <div class="as">Oversight Without Operational Burden</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--blue);">1</div><div class="sn">Aggregate reporting</div><div class="sd">EDB receives sector-wide reports across all four systems</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">2</div><div class="sn">Efficiency reporting</div><div class="sd">Principal sees school-level performance without touching a system directly</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">3</div><div class="sn">Budget approval</div><div class="sd">Principal’s one real, direct touchpoint — vendor-licensing budget</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--blue);">4</div><div class="sn">Data-access decisions</div><div class="sd">Gatekeeper decides official-data access for every vendor, consistently</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For EDB</div><div class="id">Confidence the sector is complying, without operational involvement</div></div>
+    <div class="impact-box"><div class="it">For principals</div><div class="id">Confidence in school performance, and a real say over the one budget decision that matters</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">A governance chain that can actually stand behind a safety claim, not just state one</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--blue-bg);">
+  <div class="lbl" style="background:var(--blue);">📊 What we’ll watch</div>
+  <div class="items">
+    <div class="item">Aggregate compliance reporting delivered on schedule</div>
+    <div class="item">Principal-reported confidence in school-level visibility</div>
+    <div class="item">Consistent, defensible data-access decisions across all listed vendors</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-t"></span>Theorized: all three relationships in this pillar — EDB and principal visibility are indirect-only today, data-governance process is proposed, not yet built or tested</div>
+</div>
+<div class="footnotes">
+<b>1</b> EDB and principal oversight is indirect everywhere except the principal’s vendor-licensing budget approval, which is confirmed against the prototype build.
+</div>
+</div>
+
+<!-- PILLAR: PLATFORM OPERATIONS -->
+<div class="slide">
+<div class="track-head"><span class="track-badge green">⚙ Platform Operations</span></div>
+<h2 class="track-title">The Invisible Work Behind Every Teacher-Facing Moment</h2>
+<p class="track-sub">A teacher never sees this layer directly — every one of its failures becomes their problem instantly.</p>
+<div class="actorline">
+  <span class="actorchip">Admin / IT</span>
+  <span class="actorchip">EdCity SMS team</span>
+  <span class="actorchip">EdCity content team</span>
+</div>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Manual record maintenance risks data-currency drift, and subscription approval is a manual, easy-to-miss gate.<span class="fn">2</span></li>
+        <li>Legacy system maintenance has to keep two very different data layers correct at once.</li>
+        <li>Hard to know what content teachers actually want without a direct usage signal.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>A stale roster becomes a teacher’s wrong class list; a missed subscription approval becomes a blocked tool</li>
+        <li>Every class-wide insight a teacher relies on depends on this data staying correct</li>
+        <li>Content nobody uses is a wasted trust opportunity, not just a wasted effort</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS FUNCTION RESOLVES IT</div>
+    <div class="as">Keep It Running, Keep It Current</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--green);">1</div><div class="sn">Maintain records</div><div class="sd">Admin/IT keeps official records current</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">2</div><div class="sn">Approve &amp; provision</div><div class="sd">One approval auto-enables a tool for every teacher, no separate setup</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">3</div><div class="sn">Maintain both data layers</div><div class="sd">SMS team keeps official-records and performance-data layers both correct</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--green);">4</div><div class="sn">Produce &amp; distribute content</div><div class="sd">Content team keeps DE Resources Platform current and relevant</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For Admin/IT</div><div class="id">Lower operational overhead once a tool is approved once</div></div>
+    <div class="impact-box"><div class="it">For the SMS team</div><div class="id">Every other service can trust the roster and performance data it depends on</div></div>
+    <div class="impact-box"><div class="it">For the content team</div><div class="id">Content that actually gets used, not just published</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">The layer teachers never have to think about, because it never breaks</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--green-bg);">
+  <div class="lbl" style="background:var(--green);">📊 What we’ll watch</div>
+  <div class="items">
+    <div class="item">Record-currency accuracy over time</div>
+    <div class="item">Time from subscription request to live access</div>
+    <div class="item">Content usage signal, not just publication count</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-p"></span>Partial: record maintenance and subscription approval confirmed against the prototype build (subscriptions.html); SMS team ownership confirmed, actions inferred</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: content-team usage signal — no mechanism identified yet</div>
+</div>
+<div class="footnotes">
+<b>2</b> Pain points drawn from the confirmed system architecture and prototype build, not yet validated through direct Admin/IT or SMS-team field research.
+</div>
+</div>
+
+<!-- PILLAR: MARKETPLACE & SUPPLY -->
+<div class="slide">
+<div class="track-head"><span class="track-badge purple">▲ Marketplace &amp; Supply</span></div>
+<h2 class="track-title">Making Sure Every Tool Found Is Worth Finding</h2>
+<p class="track-sub">A teacher’s "browse and request" moment only works if what’s listed has already earned that trust.</p>
+<div class="actorline">
+  <span class="actorchip">EdMarket gatekeeper</span>
+  <span class="actorchip">Vendor</span>
+</div>
+
+<div class="grid3">
+  <div>
+    <div class="colhead">Pain points → Stakes</div>
+    <div class="side-box">
+      <div class="st">🔍 Pain points</div>
+      <ul>
+        <li>Balancing vendor pressure to list quickly against thorough vetting.<span class="fn">3</span></li>
+        <li>A vendor needs subject-lead buy-in to actually get purchased and used — distribution isn’t a direct sale.</li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <div class="st">❤ Why it matters</div>
+      <ul>
+        <li>A rushed listing becomes a teacher’s bad first experience with a "vetted" tool</li>
+        <li>A vendor who can’t reach schools has no reason to keep investing in the relationship</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach">
+    <div class="at">HOW THIS FUNCTION RESOLVES IT</div>
+    <div class="as">Vet Once, Trust Everywhere</div>
+    <div class="steps">
+      <div class="step"><div class="sic" style="background:var(--purple);">1</div><div class="sn">Vet</div><div class="sd">Gatekeeper reviews every tool before it’s listed</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">2</div><div class="sn">List</div><div class="sd">Vendor submits tools, maintains the EdCity relationship</div></div>
+      <div class="sarrow">→</div>
+      <div class="step"><div class="sic" style="background:var(--purple);">3</div><div class="sn">Earn adoption</div><div class="sd">Distribution runs through subject-lead influence, not a direct pitch</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="colhead">Expected impact</div>
+    <div class="impact-box"><div class="it">For the EdMarket gatekeeper</div><div class="id">Schools trust what’s listed without needing to vet independently</div></div>
+    <div class="impact-box"><div class="it">For vendors</div><div class="id">Real distribution into schools through one trusted channel</div></div>
+    <div class="impact-box"><div class="it">For EdCity</div><div class="id">A marketplace teachers browse with confidence, not a leap of faith</div></div>
+  </div>
+</div>
+
+<div class="success" style="background:var(--purple-bg);">
+  <div class="lbl" style="background:var(--purple);">📊 What we’ll watch</div>
+  <div class="items">
+    <div class="item">Vendor listings converting to school adoption</div>
+    <div class="item">Time from vetting to live listing</div>
+    <div class="item">Repeat purchasing across departments</div>
+  </div>
+</div>
+<div class="tierline">
+  <div class="k"><span class="tierdot td-e"></span>Evidenced: vendor relationship and subject-lead purchasing influence (Sayo vendor meeting)</div>
+  <div class="k"><span class="tierdot td-t"></span>Theorized: the vetting process itself — proposed design, not yet built or tested</div>
+</div>
+<div class="footnotes">
+<b>3</b> Vetting-throughput pressure is a reasonable inference from the vendor relationship evidenced above, not yet confirmed as a named pain point from the gatekeeper’s own side.
+</div>
+</div>
+
+<!-- WHY THIS LAYER MATTERS -->
+<div class="slide">
+<div class="eyebrow">Why this layer matters</div>
+<h1 style="font-size:30px;">The foundation that makes “safely, confidently, practically” true</h1>
+<hr class="rule">
+<p style="font-size:16px;color:var(--ink2);line-height:1.6;max-width:820px;">A teacher’s daily practice rests on three things holding at once: a governance chain that can actually back a safety claim, an operations layer that keeps records and content correct without the teacher ever noticing, and a marketplace where what’s listed has genuinely earned its place. None of these actors touch a classroom — that’s exactly why they matter. Every pillar of EdCity for Teachers depends on this layer being built with the same care as the teacher relationship itself.</p>
+</div>
+
+<div class="outcome-bar">
+  <span class="ostar">★</span>
+  <span>Expected outcome: a foundation solid enough that teachers never have to think about it — safety, currency, and trust, built in before a teacher ever notices they were missing.</span>
+</div>
+
+<div class="doc-footnotes">
+<b>About this document.</b> Built (2026-07-20) as the enablement-layer companion to EdCity_Positioning_TeacherFirst.html — the governance, operations, and marketplace foundation that makes the teacher-first direction real, not a competing bet. Three functional clusters group eight actors by role rather than treating each individually: Governance &amp; Oversight (EDB, Principal, data-governance gatekeeper), Platform Operations (Admin/IT, EdCity SMS team, EdCity content team), and Marketplace &amp; Supply (EdMarket gatekeeper, Vendor). Draws its evidenced content from the corresponding actor sections of EdCity_Journeys_Value_Map.html and EdCity_Ecosystem_Maps.html.
+</div>
+
+</div>
+</body>
+</html>
