@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Teacher Journeys — A Deep Dive</title>
+<style>
+  :root{
+    --bg:#fafaf8; --card:#ffffff; --card2:#f4f2ec; --card3:#eceae2;
+    --border:#ddd9cc; --border-strong:#c9c4b2;
+    --text:#1a1a2e; --text2:#5c5c56; --text-muted:#8a8a80;
+    --accent:#008BD1; --accent-bg:#e6f4fb; --accent-border:#8fc9ea;
+    --green:#1a7a4c; --green-bg:#e6f5ec; --green-border:#8fd0ac;
+    --amber:#95630a; --amber-bg:#faefdb; --amber-border:#e8bd6f;
+    --gray:#6b6b63; --gray-bg:#f0efe9; --gray-border:#cfcabb;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .layout{display:flex;min-height:100vh;}
+  nav{width:300px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  nav .brand{padding:0 24px 20px;font-size:19px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:8px;}
+  nav .brand span{display:block;font-size:14px;font-weight:400;color:var(--text-muted);margin-top:2px;}
+  nav .grp{padding:14px 24px 4px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;}
+  nav a{display:block;padding:6px 24px;font-size:15px;color:var(--text2);text-decoration:none;border-left:3px solid transparent;}
+  nav a:hover{background:var(--card2);color:var(--accent);}
+  main{flex:1;padding:36px 48px;max-width:960px;}
+  h1{font-size:26px;font-weight:600;margin:0 0 4px;}
+  .subtitle{font-size:16px;color:var(--text2);margin:0 0 20px;line-height:1.5;}
+  section.persona{border-top:1px solid var(--border);padding-top:32px;margin-top:32px;scroll-margin-top:20px;}
+  section.persona:first-of-type{border-top:none;}
+  .persona-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .persona-head h2{font-size:23px;margin:0;}
+  .tier{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.02em;}
+  .tier.evidenced{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+  .tier.partial{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+  .tier.theorized{background:var(--gray-bg);color:var(--gray);border:1px dashed var(--gray-border);}
+  .persona-sub{font-size:15.5px;color:var(--text2);margin:6px 0 22px;line-height:1.55;max-width:760px;}
+  .moment{background:var(--card2);border-radius:14px;padding:20px 22px;margin-bottom:18px;}
+  .moment-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .moment-head h3{font-size:17px;margin:0;color:var(--text);}
+  h4.sec{font-size:12.5px;text-transform:uppercase;letter-spacing:0.03em;color:var(--text-muted);margin:14px 0 6px;}
+  .journey{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;}
+  .stage{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;flex:1 1 150px;}
+  .stage .sn{font-weight:600;font-size:12.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.02em;}
+  .stage .sd{margin-top:2px;color:var(--text2);}
+  .arrow-sep{align-self:center;color:var(--border-strong);font-size:16px;}
+  ul.pain{margin:4px 0 0;padding-left:18px;}
+  ul.pain li{font-size:14.5px;color:var(--text2);margin-top:5px;line-height:1.5;}
+  table.svc{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  table.svc th,table.svc td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+  table.svc th{font-weight:600;color:var(--text2);font-size:12.5px;text-transform:uppercase;letter-spacing:0.02em;}
+  .svctag{font-size:12px;font-weight:600;padding:1px 6px;border-radius:10px;white-space:nowrap;}
+  .svctag.e{background:var(--green-bg);color:var(--green);}
+  .svctag.p{background:var(--amber-bg);color:var(--amber);}
+  .svctag.t{background:var(--gray-bg);color:var(--gray);}
+  .note{font-size:15px;color:var(--text2);line-height:1.6;margin-top:14px;background:var(--card3);padding:12px 14px;border-radius:10px;}
+  .legend{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap;font-size:14px;color:var(--text2);}
+  .legend .k{display:flex;align-items:center;gap:6px;}
+  .legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;}
+  .legend .sw.e{background:var(--green-bg);border:1px solid var(--green-border);}
+  .legend .sw.p{background:var(--amber-bg);border:1px solid var(--amber-border);}
+  .legend .sw.t{background:var(--gray-bg);border:1px dashed var(--gray-border);}
+  code.svcname{background:var(--accent-bg);color:var(--accent);padding:1px 5px;border-radius:5px;font-size:13px;font-family:inherit;font-weight:600;}
+  .bet-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:16px 18px;margin:16px 0 24px;font-size:15.5px;color:var(--text);line-height:1.6;}
+  .valuegrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;}
+  .valuecard{background:var(--card2);border-radius:12px;padding:16px;}
+  .valuecard .vt{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:6px;}
+  .valuecard .vd{font-size:14.5px;color:var(--text2);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <div class="brand">Teacher journeys<span>A deep dive, July 2026</span></div>
+  <a href="#intro">How to read this</a>
+  <div class="grp">Secondary teacher</div>
+  <a href="#sec-prep">Weekly prep</a>
+  <a href="#sec-assign">Assignment design</a>
+  <a href="#sec-mark">Marking &amp; feedback</a>
+  <a href="#sec-insight">Class-wide insight</a>
+  <a href="#sec-collab">Cross-subject &amp; comms</a>
+  <a href="#sec-onboard">First use &amp; confidence</a>
+  <a href="#sec-tools">Discovering new tools</a>
+  <div class="grp">Primary teacher</div>
+  <a href="#pri-prep">Prep &amp; scaffolding</a>
+  <a href="#pri-mark">Marking at primary level</a>
+  <a href="#pri-onboard">First use &amp; confidence</a>
+  <div class="grp">Subject-lead</div>
+  <a href="#lead-calibrate">Calibration &amp; policy</a>
+  <a href="#lead-vet">Vetting &amp; vendor influence</a>
+  <a href="#lead-curate">Curating department content</a>
+  <div class="grp">Synthesis</div>
+  <a href="#value">What depth buys the teacher</a>
+</nav>
+<main>
+
+<div id="intro">
+<h1>Teacher journeys — a deep dive</h1>
+<p class="subtitle">One actor, mapped in full. Instead of a single need &rarr; friction &rarr; interaction &rarr; outcome line per persona, every real moment in a teacher’s week with EdCity gets its own journey, its own pain points, and its own service mapping — because depth, not breadth, is the point of this document.</p>
+<div class="legend">
+  <div class="k"><span class="sw e"></span> Evidenced — real field/vendor research or confirmed prototype behavior</div>
+  <div class="k"><span class="sw p"></span> Partly evidenced — real underlying fact, specifics inferred or extrapolated</div>
+  <div class="k"><span class="sw t"></span> Theorized — happy-path proposal, no research behind it</div>
+</div>
+<div class="note">Services: <code class="svcname">EdCity.ai</code> <code class="svcname">DE Resources Platform</code> <code class="svcname">EdMarket</code> <code class="svcname">School Management System</code>. Naming follows the confirmed glossary used across the EdCity ecosystem maps.</div>
+<div class="note">On the thinking-preservation mechanism: where it appears below, it refers to a mechanism designed to encourage active student thinking before AI help arrives, used by the teacher — staged feedback release is today’s one evidenced example, not the only or definitive design.</div>
+</div>
+
+<!-- SECONDARY TEACHER -->
+<section class="persona" id="sec-prep">
+<div class="persona-head"><h2>Secondary teacher</h2><span class="tier evidenced">Evidenced</span></div>
+<p class="persona-sub">Anchor persona — Ms. Chan, from school-visit and vendor findings. Her week is broken into seven distinct moments below, each mapped on its own.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>1. Weekly prep</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Prep lessons and materials fast, under real time pressure, without losing rigor</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Generic AI use is already ad hoc — the gap isn’t adoption, it’s trust that output matches the curriculum</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Generates and validates materials in EdCity.ai against the official curriculum framework</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Real hours saved every week, without a rigor trade-off</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Curriculum-fit risk</strong> — generic AI materials drift from the official framework unless checked. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Curriculum-fit risk</td><td>EdCity.ai</td><td>Materials generated and validated directly against the curriculum framework</td><td><span class="svctag e">evidenced</span></td></tr>
+<tr><td>Prep time</td><td>DE Resources Platform</td><td>eLAPF, EdAcademy, OQB/DES, STAR content library feeds directly into prep</td><td><span class="svctag p">partial</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-assign">
+<div class="moment-head"><h3>2. Assignment design</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Set assignments that get students thinking, not just producing an answer</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">A generic assignment gives a student the full answer path immediately — nothing forces genuine attempt first</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Builds the assignment with a thinking-preservation mechanism switched on, including for open-ended questions</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Assignments that teach the process, not just grade the output</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Students using AI to skip thinking, not to learn</strong> — the dominant concern, ahead of tool adoption itself. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Skip-thinking risk</td><td>EdCity.ai</td><td>Thinking-preservation mechanism at assignment creation; staged feedback release is today’s evidenced example</td><td><span class="svctag e">evidenced</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-mark">
+<div class="moment-head"><h3>3. Marking &amp; feedback</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Mark a full set without losing hours, in a way that matches her own standard</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Generic AI marking doesn’t always match a teacher’s own pedagogy — feedback shown before genuine attempt undercuts the exercise’s purpose</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Marks with the same thinking-preservation mechanism applied at assignment stage, including open-ended written work</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">A full set marked in a fraction of the time, in a way she’d have marked it herself</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Pedagogy-fit marking</strong> — output has to match her actual standard, not a generic one. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Pedagogy-fit marking</td><td>EdCity.ai</td><td>Marking toggle applies the same thinking-preservation mechanism as assignment creation</td><td><span class="svctag p">partial</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-insight">
+<div class="moment-head"><h3>4. Class-wide insight</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">See where the class actually stands, not just a stack of individual scores</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Individual marks don’t add up to a picture of who needs stretch, core, or support-level attention</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Views class-level skill profile by learning tier, including causal before/after insight</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Groups and attention allocated by real signal, not guesswork</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>No aggregate view</strong> without this — individual scores alone don’t reveal a pattern. <span class="tier evidenced" style="font-size:11px;">evidenced</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>No aggregate view</td><td>EdCity.ai</td><td>Class-level skill profile by tier (stretch/core/support), causal before/after</td><td><span class="svctag e">evidenced</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-collab">
+<div class="moment-head"><h3>5. Cross-subject collaboration &amp; communication</h3><span class="tier partial" style="font-size:11px;">partial</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Coordinate with colleagues and keep home-school communication moving, without extra overhead</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Cross-subject review and parent-facing drafting both eat into time already scarce</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Invites colleagues to co-review materials; drafts admin and home-school communications inside the same platform</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Coordination and communication handled without leaving the tool she already trusts</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Coordination overhead</td><td>EdCity.ai</td><td>Cross-subject co-review invites; drafts home-school communications</td><td><span class="svctag p">partial</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-onboard">
+<div class="moment-head"><h3>6. First use &amp; building confidence</h3><span class="tier partial" style="font-size:11px;">partial</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">A first AI experience that doesn’t feel generic or risky to try in front of a class</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">A blank prompt box gives no sense of whether output will be appropriate or on-curriculum</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Subject- and grade-specific onboarding with a pre-validated starting template, plus content safeguards behind the scenes</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">A working first result in minutes, confidence to keep going</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Fear of a bad first experience</strong> disproportionately determines whether a teacher tries again at all. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>First-use risk</td><td>EdCity.ai</td><td>Guided, subject/grade-specific onboarding with a working template</td><td><span class="svctag p">partial</span></td></tr>
+<tr><td>Data &amp; content safety</td><td>EdCity.ai</td><td>PDPO-aware handling, content filtering — claimed but not yet specified or confirmed</td><td><span class="svctag t">theorized</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="sec-tools">
+<div class="moment-head"><h3>7. Discovering new tools</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Find a specialist tool for a specific need, without a personal vetting burden</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Every new tool is a separate trust decision — no shared, pre-vetted channel</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Browses and requests vetted tools directly from the tool library inside EdCity.ai</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">The right specialist tool, one click away, already vetted</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Tool-vetting burden</td><td>EdMarket (via EdCity.ai tool library)</td><td>Browses / requests marketplace tools, already vetted before listing</td><td><span class="svctag e">evidenced</span></td></tr>
+</table>
+</div>
+</section>
+
+<!-- PRIMARY TEACHER -->
+<section class="persona" id="pri-prep">
+<div class="persona-head"><h2>Primary teacher</h2><span class="tier partial">Partly evidenced</span></div>
+<p class="persona-sub">Same capability footprint as secondary teacher by inference — not yet field-evidenced at primary level. Age-appropriate scaffolding is the one dimension that genuinely differs.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>1. Prep &amp; scaffolding</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Age-appropriate prep and materials, more scaffolding than secondary requires</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Assumed similar time pressure to secondary, but foundational-skill stakes are higher for younger students</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Same generation and validation capability as secondary, with no primary-specific adaptation identified yet</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Assumed same time-saving value, unconfirmed at primary level</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Foundational-skill risk</strong> — too much AI scaffolding may hinder early literacy/numeracy. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Foundational-skill risk</td><td>EdCity.ai</td><td>Not addressed — open design question, no primary-specific adaptation yet</td><td><span class="svctag t">gap, theorized</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="pri-mark">
+<div class="moment-head"><h3>2. Marking at primary level</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Mark with the same time-saving benefit, without the thinking-preservation design working against younger students</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Whether the same mechanism that suits secondary students still fits primary is untested</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Same thinking-preservation mechanism as secondary, carried over by inference</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Assumed same thinking-preserving value, unconfirmed at primary level</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Untested primary fit</td><td>EdCity.ai</td><td>Same toolset as secondary; no primary-specific validation yet</td><td><span class="svctag t">theorized</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="pri-onboard">
+<div class="moment-head"><h3>3. First use &amp; building confidence</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">The same low-risk first experience secondary teachers get, adapted to a primary classroom</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">No primary-specific onboarding path has been designed or tested</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Assumed same guided onboarding as secondary, not yet adapted or validated for primary</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Unconfirmed — most in need of direct field validation of any moment in this document</div></div>
+</div>
+<div class="note">Most in need of direct field validation before further build investment — everything in this persona is inferred from secondary-teacher evidence.</div>
+</div>
+</section>
+
+<!-- SUBJECT-LEAD -->
+<section class="persona" id="lead-calibrate">
+<div class="persona-head"><h2>Subject-lead</h2><span class="tier evidenced">Evidenced (EdMarket)</span></div>
+<p class="persona-sub">Real gatekeeping authority over department-wide marking consistency and vendor-tool adoption.</p>
+
+<div class="moment">
+<div class="moment-head"><h3>1. Calibration &amp; policy</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Ensure marking consistency across every teacher in the department</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Verifying AI marking calibration across teachers today means manual spot-checks</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Reviews calibration and sets department policy directly in EdCity.ai</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">One consistent grading standard across the whole department</div></div>
+</div>
+<h4 class="sec">Pain points</h4>
+<ul class="pain">
+<li><strong>Marking-consistency oversight is manual today</strong> — no calibration-check mechanism exists yet. <span class="tier theorized" style="font-size:11px;">theorized</span></li>
+</ul>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Calibration risk</td><td>EdCity.ai</td><td>Not addressed — no calibration-check mechanism identified yet</td><td><span class="svctag t">gap, theorized</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="lead-vet">
+<div class="moment-head"><h3>2. Vetting &amp; vendor influence</h3><span class="tier evidenced" style="font-size:11px;">evidenced</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Choose the right vendor tools for the department, with real say in the decision</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">Evaluating vendor tools before a full-department subscription is a real, unstructured responsibility today</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Vets and requests tools in EdMarket; a completed evaluation is required before Admin/IT approves a department-wide subscription</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">Real influence over what shapes the department’s teaching</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Vendor tool vetting</td><td>EdMarket</td><td>Influences purchasing; department subscription requires a completed evaluation before Admin/IT approves it</td><td><span class="svctag e">evidenced</span></td></tr>
+</table>
+</div>
+
+<div class="moment" id="lead-curate">
+<div class="moment-head"><h3>3. Curating department content</h3><span class="tier theorized" style="font-size:11px;">theorized</span></div>
+<div class="journey">
+<div class="stage"><div class="sn">Need</div><div class="sd">Keep prep content relevant and trustworthy for the whole department</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Friction today</div><div class="sd">No structured curation role exists today beyond individual teacher choice</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">EdCity interaction</div><div class="sd">Curates and vets DE Resources Platform content for the department</div></div>
+<div class="arrow-sep">&rarr;</div>
+<div class="stage"><div class="sn">Outcome</div><div class="sd">A department that draws from the same trusted content, not fragmented individual choices</div></div>
+</div>
+<h4 class="sec">Service mapping</h4>
+<table class="svc">
+<tr><th>Pain point</th><th>Service</th><th>How addressed</th><th>Tier</th></tr>
+<tr><td>Content curation</td><td>DE Resources Platform</td><td>Curates / vets content for department</td><td><span class="svctag t">theorized</span></td></tr>
+</table>
+</div>
+</section>
+
+<!-- SYNTHESIS -->
+<div id="value">
+<section class="persona">
+<div class="persona-head"><h2>What depth buys the teacher</h2></div>
+<div class="bet-box">Thirteen distinct moments, three teacher personas, mapped in full rather than compressed into one line each. The bet: a teacher who trusts every one of these moments builds a daily practice around EdCity — that trust compounds faster than a thinner layer spread across more actors ever could.</div>
+
+<div class="valuegrid">
+  <div class="valuecard"><div class="vt">Prep &amp; materials</div><div class="vd">Real hours saved every week, validated against the curriculum a teacher already has to teach to.</div></div>
+  <div class="valuecard"><div class="vt">Assignments &amp; marking</div><div class="vd">A thinking-preservation mechanism a teacher controls, not a black box she has to trust blindly.</div></div>
+  <div class="valuecard"><div class="vt">Insight &amp; calibration</div><div class="vd">A class-wide picture, with department-wide consistency still an open gap worth naming honestly.</div></div>
+  <div class="valuecard"><div class="vt">Confidence from first use</div><div class="vd">A first experience built for her subject and grade, not a generic prompt box.</div></div>
+  <div class="valuecard"><div class="vt">Safety she doesn’t verify herself</div><div class="vd">Claimed, not yet built — the one moment in this map still resting entirely on theorized ground.</div></div>
+  <div class="valuecard"><div class="vt">Discovery without the vetting burden</div><div class="vd">Specialist tools arrive pre-vetted, one click away, inside the platform she already trusts.</div></div>
+</div>
+</section>
+</div>
+
+</main>
+</div>
+</body>
+</html>
