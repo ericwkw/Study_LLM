@@ -29,7 +29,9 @@
   .subtitle{font-size:17px;color:var(--text2);margin:0 0 24px;}
   .bet-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:16px 18px;margin-bottom:22px;font-size:16px;color:var(--text);line-height:1.6;}
   .group{background:var(--card2);border-radius:16px;padding:18px 20px;margin-bottom:16px;}
-  .group-label{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:10px;}
+  .group.core{background:var(--accent-bg);border:1px solid var(--accent-border);}
+  .group-label{font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px;}
+  .group-label .cluster{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;display:block;margin-bottom:2px;}
   .cap{list-style:none;margin:0;padding:0;}
   .cap li{font-size:16px;color:var(--text2);margin-top:6px;padding-left:16px;position:relative;line-height:1.45;}
   .cap li::before{content:"–";position:absolute;left:0;color:var(--border-strong);}
@@ -48,123 +50,245 @@
   table{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px;}
   th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
   th{font-weight:600;color:var(--text2);font-size:15px;text-transform:uppercase;letter-spacing:0.02em;}
+  td.dot{text-align:center;}
   .dot-e{color:var(--green);font-weight:700;}
   .dot-p{color:var(--amber);font-weight:700;}
   .dot-t{color:var(--border-strong);}
+  .count{font-weight:600;}
   .note{font-size:17px;color:var(--text2);line-height:1.6;margin-top:16px;background:var(--card2);padding:14px 16px;border-radius:10px;}
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;}
+  .sysbox{width:100%;max-width:560px;border-radius:12px;padding:16px 20px;text-align:center;background:var(--card);border:1px solid var(--border-strong);}
+  .sysbox.hub{background:var(--accent-bg);border-color:var(--accent-border);}
+  .sysbox .sn{font-size:20px;font-weight:600;color:var(--text);}
+  .sysbox.hub .sn{color:var(--accent);}
+  .sysbox .sd{font-size:16px;color:var(--text2);margin-top:2px;}
+  .connector{display:flex;flex-direction:column;align-items:center;padding:8px 0;}
+  .connector .arrow{font-size:22px;color:var(--border-strong);line-height:1;}
+  .connector .clabel{font-size:15px;color:var(--text2);background:var(--card2);padding:3px 10px;border-radius:20px;margin-top:2px;text-align:center;max-width:340px;}
+  .layerbox{width:100%;max-width:560px;border-radius:12px;padding:6px;background:var(--card2);border:1px solid var(--border-strong);}
+  .layer{background:var(--card);border-radius:8px;padding:10px 14px;margin:6px;}
+  .layer .ln{font-size:17px;font-weight:600;}
+  .layer .ld{font-size:15px;color:var(--text2);margin-top:2px;}
 </style>
 </head>
 <body>
 <div class="layout">
 <nav>
   <div class="brand">EdCity ecosystem maps<span>Enablement layer, July 2026</span></div>
-  <button data-panel="overview" class="active">The layer behind the teacher</button>
-  <button data-panel="governance">Governance &amp; Oversight</button>
-  <button data-panel="ops">Platform Operations</button>
-  <button data-panel="marketplace">Marketplace &amp; Supply</button>
+  <button data-panel="overview" class="active">Enablement layer across the platform</button>
+  <button data-panel="systems">How the systems connect</button>
+  <button data-panel="ai">EdCity.ai</button>
+  <button data-panel="sms">School Management System</button>
+  <button data-panel="resources">DE Resources Platform</button>
+  <button data-panel="edmarket">EdMarket</button>
 </nav>
 <main>
 
 <div class="panel active" id="overview">
-<h1>The layer behind the teacher</h1>
-<p class="subtitle">Eight actors, none of whom touch a classroom directly, grouped into the three functions that make the teacher relationship possible.</p>
-<div class="bet-box">A teacher’s trust is only as solid as what’s holding it up. This map goes deep on the three functions that hold it up — governance, operations, and marketplace supply — the same way the teacher map goes deep on the teacher’s own moments.</div>
+<h1>Enablement layer across the platform</h1>
+<p class="subtitle">Same panel set as the teacher-first map — Overview, Systems, EdCity.ai, SMS, Resources, EdMarket — so the two can be read side by side, system by system.</p>
+<div class="bet-box">The teacher-first map goes deep on one relationship across four systems. This map goes deep on the eight relationships that make that one possible — governance, operations, and marketplace supply, each shown in the same systems it actually touches.</div>
 <table>
-<tr><th>Function</th><th>Actors</th><th>What it makes possible for the teacher</th></tr>
-<tr><td>Governance &amp; Oversight</td><td>EDB, Principal, data-governance gatekeeper</td><td>A safety claim the teacher can actually rely on, not just hear</td></tr>
-<tr><td>Platform Operations</td><td>Admin/IT, EdCity SMS team, EdCity content team</td><td>Records, subscriptions, and content that stay correct without the teacher noticing</td></tr>
-<tr><td>Marketplace &amp; Supply</td><td>EdMarket gatekeeper, Vendor</td><td>A tool library the teacher can browse with confidence</td></tr>
+<tr><th>Actor</th><th>EdCity.ai</th><th>SMS</th><th>Resources</th><th>EdMarket</th><th>Appears in</th></tr>
+<tr><td>Admin / IT</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="dot dot-t">○</td><td class="dot dot-p">◐</td><td class="count">4 / 4</td></tr>
+<tr><td>EDB</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="count">4 / 4</td></tr>
+<tr><td>Principal</td><td class="dot dot-t">○</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">3 / 4</td></tr>
+<tr><td>EdCity SMS team</td><td class="dot dot-t">—</td><td class="dot dot-p">◐</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="count">1 / 4</td></tr>
+<tr><td>EdCity content team</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="dot dot-t">—</td><td class="count">1 / 4</td></tr>
+<tr><td>EdMarket gatekeeper</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">1 / 4</td></tr>
+<tr><td>Data-governance gatekeeper</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">○</td><td class="count">1 / 4</td></tr>
+<tr><td>Vendor (e.g. Sayo/AAIL)</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-t">—</td><td class="dot dot-e">●</td><td class="count">1 / 4</td></tr>
 </table>
+<div class="legend">
+  <div class="k"><span class="dot-e">●</span> Evidenced</div>
+  <div class="k"><span class="dot-p">◐</span> Partly evidenced</div>
+  <div class="k"><span class="dot-t">○</span> Theorized, not researched</div>
+  <div class="k"><span class="dot-t">—</span> Not in this map</div>
+</div>
 <div class="note">
-Every panel below groups its actors by what they jointly enable, not by individual actor rings — the point of this map is depth on three functions, not breadth across eight actors treated separately.
+Admin/IT, EDB, and Principal touch all or nearly all four systems, mirroring how deep the teacher’s own footprint runs — but every one of their touchpoints is indirect or oversight-level, not daily use. The remaining four actors are single-system specialists, matching the same pattern seen among vendor/gatekeeper/content actors in the original ecosystem map.
 </div>
 </div>
 
-<div class="panel" id="governance">
-<div class="center"><span class="name">Governance &amp; Oversight</span><span class="desc">EDB, Principal, data-governance gatekeeper — the chain behind every safety claim</span></div>
+<div class="panel" id="systems">
+<h1>How the systems connect</h1>
+<p class="subtitle">Confirmed system architecture — unchanged from the teacher-first map, since this backbone doesn’t depend on who’s using it.</p>
+
+<div class="flow">
+<div class="sysbox hub"><div class="sn">DE Resources Platform</div><div class="sd">Entry point — kept current by the EdCity content team</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">provides access to</span></div>
+
+<div class="sysbox"><div class="sn">EdCity.ai</div><div class="sd">The system every enablement actor either provisions, reports through, or oversees indirectly</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">tool section provides access to</span></div>
+
+<div class="sysbox"><div class="sn">EdMarket</div><div class="sd">Where the marketplace-supply actors — gatekeeper and vendor — actually do their work</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">separately, maintained directly by Admin/IT and the EdCity SMS team</span></div>
+
+<div class="layerbox">
+<div class="layer"><div class="ln">Official records layer</div><div class="ld">→ one-directional: maintained by Admin/IT and the EdCity SMS team, feeds out to EdCity.ai. Not written back to.</div></div>
+<div class="layer"><div class="ln">Performance data layer</div><div class="ld">↔ bidirectional: written to and read by EdCity.ai as teachers and students use it — the SMS team keeps this layer reliable, but doesn’t generate its content.</div></div>
+</div>
+<div class="sysbox" style="margin-top:8px;"><div class="sn">School Management System</div><div class="sd">Two data layers above, maintained internally by the SMS team</div></div>
+</div>
+
+<div class="note">
+This is the same architecture shown in the teacher-first map — the enablement layer is what keeps it running, not a different system underneath it.
+</div>
+</div>
+
+<div class="panel" id="ai">
+<div class="center"><span class="name">EdCity.ai</span><span class="desc">Where enablement actors provision, report, and oversee — not where they work day to day</span></div>
 
 <div class="group">
-<div class="group-label">EDB</div>
+<div class="group-label"><span class="cluster">Platform Operations</span>Admin / IT</div>
 <ul class="cap">
-<li>Sets the mandate the whole platform aligns to</li>
-<li>Receives aggregate compliance reports across all four systems</li>
+<li>Provisions accounts, ensures PDPO compliance</li>
 </ul>
-<div class="e-tag">Theorized — indirect relationship, unconfirmed future data link, not a current system user</div>
+<div class="e-tag">Theorized</div>
 </div>
 
 <div class="group">
-<div class="group-label">Principal</div>
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>Principal</div>
 <ul class="cap">
-<li>Receives efficiency reporting via EdCity.ai — indirect, aggregate only</li>
-<li>Approves vendor-licensing budget in EdMarket — the one direct, hands-on touchpoint</li>
+<li>Receives efficiency reporting — indirect, not a frequent direct user</li>
 </ul>
-<div class="e-tag">Theorized, except budget approval — confirmed against the prototype build</div>
+<div class="e-tag">Theorized</div>
 </div>
 
 <div class="group">
-<div class="group-label">Data-governance gatekeeper</div>
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>EDB</div>
 <ul class="cap">
-<li>Decides official-data access for every vendor listed in EdMarket</li>
+<li>Sets the mandate; receives aggregate reports — indirect only</li>
 </ul>
-<div class="e-tag">Theorized — proposed process, not yet built or tested</div>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="sms">
+<div class="center"><span class="name">School Management System</span><span class="desc">Legacy, security-first, internally maintained — where two enablement actors do their core work</span></div>
+
+<div class="group core">
+<div class="group-label"><span class="cluster">Platform Operations — core</span>Admin / IT</div>
+<ul class="cap">
+<li>Manually maintains student/school records — official records layer only</li>
+</ul>
+<div class="e-tag">Partly evidenced — data-currency risk named, JTBD inferred</div>
+</div>
+
+<div class="group core">
+<div class="group-label"><span class="cluster">Platform Operations — core</span>EdCity SMS team</div>
+<ul class="cap">
+<li>Maintains the legacy system internally — both data layers</li>
+</ul>
+<div class="e-tag">Partly evidenced — ownership confirmed, actions inferred</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>Principal</div>
+<ul class="cap">
+<li>No direct access — compliance visibility comes via EdCity.ai, not from SMS directly</li>
+</ul>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>EDB</div>
+<ul class="cap">
+<li>Indirect only — unconfirmed future data link, not a current system user</li>
+</ul>
+<div class="e-tag">Theorized</div>
 </div>
 
 <div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
-<div class="panel" id="ops">
-<div class="center"><span class="name">Platform Operations</span><span class="desc">Admin/IT, EdCity SMS team, EdCity content team — the layer that keeps everything correct</span></div>
+<div class="panel" id="resources">
+<div class="center"><span class="name">DE Resources Platform</span><span class="desc">News, events, research — kept current by one enablement actor, distributed by another</span></div>
 
-<div class="group">
-<div class="group-label">Admin / IT</div>
+<div class="group core">
+<div class="group-label"><span class="cluster">Platform Operations — core</span>EdCity content team</div>
 <ul class="cap">
-<li>Maintains official student and school records — official-records layer only</li>
-<li>Approves and administers EdMarket subscriptions — approval auto-enables a tool for teachers, no separate setup</li>
-<li>Enforces that a subject-lead’s full-department subscription request has a completed evaluation first</li>
-</ul>
-<div class="e-tag">Partly evidenced — data-currency risk named; subscription flow confirmed against the prototype build (subscriptions.html)</div>
-</div>
-
-<div class="group">
-<div class="group-label">EdCity SMS team</div>
-<ul class="cap">
-<li>Maintains the legacy School Management System internally — both the official-records and performance-data layers</li>
-</ul>
-<div class="e-tag">Partly evidenced — ownership confirmed, day-to-day actions inferred</div>
-</div>
-
-<div class="group">
-<div class="group-label">EdCity content team</div>
-<ul class="cap">
-<li>Produces news, updates, and event listings on DE Resources Platform</li>
+<li>Produces news, updates, and event listings</li>
 </ul>
 <div class="e-tag">Theorized — role confirmed, usage-driven content strategy not yet evidenced</div>
 </div>
 
-<div class="legend"><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
-</div>
-
-<div class="panel" id="marketplace">
-<div class="center"><span class="name">Marketplace &amp; Supply</span><span class="desc">EdMarket gatekeeper, Vendor — what makes a listed tool worth trusting</span></div>
-
 <div class="group">
-<div class="group-label">EdMarket gatekeeper</div>
+<div class="group-label"><span class="cluster">Platform Operations</span>Admin / IT</div>
 <ul class="cap">
-<li>Vets and lists vendor tools in EdMarket before a teacher ever sees them</li>
+<li>Distributes event / update info to staff</li>
 </ul>
-<div class="e-tag">Theorized — role confirmed, vetting process itself not yet built or tested</div>
+<div class="e-tag">Theorized</div>
 </div>
 
 <div class="group">
-<div class="group-label">Vendor (e.g. Sayo/AAIL)</div>
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>EDB</div>
 <ul class="cap">
-<li>Submits tools to EdMarket, maintains an existing EdCity relationship</li>
-<li>Reaches schools through subject-lead influence and Admin/IT approval, not a direct sale</li>
+<li>Sets the mandate EdCity aligns its own content to — doesn’t use the platform directly</li>
 </ul>
-<div class="e-tag">Evidenced (Sayo vendor meeting)</div>
+<div class="e-tag">Theorized</div>
 </div>
 
-<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+<div class="legend"><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="edmarket">
+<div class="center"><span class="name">EdMarket</span><span class="desc">Vendor marketplace and relationships — the system where marketplace-supply actors do their core work</span></div>
+
+<div class="group core evidenced">
+<div class="group-label"><span class="cluster">Marketplace &amp; Supply — core</span>Vendor (e.g. Sayo/AAIL)</div>
+<ul class="cap">
+<li>Submits tools, maintains existing EdCity relationship</li>
+</ul>
+<div class="e-tag">Evidenced</div>
+</div>
+
+<div class="group core">
+<div class="group-label"><span class="cluster">Marketplace &amp; Supply — core</span>EdMarket gatekeeper</div>
+<ul class="cap">
+<li>Vets and lists vendor tools</li>
+</ul>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>Data-governance gatekeeper</div>
+<ul class="cap">
+<li>Decides official-data access for vendors</li>
+</ul>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Platform Operations</span>Admin / IT</div>
+<ul class="cap">
+<li>Approves and administers school-wide subscriptions to vetted tools — approval auto-enables a tool, no separate setup. Enforces a completed evaluation before a full-department request.</li>
+</ul>
+<div class="e-tag">Partly evidenced — confirmed against the prototype build (subscriptions.html)</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>Principal</div>
+<ul class="cap">
+<li>Approves budget for vendor licensing — the one direct touchpoint in this whole map</li>
+</ul>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="group">
+<div class="group-label"><span class="cluster">Governance &amp; Oversight</span>EDB</div>
+<ul class="cap">
+<li>Indirect only — Blueprint alignment, conflict-of-interest oversight, not a marketplace user</li>
+</ul>
+<div class="e-tag">Theorized</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
 </div>
 
 </main>
