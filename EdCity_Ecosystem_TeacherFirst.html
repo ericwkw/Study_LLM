@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity Ecosystem Maps — Teacher-First</title>
+<style>
+  :root{
+    --bg:#fafaf8; --card:#ffffff; --card2:#f4f2ec; --card3:#eceae2;
+    --border:#ddd9cc; --border-strong:#c9c4b2;
+    --text:#1a1a2e; --text2:#5c5c56; --text-muted:#8a8a80;
+    --accent:#008BD1; --accent-bg:#e6f4fb; --accent-border:#8fc9ea;
+    --green:#1a7a4c; --green-bg:#e6f5ec; --green-border:#8fd0ac;
+    --amber:#95630a; --amber-bg:#faefdb; --amber-border:#e8bd6f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  .layout{display:flex;min-height:100vh;}
+  nav{width:300px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  nav .brand{padding:0 24px 20px;font-size:20px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:12px;}
+  nav .brand span{display:block;font-size:15px;font-weight:400;color:var(--text-muted);margin-top:2px;}
+  nav button{display:block;width:100%;text-align:left;padding:12px 24px;line-height:1.4;background:none;border:none;font-size:17px;color:var(--text2);cursor:pointer;border-left:3px solid transparent;}
+  nav button:hover{background:var(--card2);}
+  nav button.active{background:var(--accent-bg);color:var(--accent);border-left-color:var(--accent);font-weight:600;}
+  main{flex:1;padding:36px 40px;max-width:920px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  h1{font-size:26px;font-weight:600;margin:0 0 4px;}
+  .subtitle{font-size:17px;color:var(--text2);margin:0 0 24px;}
+  .bet-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:16px 18px;margin-bottom:22px;font-size:16px;color:var(--text);line-height:1.6;}
+  .group{background:var(--card2);border-radius:16px;padding:18px 20px;margin-bottom:16px;}
+  .group-label{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:10px;}
+  .cap{list-style:none;margin:0;padding:0;}
+  .cap li{font-size:16px;color:var(--text2);margin-top:6px;padding-left:16px;position:relative;line-height:1.45;}
+  .cap li::before{content:"–";position:absolute;left:0;color:var(--border-strong);}
+  .e-tag{font-size:14px;margin-top:8px;color:var(--text-muted);}
+  .center{text-align:center;margin-bottom:14px;}
+  .center .name{font-size:20px;font-weight:600;color:var(--accent);}
+  .center .desc{font-size:16px;color:var(--text2);display:block;}
+  .legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;}
+  .legend .k{display:flex;align-items:center;gap:6px;font-size:16px;color:var(--text2);}
+  .legend .sw{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .legend .sw.evidenced{background:var(--green-bg);border:1px solid var(--green-border);}
+  .legend .sw.partial{background:var(--amber-bg);border:1px solid var(--amber-border);}
+  .legend .sw.theorized{background:var(--card);border:1px dashed var(--border-strong);}
+  .legend .sw.confirmed{background:var(--accent-bg);border:1px solid var(--accent-border);}
+  .conf{color:var(--accent);font-weight:600;}
+  table{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px;}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+  th{font-weight:600;color:var(--text2);font-size:15px;text-transform:uppercase;letter-spacing:0.02em;}
+  .dot-e{color:var(--green);font-weight:700;}
+  .dot-p{color:var(--amber);font-weight:700;}
+  .dot-t{color:var(--border-strong);}
+  .note{font-size:17px;color:var(--text2);line-height:1.6;margin-top:16px;background:var(--card2);padding:14px 16px;border-radius:10px;}
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;}
+  .sysbox{width:100%;max-width:560px;border-radius:12px;padding:16px 20px;text-align:center;background:var(--card);border:1px solid var(--border-strong);}
+  .sysbox.hub{background:var(--accent-bg);border-color:var(--accent-border);}
+  .sysbox .sn{font-size:20px;font-weight:600;color:var(--text);}
+  .sysbox.hub .sn{color:var(--accent);}
+  .sysbox .sd{font-size:16px;color:var(--text2);margin-top:2px;}
+  .connector{display:flex;flex-direction:column;align-items:center;padding:8px 0;}
+  .connector .arrow{font-size:22px;color:var(--border-strong);line-height:1;}
+  .connector .clabel{font-size:15px;color:var(--text2);background:var(--card2);padding:3px 10px;border-radius:20px;margin-top:2px;text-align:center;max-width:340px;}
+  .layerbox{width:100%;max-width:560px;border-radius:12px;padding:6px;background:var(--card2);border:1px solid var(--border-strong);}
+  .layer{background:var(--card);border-radius:8px;padding:10px 14px;margin:6px;}
+  .layer .ln{font-size:17px;font-weight:600;}
+  .layer .ld{font-size:15px;color:var(--text2);margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <div class="brand">EdCity ecosystem maps<span>Teacher-first, July 2026</span></div>
+  <button data-panel="overview" class="active">Teacher across the platform</button>
+  <button data-panel="systems">How the systems connect</button>
+  <button data-panel="ai">EdCity.ai</button>
+  <button data-panel="sms">School Management System</button>
+  <button data-panel="resources">DE Resources Platform</button>
+  <button data-panel="edmarket">EdMarket</button>
+</nav>
+<main>
+
+<div class="panel active" id="overview">
+<h1>Teacher across the platform</h1>
+<p class="subtitle">One relationship, mapped deep across every system it touches — the teacher and, where they act on the teacher’s behalf, the subject-lead.</p>
+<div class="bet-box">A teacher who trusts every one of these touchpoints builds a daily practice around EdCity. That’s the bet this map is built to test: depth across four systems for one relationship, not a thin layer spread across many.</div>
+<table>
+<tr><th>System</th><th>What the teacher does there</th><th>Evidence</th></tr>
+<tr><td>EdCity.ai</td><td>Prep, assignment design, marking, class-wide insight, cross-subject collaboration, tool discovery — the daily-use core</td><td class="dot-p">◐ partial</td></tr>
+<tr><td>DE Resources Platform</td><td>Consumes curriculum-aligned prep content; entry point into EdCity.ai and, through it, EdMarket</td><td class="dot-p">◐ partial</td></tr>
+<tr><td>EdMarket</td><td>Browses and requests vetted specialist tools, one click from inside EdCity.ai</td><td class="dot-t">○ theorized</td></tr>
+<tr><td>School Management System</td><td>No direct access — roster and performance data flow through EdCity.ai instead</td><td class="dot-t">○ theorized</td></tr>
+</table>
+<div class="legend">
+  <div class="k"><span class="dot-e">●</span> Evidenced</div>
+  <div class="k"><span class="dot-p">◐</span> Partly evidenced</div>
+  <div class="k"><span class="dot-t">○</span> Theorized, not researched</div>
+</div>
+<div class="note">
+The teacher touches all four systems, directly or through EdCity.ai as the front door. Building this relationship deep and well, one system at a time, is the whole premise of this map.
+</div>
+</div>
+
+<div class="panel" id="systems">
+<h1>How the systems connect for the teacher</h1>
+<p class="subtitle">Confirmed system architecture — the backbone every teacher-facing capability in this map is built on.</p>
+
+<div class="flow">
+<div class="sysbox hub"><div class="sn">DE Resources Platform</div><div class="sd">Entry point — where the teacher’s day with EdCity starts</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">provides access to</span></div>
+
+<div class="sysbox"><div class="sn">EdCity.ai</div><div class="sd">The teacher’s daily-use core — prep, marking, insight, communication</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">tool section provides access to</span></div>
+
+<div class="sysbox"><div class="sn">EdMarket</div><div class="sd">Reached from inside EdCity.ai — the teacher never has to leave the tool they trust to find a new one</div></div>
+
+<div class="connector"><span class="arrow">↓</span><span class="clabel">separately, feeds and is fed by the teacher’s own activity in EdCity.ai</span></div>
+
+<div class="layerbox">
+<div class="layer"><div class="ln">Official records layer</div><div class="ld">→ one-directional: gives the teacher their class roster. Not written back to.</div></div>
+<div class="layer"><div class="ln">Performance data layer</div><div class="ld">↔ bidirectional: written to as the teacher marks and the student completes work; read back out to power class-wide insight.</div></div>
+</div>
+<div class="sysbox" style="margin-top:8px;"><div class="sn">School Management System</div><div class="sd">No direct teacher access — both layers reach the teacher through EdCity.ai</div></div>
+</div>
+
+<div class="note">
+Every teacher-facing capability in this map depends on this chain holding: DE Resources Platform gets the teacher in the door, EdCity.ai is where the actual work happens, and EdMarket and School Management System both reach the teacher through it rather than directly.
+</div>
+</div>
+
+<div class="panel" id="ai">
+<div class="center"><span class="name">EdCity.ai</span><span class="desc">The teacher’s daily-use core</span></div>
+
+<div class="group">
+<div class="group-label">Prep &amp; materials</div>
+<ul class="cap">
+<li>Prepares for class, generates and validates teaching materials against the official curriculum framework</li>
+<li>Collaborates cross-subject — invites colleagues from other subjects to co-review materials</li>
+</ul>
+</div>
+
+<div class="group">
+<div class="group-label">Assignments &amp; marking</div>
+<ul class="cap">
+<li>Generates assignments using a mechanism that encourages students to think before receiving AI help</li>
+<li>Marks assignments with the same thinking-first approach, including open-ended written work</li>
+</ul>
+</div>
+
+<div class="group">
+<div class="group-label">Groups &amp; communication</div>
+<ul class="cap">
+<li>Creates and manages teaching groups; assigns materials by group</li>
+<li>Drafts admin / home-school communications</li>
+<li>Shares resources; browses and uses partner (vendor) tools via the tool library</li>
+</ul>
+</div>
+
+<div class="group">
+<div class="group-label">Insight</div>
+<ul class="cap">
+<li>Views class-level skill profile by learning tier (stretch / core / support), including causal before-after insight</li>
+</ul>
+</div>
+
+<div class="group">
+<div class="group-label">Subject-lead — acting on the teacher’s behalf</div>
+<ul class="cap">
+<li>Reviews marking calibration and sets department-wide policy</li>
+</ul>
+</div>
+
+<div class="e-tag">Marking and skill-profile capabilities evidenced for secondary teachers (Ms. Chan; Sayo vendor meeting); same footprint applied to primary by inference, not yet field-evidenced there. Rest of the list confirmed against the prototype build for both.</div>
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="sms">
+<div class="center"><span class="name">School Management System</span><span class="desc">Legacy, security-first, internally maintained. Two distinct data layers: official records (one-way out) and student performance data (two-way, fed by EdCity.ai) — see How the systems connect.</span></div>
+
+<div class="group">
+<div class="group-label">The teacher’s relationship</div>
+<ul class="cap">
+<li>No direct access — receives roster and record data via EdCity.ai, not from SMS directly</li>
+<li>Every assignment marked in EdCity.ai writes back into the performance-data layer, which is what powers the teacher’s own class-wide insight view</li>
+</ul>
+<div class="e-tag">Partly evidenced — data-currency and system-ownership confirmed; the teacher-facing consequence (indirect access only) inferred from the confirmed architecture</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw confirmed"></span>Confirmed system architecture</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="resources">
+<div class="center"><span class="name">DE Resources Platform</span><span class="desc">The teacher’s entry point — where the day starts, and the door into EdCity.ai and, through it, EdMarket.</span></div>
+
+<div class="group">
+<div class="group-label">The teacher’s relationship</div>
+<ul class="cap">
+<li>Consumes eLAPF, EdAcademy, OQB/DES, STAR for prep</li>
+<li>Accesses EdCity.ai, and through it EdMarket, from within this platform</li>
+</ul>
+<div class="e-tag">Content-consumption partly evidenced (general prep-tool use); the EdCity.ai/EdMarket access path is <span class="conf">confirmed system architecture, not theorized</span></div>
+</div>
+
+<div class="group">
+<div class="group-label">Subject-lead — acting on the teacher’s behalf</div>
+<ul class="cap">
+<li>Curates and vets content for the department, so what reaches individual teachers is already trustworthy</li>
+</ul>
+</div>
+
+<div class="legend"><div class="k"><span class="sw confirmed"></span>Confirmed system architecture</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+<div class="panel" id="edmarket">
+<div class="center"><span class="name">EdMarket</span><span class="desc">Vetted specialist tools, one click from inside EdCity.ai</span></div>
+
+<div class="group">
+<div class="group-label">The teacher’s relationship</div>
+<ul class="cap">
+<li>Browses and requests marketplace tools, already vetted before listing</li>
+</ul>
+<div class="e-tag">Evidenced</div>
+</div>
+
+<div class="group">
+<div class="group-label">Subject-lead — acting on the teacher’s behalf</div>
+<ul class="cap">
+<li>Influences which vendor tools actually get purchased for the department</li>
+</ul>
+<div class="e-tag">Evidenced (Sayo vendor meeting)</div>
+</div>
+
+<div class="group">
+<div class="group-label">The one gap in this chain</div>
+<ul class="cap">
+<li>No calibration-check mechanism exists yet to verify marking consistency across teachers once a tool is adopted</li>
+</ul>
+<div class="e-tag">Theorized — named gap, not yet designed</div>
+</div>
+
+<div class="legend"><div class="k"><span class="sw evidenced"></span>Evidenced</div><div class="k"><span class="sw partial"></span>Partly evidenced</div><div class="k"><span class="sw theorized"></span>Theorized, not researched</div></div>
+</div>
+
+</main>
+</div>
+<script>
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+    location.hash = btn.dataset.panel;
+  });
+});
+if(location.hash){
+  const id = location.hash.slice(1);
+  const btn = document.querySelector('nav button[data-panel="'+id+'"]');
+  if(btn) btn.click();
+}
+</script>
+</body>
+</html>
