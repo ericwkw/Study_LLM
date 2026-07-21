@@ -27,6 +27,7 @@ const PAGES = [
     ['agents.html','Apps／代理庫',''],
     ['marking.html','AI 批改（故事 1）','y'],
     ['groups.html','教學分組','y'],
+    ['trial-invites.html','試用邀請（供應商發起）','r'],
     ['materials.html','教材準備（三大用例）','y'],
     ['material-library.html','教材庫（我的教材）','y'],
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],

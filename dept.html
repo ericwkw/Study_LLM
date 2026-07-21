@@ -148,7 +148,8 @@
 
   <div class="trial-section">
     <h2>另一個崗位：工具試用評估</h2>
-    <div class="sub" style="margin:0;">全科訂閱須先由你實測評估，才能交資訊科技統籌批出——個別教師自行試用毋須經過此步。若評估不通過，會記錄原因，供應商在冷靜期內不能就同一工具再次申請全科評估。</div>
+    <div class="sub" style="margin:0;">全科訂閱須先由你實測評估，才能交資訊科技統籌批出；個別教師自行試用毋須經過此步。若評估不通過，會記錄原因，供應商在冷靜期內不能就同一工具再次申請全科評估。</div>
+    <div class="sub" style="margin:6px 0 0;font-size:.72rem;color:var(--ink-3);">邀約試用的接洽（供應商聯絡、約時間）維持在系統之外進行，如電郵或電話；下方的評估紀錄由你接洽後自行建立。</div>
     <div id="trialList"></div>
   </div>
 
@@ -174,7 +175,7 @@ function renderTrials(){
               <button class="btn ghost" onclick="toast('原型示範：查看供應商合規資料')">查看資料</button>`;
     } else if(t.status==='progress'){
       stateChip = `<span class="state-chip progress">🧪 實測評估中 · 第 3/7 天</span>`;
-      body = `<p>正以真實學生作文檢驗回饋質素。完成一週後，請在下方記錄評估結果——通過會交資訊科技統籌批出全科訂閱，不通過須說明原因，並進入冷靜期。</p>`;
+      body = `<p>正以真實學生作文檢驗回饋質素。完成一週後，請在下方記錄評估結果：通過會交資訊科技統籌批出全科訂閱，不通過須說明原因，並進入冷靜期。</p>`;
       btns = `<button class="btn" onclick="passEval('${t.id}')">✓ 通過，建議全科採用</button>
               <button class="btn ghost" onclick="declineEval('${t.id}')">✕ 不通過</button>`;
     } else if(t.status==='passed'){
