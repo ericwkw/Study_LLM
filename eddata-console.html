@@ -464,7 +464,7 @@ function reconfirmScope(vendorId, kind, id){
   const v = VENDORS.find(x=>x.id===vendorId);
   const entry = kind==='grant' ? v.grants.find(g=>g.since===id) : v.pending.find(r=>r.id===id);
   if(!entry || !entry.groupId) return;
-  const current = entry.groupId==='__whole_class__' ? wholeClassMembers().map(s=>s.n) : groupMembers(entry.groupId).map(s=>s.n);
+  const current = entry.groupId==='__whole_class__' ? wholeClassMembers(entry.classId).map(s=>s.n) : groupMembers(entry.classId, entry.groupId).map(s=>s.n);
   entry.memberSnapshot = current;
   entry.headcount = current.length;
   AUDIT.unshift({ic:'✓', text:'馮 Sir 已知悉'+v.name+'（'+entry.group+'）的成員異動，並更新記錄範圍至 '+current.length+' 人', time:'2026-07-21'});

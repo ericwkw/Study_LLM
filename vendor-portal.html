@@ -179,6 +179,7 @@
       <div class="sub" style="margin:0 0 14px;">你必須已經和該老師接觸過（如電郵、電話、學校活動）才能發出邀請——這不是繞過學校的資料查詢，而是為既有接洽補一個正式起點。老師確認後，邀請會交由資訊科技統籌核實試用時限與資料層級，才會正式開始；試用固定為 Tier 1 · 基本資料，最長 14 天。</div>
       <div class="invite-form">
         <label>老師姓名<input type="text" id="inv-teacher" value="陳老師"></label>
+        <label>班別<select id="inv-class" onchange="populateGroupSelect()"></select></label>
         <label>組別範圍<select id="inv-group"></select></label>
         <label>試用工具／方案名稱<input type="text" id="inv-tool" placeholder="例如：寫作回饋工具 · 進階版試用"></label>
         <button class="btn" onclick="sendInvite()">📨 發出試用邀請</button>
@@ -218,10 +219,15 @@ function resubmit(btn){btn.textContent='已上傳 · 待覆核 ✓';btn.disabled
 const MY_VENDOR_ID = 'zhixie';
 const MY_VENDOR_NAME = '智寫科技';
 
+function populateClassSelect(){
+  const sel = document.getElementById('inv-class');
+  sel.innerHTML = CLASS_LIST.map(c=>`<option value="${c.id}">${c.className}（${c.subjectLabel}）</option>`).join('');
+}
 function populateGroupSelect(){
+  const classId = document.getElementById('inv-class').value;
   const sel = document.getElementById('inv-group');
-  sel.innerHTML = ROSTER.groups.map(g=>`<option value="${g.id}">${g.name}（${groupHeadcount(g.id)} 人）· ${ROSTER.className}</option>`).join('')
-    + `<option value="__whole_class__">全班 · ${ROSTER.className}</option>`;
+  sel.innerHTML = classGroups(classId).map(g=>`<option value="${g.id}">${g.name}（${groupHeadcount(classId, g.id)} 人）· ${CLASSES[classId].className}</option>`).join('')
+    + `<option value="__whole_class__">全班 · ${CLASSES[classId].className}</option>`;
 }
 
 function inviteStatusLabel(s){
@@ -250,16 +256,17 @@ function showTab(name){
 
 function sendInvite(){
   const teacher = document.getElementById('inv-teacher').value.trim() || '陳老師';
+  const classId = document.getElementById('inv-class').value;
   const groupId = document.getElementById('inv-group').value;
   const tool = document.getElementById('inv-tool').value.trim() || MY_VENDOR_NAME+' · 試用';
-  const groupText = groupLabel(groupId);
+  const groupText = groupLabel(classId, groupId);
   const block = document.getElementById('inviteBlock');
 
-  const existing = TRIALS.filter(t=>t.vendorId===MY_VENDOR_ID && t.group===groupText);
+  const existing = TRIALS.filter(t=>t.vendorId===MY_VENDOR_ID && t.classId===classId && t.groupId===groupId);
   const inFlight = existing.find(t=>['awaiting_teacher','pending_it','active'].includes(t.status));
   if(inFlight){
-    block.innerHTML = `<div class="invite-block-note">🚫 此組別已有一個進行中的邀請（${inviteStatusLabel(inFlight.status)}），請待老師或資訊科技統籌回覆後再發出新邀請。</div>`;
-    toast('此組別已有進行中的邀請');
+    block.innerHTML = `<div class="invite-block-note">🚫 此班別／組別已有一個進行中的邀請（${inviteStatusLabel(inFlight.status)}），請待老師或資訊科技統籌回覆後再發出新邀請。</div>`;
+    toast('此班別／組別已有進行中的邀請');
     return;
   }
   const cooling = existing.find(t=>t.status==='declined' && t.cooldownUntil);
@@ -270,9 +277,9 @@ function sendInvite(){
   }
   block.innerHTML = '';
 
-  const headcount = groupId==='__whole_class__' ? wholeClassMembers().length : groupHeadcount(groupId);
+  const headcount = groupId==='__whole_class__' ? wholeClassMembers(classId).length : groupHeadcount(classId, groupId);
   TRIALS.push({
-    id:'v-'+Date.now(), vendor:MY_VENDOR_NAME, vendorId:MY_VENDOR_ID, teacher, group:groupText, headcount,
+    id:'v-'+Date.now(), vendor:MY_VENDOR_NAME, vendorId:MY_VENDOR_ID, teacher, classId, groupId, group:groupText, headcount,
     tool, status:'awaiting_teacher', expiresAt:null, declineReason:null, cooldownUntil:null, declinedBy:null,
   });
   renderInvites();
@@ -282,6 +289,7 @@ function sendInvite(){
 
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+populateClassSelect();
 populateGroupSelect();
 renderInvites();
 </script>

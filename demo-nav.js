@@ -27,10 +27,10 @@ const PAGES = [
     ['agents.html','Apps／代理庫',''],
     ['marking.html','AI 批改（故事 1）','y'],
     ['materials.html','教材準備（三大用例）','y'],
+    ['material-library.html','教材庫（我的教材）','y'],
     ['groups.html','教學分組','y'],
     ['group-access-requests.html','學生工具申請（含全班／分組、成員異動提示）','y'],
     ['trial-invites.html','試用邀請（供應商發起）','r'],
-    ['material-library.html','教材庫（我的教材）','y'],
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],
   ]},
   {group:'📈 科主任（李主任）', items:[
@@ -42,7 +42,7 @@ const PAGES = [
     ['eddata-console.html','EdData 資料存取審批','r'],
   ]},
   {group:'📋 校務處（何主任）', items:[
-    ['roster.html','名冊完整度檢視（故事 2）','y'],
+    ['roster.html','校務處控制台（班級名冊／教師名冊／任教編配／學生編班）','y'],
   ]},
   {group:'🎒 學生／家長（Karen）', items:[
     ['student.html','學生／家長入口（故事 8）','r'],

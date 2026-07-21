@@ -34,8 +34,16 @@
   .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   h1{font-size:1.5rem;font-weight:800;}
   .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
-  .class-pick{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;}
-  .class-pick b{color:var(--ec-blue-dark);}
+  .class-dd{position:relative;}
+  .class-btn{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.82rem;cursor:pointer;font-family:inherit;color:var(--ink);}
+  .class-btn b{color:var(--ec-blue-dark);}
+  .class-btn .car{font-size:.7rem;color:var(--ink-3);margin-left:2px;}
+  .class-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(20,30,40,.14);width:250px;padding:6px;display:none;z-index:40;}
+  .class-menu.show{display:block;}
+  .class-opt{display:flex;flex-direction:column;gap:2px;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:.8rem;color:var(--ink-2);}
+  .class-opt:hover{background:#f2f6f9;}
+  .class-opt.on{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .class-opt small{font-size:.68rem;color:var(--ink-3);font-weight:400;}
 
   .ownership{
     margin:14px 0 20px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
@@ -112,13 +120,13 @@
       <a href="agents.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>Apps／代理</a>
       <a href="marking.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>AI 批改</a>
       <a href="materials.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>教材準備</a>
+      <a href="material-library.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M4 8v10a2 2 0 002 2h12a2 2 0 002-2V8M10 12h4"/></svg>教材庫</a>
     </div>
     <div class="nav-group" style="margin-top:18px;">
       <h6>課堂管理</h6>
       <a href="groups.html" class="active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>教學分組</a>
       <a href="group-access-requests.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 100-8 4 4 0 000 8zM3 21c0-3.87 4-7 9-7s9 3.13 9 7"/></svg>學生工具申請</a>
       <a href="trial-invites.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a2 2 0 002 2h12a2 2 0 002-2l-5-12V2M9 2h6"/></svg>試用邀請</a>
-      <a href="material-library.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M4 8v10a2 2 0 002 2h12a2 2 0 002-2V8M10 12h4"/></svg>教材庫</a>
       <a href="insights.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"/></svg>班級學習面貌</a>
     </div>
   </nav>
@@ -136,7 +144,10 @@
       <h1>教學分組</h1>
       <div class="sub">把班級分成小組，按需要指派不同的練習與教材。名單直接取自校管系統，毋須重新輸入。</div>
     </div>
-    <div class="class-pick">📋 <b>中二乙班</b> · 中文 · 32 人</div>
+    <div class="class-dd">
+      <button class="class-btn" id="classBtn" onclick="toggleClassMenu()">📋 <b id="classLabel"></b><span id="classMeta"></span><span class="car">▾</span></button>
+      <div class="class-menu" id="classMenu"></div>
+    </div>
   </div>
 
   <div class="ownership">🔒 分組只有你看得到——行政系統與科組統計都不會採用。學生轉班後會自動退出，毋須手動清理。</div>
@@ -162,12 +173,35 @@
 <div class="toast" id="toast"></div>
 <script src="vendor-data.js"></script>
 <script>
-/* GROUPS/students used to live only here; they're now ROSTER.groups/ROSTER.students in
- * vendor-data.js, shared with group-access-requests.html and eddata-console.html so a
- * tool request always compares against the same membership this board shows. */
+/* GROUPS/students used to live only here; they're now CLASSES[classId].groups/.students
+ * in vendor-data.js, shared with group-access-requests.html, trial-invites.html, and
+ * eddata-console.html so a tool request always compares against the same membership
+ * this board shows. A teacher can teach more than one class (same subject) — see
+ * activeClassId below — so every lookup is keyed by class, not just group. */
+let activeClassId = '2b';
+
+function renderClassSwitcher(){
+  const c = CLASSES[activeClassId];
+  document.getElementById('classLabel').textContent = c.className;
+  document.getElementById('classMeta').textContent = '· '+c.subjectLabel;
+  document.getElementById('classMenu').innerHTML = CLASS_LIST.map(cl=>
+    `<div class="class-opt ${cl.id===activeClassId?'on':''}" data-c="${cl.id}" onclick="switchClass('${cl.id}')">${cl.className}<small>${cl.subjectLabel}</small></div>`
+  ).join('');
+}
+function toggleClassMenu(){ document.getElementById('classMenu').classList.toggle('show'); }
+function switchClass(classId){
+  activeClassId = classId;
+  document.getElementById('classMenu').classList.remove('show');
+  renderClassSwitcher();
+  render();
+  toast('已切換至 '+CLASSES[classId].className);
+}
+document.addEventListener('click', e=>{ if(!e.target.closest('.class-dd')) document.getElementById('classMenu').classList.remove('show'); });
+
 function render(){
-  document.getElementById('board').innerHTML = ROSTER.groups.map((grp)=>{
-    const members = ROSTER.students.filter(s=>s.g===grp.id);
+  const c = CLASSES[activeClassId];
+  document.getElementById('board').innerHTML = c.groups.map((grp)=>{
+    const members = c.students.filter(s=>s.g===grp.id);
     const active = members.filter(s=>!s.left).length;
     return `<div class="col" data-gi="${grp.id}" ondragover="dragOver(event)" ondragleave="this.classList.remove('dragover')" ondrop="dropStu(event,'${grp.id}')">
       <div class="c-head"><span class="dot" style="background:${grp.color}"></span><b>${grp.name}</b><span class="n">${active} 人</span></div>
@@ -196,24 +230,27 @@ function dropStu(ev,gid){
   ev.currentTarget.classList.remove('dragover');
   const name=ev.dataTransfer.getData('text/plain')||dragName;
   if(!name) return;
-  const s=ROSTER.students.find(x=>x.n===name);
+  const c = CLASSES[activeClassId];
+  const s=c.students.find(x=>x.n===name);
   if(!s||s.left||s.g===gid) return;
   s.g=gid;
   render();
-  const grp = ROSTER.groups.find(g=>g.id===gid);
+  const grp = c.groups.find(g=>g.id===gid);
   toast(name+' → '+grp.name);
   dragName=null;
 }
 function moveStu(name){
-  const s = ROSTER.students.find(x=>x.n===name);
-  const idx = ROSTER.groups.findIndex(g=>g.id===s.g);
-  const next = ROSTER.groups[(idx+1) % ROSTER.groups.length];
+  const c = CLASSES[activeClassId];
+  const s = c.students.find(x=>x.n===name);
+  const idx = c.groups.findIndex(g=>g.id===s.g);
+  const next = c.groups[(idx+1) % c.groups.length];
   s.g = next.id;
   render();
   toast(name + ' → ' + next.name);
 }
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
+renderClassSwitcher();
 render();
 </script>
 <script src="usage-modal.js"></script>

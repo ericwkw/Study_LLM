@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>學校管理系統（SMS）— 故事 2：名冊維護（示意）</title>
+<title>學校管理系統（SMS）— 校務處控制台（示意）</title>
 <style>
   :root{
     --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;
@@ -65,13 +65,28 @@
     margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;
     font-size:.78rem;color:var(--ink-2);line-height:1.8;
   }
-  .downstream b{color:var(--ink);display:block;margin-bottom:4px;font-size:.84rem;}
-  .downstream .flow{font-size:.76rem;color:var(--ink-3);}
-  .downstream .flow em{font-style:normal;color:var(--ec-blue-dark);font-weight:700;}
+  .downstream b{color:var(--ink);display:block;margin-bottom:8px;font-size:.84rem;}
+  .downstream .why{font-size:.78rem;color:var(--ink-2);line-height:1.6;margin-bottom:10px;}
+  .downstream .why-caveat{font-size:.74rem;color:#8a5a00;line-height:1.6;margin-top:12px;background:#fdf6ec;border:1px solid #f3e3c3;border-radius:8px;padding:9px 12px;}
+  .sync-steps{display:flex;flex-direction:column;gap:6px;}
+  .sync-step{display:flex;align-items:flex-start;gap:9px;font-size:.78rem;color:var(--ink-2);line-height:1.5;}
+  .sync-step .num{flex-shrink:0;width:18px;height:18px;border-radius:50%;background:#e6f4fb;color:var(--ec-blue-dark);
+    font-size:.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .sync-step b{display:inline;color:var(--ec-blue-dark);font-weight:700;margin:0;font-size:inherit;}
 
   .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
   .toast.show{opacity:.94;}
   footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+  .tab-btn{border:none;background:none;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--ink-3);
+    padding:10px 4px;margin-right:22px;cursor:pointer;border-bottom:2px solid transparent;}
+  .tab-btn.active{color:var(--ec-blue-dark);border-bottom-color:var(--ec-blue);}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+  .scope-note{font-size:.72rem;color:var(--ink-3);margin:10px 0 0;line-height:1.6;max-width:52em;}
+  .reassign-row{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:8px;padding:12px 14px;margin-top:10px;font-size:.79rem;}
+  .reassign-row select{font-family:inherit;font-size:.78rem;border:1px solid var(--line);border-radius:6px;padding:6px 9px;margin:0 8px;}
 </style>
 </head>
 <body>
@@ -79,7 +94,7 @@
 <aside class="sys-sidebar">
   <div class="sh-label">校務處（何主任）</div>
   <nav class="sys-nav">
-    <a href="roster.html" class="active">📋 班級名冊</a>
+    <a href="roster.html" class="active">📋 校務處控制台</a>
   </nav>
   <div class="sys-sidebar-foot">
     <a href="index.html">← 返回 EdCity.ai</a>
@@ -100,40 +115,122 @@
     <span class="ribbon prop">🟡 完整度檢視畫面為提案，未建置</span>
   </div>
 
-  <h1>班級名冊 · 完整度檢視</h1>
-  <div class="sub">每學期核對一次：哪些班的名冊完整、最新、標註齊全。這個畫面樸實無華——但教學分組、自動入檔、學生入口，全部建立在它之上。</div>
-
-  <div class="foundation">🏗 教學分組、批改入檔、學生入口都直接讀取這裏的名冊，不會另存副本。更新一次，全平台自動同步。</div>
-
-  <table>
-    <thead><tr><th>班別</th><th>人數</th><th>最後更新</th><th>資料完整度</th><th>狀態</th><th></th></tr></thead>
-    <tbody>
-      <tr><td><b>中一甲</b></td><td>30</td><td>2026-07-02</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
-      <tr><td><b>中二乙</b></td><td>32</td><td>2026-07-08</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
-      <tr id="rowC"><td><b>中三丙</b></td><td>32 → 33</td><td>2026-06-30</td><td>97%</td><td><span class="st warn" id="stC">⚠ 1 個轉班待處理</span></td><td><button class="act" id="btnC" onclick="handleTransfer()">處理轉班</button></td></tr>
-      <tr><td><b>中三丁</b></td><td>29</td><td>2026-07-05</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
-    </tbody>
-  </table>
-
-  <div class="pending" id="pendingCard">
-    <h3>⚠ 待處理：學生轉班</h3>
-    <p><b>簡愛琳（Karen）</b>由中二乙班轉入中三丙班，生效日期 2026-07-06。校務處確認後，名冊即時更新——她會自動退出原班教師的教學分組，學生入口的班別資料亦隨即更正。</p>
-    <button class="act" onclick="handleTransfer()">確認轉班並更新名冊</button>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="roster" onclick="showTab('roster')">班級名冊</button>
+    <button class="tab-btn" data-tab="teachers" onclick="showTab('teachers')">教師名冊</button>
+    <button class="tab-btn" data-tab="assign" onclick="showTab('assign')">任教編配</button>
+    <button class="tab-btn" data-tab="students" onclick="showTab('students')">學生編班</button>
   </div>
 
-  <div class="downstream">
-    <b>下游同步（自動，毋須任何人手動跟進）</b>
-    <span class="flow">名冊更新 → <em>教學分組</em>：Karen 自動退出陳老師的分組 → <em>批改入檔</em>：成績記入新班 → <em>學生入口</em>：班別即時更正 → <em>科組統計</em>：下次匯總自動反映</span>
-  </div>
+  <section class="tab-pane active" data-pane="roster">
+    <h1>班級名冊 · 完整度檢視</h1>
+    <div class="sub">每學期核對一次：哪些班的名冊完整、最新、標註齊全。這個畫面樸實無華——但教學分組、自動入檔、學生入口，全部建立在它之上。</div>
+
+    <div class="foundation">🏗 教學分組、批改入檔、學生入口都直接讀取這裏的名冊，不會另存副本。更新一次，全平台自動同步。</div>
+
+    <table>
+      <thead><tr><th>班別</th><th>人數</th><th>最後更新</th><th>資料完整度</th><th>狀態</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><b>中一甲</b></td><td>30</td><td>2026-07-02</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+        <tr><td><b>中二乙</b></td><td>32</td><td>2026-07-08</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+        <tr id="rowC"><td><b>中三丙</b></td><td>32 → 33</td><td>2026-06-30</td><td>97%</td><td><span class="st warn" id="stC">⚠ 1 個轉班待處理</span></td><td><button class="act" id="btnC" onclick="handleTransfer()">處理轉班</button></td></tr>
+        <tr><td><b>中三丁</b></td><td>29</td><td>2026-07-05</td><td>100%</td><td><span class="st ok">✓ 完整</span></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="pending" id="pendingCard">
+      <h3>⚠ 待處理：學生轉班</h3>
+      <p><b>簡愛琳（Karen）</b>由中二乙班轉入中三丙班，生效日期 2026-07-06。校務處確認後，名冊即時更新——她會自動退出原班教師的教學分組，學生入口的班別資料亦隨即更正。</p>
+      <button class="act" onclick="handleTransfer()">確認轉班並更新名冊</button>
+    </div>
+
+    <div class="downstream">
+      <b>下游同步（自動，毋須任何人手動跟進）</b>
+      <p class="why">你剛才的確認，只需要在這裡按一次——不用再跑去教學分組、批改系統、學生入口逐一通知或更新，以下畫面會自動反映：</p>
+      <div class="sync-steps">
+        <div class="sync-step"><span class="num">1</span><span><b>教學分組</b> — 陳老師打開這個畫面時，Karen 已經不在她的組別名單裡，不會誤發教材或工具給她</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>批改入檔</b> — Karen 之後交的功課，成績會自動計入中三丙班，不會誤記在原班</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>學生入口</b> — Karen 自己登入時，看到的班別已經是中三丙班</span></div>
+        <div class="sync-step"><span class="num">4</span><span><b>科組統計</b> — 科主任下次查看科組數據時，Karen 的表現已經計入新班別，不會重複或遺漏</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-pane" data-pane="teachers">
+    <h1>教師名冊</h1>
+    <div class="sub">教師的在職狀態、所屬科組與聯絡方式，由校務處在此維護——任教編配、供應商邀請等畫面應信任這裡的紀錄，而不是各自假設「這個名字仍然在職」。</div>
+
+    <div class="foundation">🏗 只有<b>在職中</b>的教師會在「任教編配」的重新編配選單中出現；請假或已離職的教師不能被指派新的班別。</div>
+
+    <table>
+      <thead><tr><th>教師</th><th>所屬科組</th><th>聯絡方式</th><th>狀態</th><th></th></tr></thead>
+      <tbody id="teacherTbody"></tbody>
+    </table>
+
+    <div class="scope-note">⚠️ 狀態變更會即時影響本頁「任教編配」分頁的重新編配選單（本頁開啟期間有效）；此原型沒有跨頁面的資料儲存，離開此頁後不會保留。</div>
+  </section>
+
+  <section class="tab-pane" data-pane="assign">
+    <h1>任教編配</h1>
+    <div class="sub">哪位老師任教哪一班、哪一科，由校務處在此編配——教學分組、學生工具申請、試用邀請等教師畫面看到的班別，源頭都在這裡，不是各自另外設定。</div>
+
+    <div class="foundation">🏗 EdData 負責保存學生與教師的正式紀錄；但紀錄「怎樣組織」——即誰教哪一班——是校管系統（SMS）的職責，不屬於 EdData。</div>
+
+    <table>
+      <thead><tr><th>老師</th><th>班別</th><th>科目</th><th>學年</th><th></th></tr></thead>
+      <tbody id="assignTbody"></tbody>
+    </table>
+
+    <div id="reassignBox"></div>
+
+    <div class="downstream" style="margin-top:20px;">
+      <b>編配之後，理應發生的事（構想中，此原型尚未真正接通）</b>
+      <p class="why">目的：校務處只需要在這裡改一次，新舊老師的教學畫面就應該自動反映，不用另外通知任何人——就像轉班一樣。以下是應該出現的效果：</p>
+      <div class="sync-steps">
+        <div class="sync-step"><span class="num">1</span><span><b>新老師的教學分組</b> — 一登入就看到這個班，不用自己去申請或設定</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>新老師的學生工具申請／試用邀請</b> — 原本卡在舊老師名下的待處理項目，自動轉交給她</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>原本老師的畫面</b> — 這個班從她的畫面消失，避免她誤以為自己還要負責</span></div>
+      </div>
+      <p class="why-caveat">⚠️ 但目前按「確認編配」只會更新上面這個表格，不會真的觸發以上三件事——要做到這樣，需要教學分組等畫面知道「現在登入的是誰」，這個原型還沒有這個機制。</p>
+    </div>
+  </section>
+
+  <section class="tab-pane" data-pane="students">
+    <h1>學生編班</h1>
+    <div class="sub">哪位學生屬於哪一班，同樣由校務處在此編配——這與「教學分組」不同：教學分組是老師按教學需要自行劃分的小組，只有老師自己看到；學生編班是正式的班別歸屬，教學分組、批改入檔、學生入口都跟著它走。</div>
+
+    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。</div>
+
+    <table>
+      <thead><tr><th>學生</th><th>班別</th><th>狀態</th><th></th></tr></thead>
+      <tbody id="studentTbody"></tbody>
+    </table>
+
+    <div id="classTransferBox"></div>
+
+    <div class="scope-note" id="studentScopeNote"></div>
+
+    <div class="downstream" style="margin-top:20px;">
+      <b>轉班之後，理應發生的事</b>
+      <p class="why">目的：校務處只需要在這裡轉一次班，不用另外通知教學分組、批改系統、學生入口——這些畫面應該自動跟著更新：</p>
+      <div class="sync-steps">
+        <div class="sync-step"><span class="num">1</span><span><b>教學分組</b> — 學生自動從原班老師的組別名單中消失，不會誤發教材或工具給她</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>批改入檔</b> — 之後交的功課，成績計入新班，不會誤記在原班</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>學生入口</b> — 學生登入時看到的班別立即更新</span></div>
+      </div>
+      <p class="why-caveat">⚠️ 在這一頁按「確認轉班」，確實會即時更新上方名單（本頁開啟期間有效）；但教學分組等畫面是獨立的頁面，這個原型沒有跨頁面的資料儲存，所以離開這一頁後，教學分組實際打開時看到的仍是原本的示範學生名單。</p>
+    </div>
+  </section>
 
   <footer class="note">
     學校管理系統 · 故事 2「The Reliable Roster」示意畫面 · 內部示範原型，僅供概念演示<br>
-    名冊維護是全平台唯一今天已真實存在的基礎功能；完整度檢視則是為它補建的簡單視窗。
+    名冊維護是全平台唯一今天已真實存在的基礎功能；完整度檢視、教師名冊、任教編配與學生編班則是為它補建的示意視窗。
   </footer>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="vendor-data.js"></script>
 <script>
 function handleTransfer(){
   document.getElementById('stC').outerHTML='<span class="st ok">✓ 完整</span>';
@@ -143,8 +240,132 @@ function handleTransfer(){
   p.style.borderColor='#b3e2cc';
   toast('名冊已更新 · 下游系統自動同步');
 }
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+}
+
+/* Teaching-assignment records for 任教編配 — page-local (not shared with other
+ * pages, since this tab stays illustrative per Eric's earlier scope call), but the
+ * 科目 field is sourced from vendor-data.js's shared SUBJECTS via subjectId, same
+ * as 教師名冊's TEACHERS, so the two tabs can no longer silently disagree. */
+const ASSIGNMENTS = [
+  {id:'a1', teacher:'陳老師', cls:'中二乙班', subjectId:'chi', year:'2025/26'},
+  {id:'a2', teacher:'陳老師', cls:'中一丙班', subjectId:'chi', year:'2025/26 · 本學期新接手'},
+  {id:'a3', teacher:'黃老師', cls:'中一甲班', subjectId:'chi', year:'2025/26'},
+];
+function renderAssignments(){
+  document.getElementById('assignTbody').innerHTML = ASSIGNMENTS.map(a=>`
+    <tr data-id="${a.id}">
+      <td><b>${a.teacher}</b></td>
+      <td>${a.cls}</td>
+      <td>${subjectName(a.subjectId)}</td>
+      <td>${a.year}</td>
+      <td><button class="act" onclick="startReassign('${a.id}')">重新編配</button></td>
+    </tr>`).join('');
+}
+function startReassign(id){
+  const a = ASSIGNMENTS.find(x=>x.id===id);
+  // only active teachers can receive a new class — 教師名冊's status is what this reads.
+  const candidates = activeTeachers().map(t=>t.name).filter(n=>n!==a.teacher);
+  const options = candidates.length
+    ? candidates.map(t=>`<option value="${t}">${t}</option>`).join('')
+    : `<option value="">（沒有其他在職教師可選）</option>`;
+  document.getElementById('reassignBox').innerHTML = `
+    <div class="reassign-row">
+      將 <b>${a.cls}</b>（${subjectName(a.subjectId)}）由 <b>${a.teacher}</b> 重新編配給
+      <select id="reassignPick">${options}</select>
+      <button class="act" onclick="confirmReassign('${id}')">確認編配</button>
+      <button class="act" onclick="document.getElementById('reassignBox').innerHTML=''">取消</button>
+    </div>`;
+}
+function confirmReassign(id){
+  const toTeacher = document.getElementById('reassignPick').value;
+  if(!toTeacher){ toast('沒有其他在職教師可選，無法編配'); return; }
+  const a = ASSIGNMENTS.find(x=>x.id===id);
+  const fromTeacher = a.teacher;
+  a.teacher = toTeacher;
+  renderAssignments();
+  document.getElementById('reassignBox').innerHTML =
+    `<div class="reassign-row" style="background:#effaf5;border-color:#bfe8d7;">✓ ${a.cls}（${subjectName(a.subjectId)}）已由 ${fromTeacher} 轉交 ${toTeacher}。（此原型未接通教學分組等畫面，實際變動僅在此示意）</div>`;
+  toast('已將 '+a.cls+' 由 '+fromTeacher+' 轉交 '+toTeacher);
+}
+
+/* Student-class assignment reads/writes the SAME CLASSES object (from vendor-data.js)
+ * that groups.html/group-access-requests.html/trial-invites.html use — so a transfer
+ * made here is a real mutation, not a cosmetic label swap, for as long as this page
+ * stays open. It still can't survive navigating to another page, since this suite has
+ * no cross-page persistence (no localStorage) — see studentScopeNote below. */
+function renderStudents(){
+  const rows = [];
+  CLASS_LIST.forEach(c=>{
+    c.students.forEach(s=>{
+      const status = s.left ? '<span class="st warn">已轉出</span>' : '<span class="st ok">在校</span>';
+      const action = s.left ? '' : `<button class="act" onclick="startClassTransfer('${c.id}','${s.n}')">轉班</button>`;
+      rows.push(`<tr data-class="${c.id}" data-name="${s.n}"><td><b>${s.n}</b></td><td>${c.className}</td><td>${status}</td><td>${action}</td></tr>`);
+    });
+  });
+  document.getElementById('studentTbody').innerHTML = rows.join('');
+  document.getElementById('studentScopeNote').innerHTML =
+    '⚠️ 此分頁讀寫的是與「教學分組」「學生工具申請」「試用邀請」相同的班別資料（本頁開啟期間即時生效），但這個原型沒有跨頁面的資料儲存——離開此頁後再打開其他畫面，看到的仍是原本的示範資料。';
+}
+function startClassTransfer(fromClassId, name){
+  const options = CLASS_LIST.filter(c=>c.id!==fromClassId).map(c=>`<option value="${c.id}">${c.className}</option>`).join('');
+  document.getElementById('classTransferBox').innerHTML = `
+    <div class="reassign-row">
+      將 <b>${name}</b> 由 <b>${CLASSES[fromClassId].className}</b> 轉班至
+      <select id="classTransferPick">${options}</select>
+      <button class="act" onclick="confirmClassTransfer('${fromClassId}','${name}')">確認轉班</button>
+      <button class="act" onclick="document.getElementById('classTransferBox').innerHTML=''">取消</button>
+    </div>`;
+}
+function confirmClassTransfer(fromClassId, name){
+  const toClassId = document.getElementById('classTransferPick').value;
+  const fromClass = CLASSES[fromClassId];
+  const toClass = CLASSES[toClassId];
+  const idx = fromClass.students.findIndex(x=>x.n===name);
+  const s = fromClass.students[idx];
+  fromClass.students.splice(idx, 1); // in-place removal — CLASS_LIST holds the same array reference, so reassigning it here would silently desync
+  // destination class may not have the same group ids (e.g. 1c has no 增潤組) — default to its first group
+  const groupStillExists = toClass.groups.some(g=>g.id===s.g);
+  toClass.students.push({n:s.n, g: groupStillExists ? s.g : toClass.groups[0].id});
+  renderStudents();
+  document.getElementById('classTransferBox').innerHTML =
+    `<div class="reassign-row" style="background:#effaf5;border-color:#bfe8d7;">✓ ${name} 已由 ${fromClass.className} 轉入 ${toClass.className}。（本頁開啟期間即時生效；離開此頁後不會保留）</div>`;
+  toast('已將 '+name+' 轉入 '+toClass.className);
+}
+
+/* TEACHERS is real shared data (vendor-data.js) — status changes here affect
+ * 任教編配's reassignment picker immediately, in the same page session, since
+ * both read the same array of objects. */
+const STATUS_LABEL = {active:'在職', leave:'請假', departed:'已離職'};
+function renderTeachers(){
+  document.getElementById('teacherTbody').innerHTML = TEACHERS.map(t=>`
+    <tr>
+      <td><b>${t.name}</b></td>
+      <td>${subjectName(t.subjectId)}</td>
+      <td>${t.contact}</td>
+      <td>
+        <select onchange="setTeacherStatus('${t.name}', this.value)">
+          <option value="active" ${t.status==='active'?'selected':''}>在職</option>
+          <option value="leave" ${t.status==='leave'?'selected':''}>請假</option>
+          <option value="departed" ${t.status==='departed'?'selected':''}>已離職</option>
+        </select>
+      </td>
+      <td></td>
+    </tr>`).join('');
+}
+function setTeacherStatus(name, status){
+  const t = TEACHERS.find(x=>x.name===name);
+  t.status = status;
+  toast(name+' 狀態已更新為「'+STATUS_LABEL[status]+'」');
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+renderAssignments();
+renderStudents();
+renderTeachers();
 </script>
 <script src="demo-nav.js"></script>
 </body>
