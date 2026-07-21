@@ -63,6 +63,29 @@
   .chip.ind{color:var(--ink-2);background:#f5f8fa;border:1px solid var(--line);}
   .note-row{font-size:.72rem;color:var(--ink-3);margin-top:10px;line-height:1.6;max-width:52em;}
 
+  .req.capacity .ic{background:#fdf6ec;}
+  .req.capacity .scope{color:#b07c10;background:#fdf6ec;border:1px solid #f3e3c3;}
+
+  .plan-zone{background:#f7f9fb;border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:28px;}
+  .plan-zone h2{margin-top:0;}
+  .plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px;}
+  .plan-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .plan-card b{font-size:.88rem;display:block;}
+  .plan-card .pv{font-size:.68rem;color:var(--ink-3);margin-top:2px;display:block;}
+  .plan-card .cap-row{margin-top:12px;}
+  .plan-card .cap-row .lbl{font-size:.7rem;color:var(--ink-2);display:flex;justify-content:space-between;margin-bottom:5px;}
+  .plan-card .cap-row.unlimited-row{font-size:.76rem;color:var(--ink-2);line-height:1.6;}
+  .cap-bar{height:7px;border-radius:99px;background:#eef2f5;overflow:hidden;}
+  .cap-fill{height:100%;border-radius:99px;}
+  .cap-fill.ok{background:var(--ec-green);}
+  .cap-fill.warn{background:var(--ec-amber);}
+  .cap-fill.danger{background:var(--ec-red);}
+  .plan-card .renew{font-size:.68rem;color:var(--ink-3);margin-top:12px;}
+  .plan-state{font-size:.62rem;font-weight:700;border-radius:99px;padding:2px 9px;display:inline-block;margin-top:8px;}
+  .plan-state.ok{color:var(--ec-green);background:#effaf5;border:1px solid #bfe8d7;}
+  .plan-state.warn{color:#b07c10;background:#fdf6ec;border:1px solid #f3e3c3;}
+  .plan-state.danger{color:var(--ec-red);background:#fdecec;border:1px solid #f3c6c9;}
+
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
   .toast.show{opacity:.94;}
   footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
@@ -134,6 +157,58 @@
       <button class="btn" disabled>批出</button>
       <button class="btn ghost" onclick="toast('原型示範：提醒科主任完成評估')">催辦</button>
     </div>
+  </div>
+  <div class="req capacity">
+    <div class="ic">📊</div>
+    <div class="body">
+      <b>黃老師為核心組（5 人）申請「智寫」寫作回饋工具</b>
+      <p>「智寫」Basic 方案的學生名額只剩 2 個，批出這個請求需要 5 個，會超出上限 3 個。這是<b>方案容量</b>的決定，不是資料存取層級的決定，所以在進入 EdData 審批前，先由此攔截。</p>
+      <span class="scope">⚠ 超出方案名額 3 個 · 需要方案決定</span>
+    </div>
+    <div class="btns">
+      <button class="btn" onclick="toast('原型示範：升級至 Standard 方案（8 教師／120 學生）並批出請求')">升級方案並批出</button>
+      <button class="btn ghost" onclick="toast('原型示範：婉拒，並請黃老師於 2026-09-30 續期後重新申請')">婉拒</button>
+    </div>
+  </div>
+
+  <div class="plan-zone">
+    <h2>供應商方案名額</h2>
+    <div class="sub" style="margin:0 0 4px;">每個方案的教師與學生名額上限。用量達八成即提早示警，讓你在教師提交請求前，先看到快要滿額的方案。</div>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <b>智寫科技</b><span class="pv">寫作回饋工具 · Basic 方案</span>
+        <div class="cap-row">
+          <div class="lbl"><span>教師名額</span><span>3 / 4</span></div>
+          <div class="cap-bar"><div class="cap-fill warn" style="width:75%"></div></div>
+        </div>
+        <div class="cap-row">
+          <div class="lbl"><span>學生名額</span><span>34 / 36</span></div>
+          <div class="cap-bar"><div class="cap-fill warn" style="width:94%"></div></div>
+        </div>
+        <span class="plan-state warn">⚠ 接近上限</span>
+        <div class="renew">續期日：2026-09-30</div>
+      </div>
+      <div class="plan-card">
+        <b>點讀教育</b><span class="pv">中文分級閱讀庫 · Standard 方案</span>
+        <div class="cap-row">
+          <div class="lbl"><span>教師名額</span><span>3 / 8</span></div>
+          <div class="cap-bar"><div class="cap-fill ok" style="width:38%"></div></div>
+        </div>
+        <div class="cap-row">
+          <div class="lbl"><span>學生名額</span><span>32 / 150</span></div>
+          <div class="cap-bar"><div class="cap-fill ok" style="width:21%"></div></div>
+        </div>
+        <span class="plan-state ok">✓ 名額充裕</span>
+        <div class="renew">續期日：2026-08-15</div>
+      </div>
+      <div class="plan-card">
+        <b>智語科技</b><span class="pv">普通話朗讀評測 · 全校方案</span>
+        <div class="cap-row unlimited-row">不設教師／學生名額上限，按全校教師人數議定年費。</div>
+        <span class="plan-state ok">✓ 不受名額限制</span>
+        <div class="renew">續期日：2026-12-31</div>
+      </div>
+    </div>
+    <div class="note-row">名額用量按 <a href="eddata-console.html" style="color:var(--ec-blue-dark);font-weight:700;">EdData 存取審批</a> 中已核准組別的學生人數滙總計算，僅供參考，實際扣減以供應商合約為準。</div>
   </div>
 
   <h2>現有訂閱</h2>
