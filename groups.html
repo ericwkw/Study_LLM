@@ -71,6 +71,16 @@
     padding:8px;font-size:.72rem;color:var(--ink-2);cursor:pointer;font-family:inherit;
   }
   .col .assign:hover{border-color:var(--ec-blue);color:var(--ec-blue-dark);}
+  .col .req-btn{
+    width:100%;margin-top:6px;border:1px dashed #c4e5f5;background:#f7fbfe;border-radius:9px;
+    padding:8px;font-size:.72rem;color:var(--ec-blue-dark);cursor:pointer;font-family:inherit;font-weight:600;
+  }
+  .col .req-btn:hover{border-color:var(--ec-blue);}
+  .col .req-btn.sent{background:#fdf6ec;border:1px solid #f3e3c3;color:#8a6d00;cursor:default;font-weight:700;}
+  .req-box{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 10px;}
+  .req-box select{width:100%;border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:.72rem;font-family:inherit;margin-bottom:7px;color:var(--ink);}
+  .req-box .go{width:100%;border:none;border-radius:7px;padding:7px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .req-box .note{font-size:.64rem;color:var(--ink-3);line-height:1.55;margin-top:7px;}
 
   .sync{
     margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 18px;
@@ -165,6 +175,16 @@ function render(){
         <span class="av">${s.n[0]}</span>${s.n}${s.left?'（已轉班 · 自動退出）':''}<span class="mv">移組 ›</span>
       </div>`).join('')}
       <button class="assign" onclick="toast('原型示範：指派教材給「${grp.name}」')">📎 指派教材／練習給此組</button>
+      <button class="req-btn ${reqSent[gi]?'sent':''}" id="reqBtn${gi}" onclick="${reqSent[gi]?'':'toggleReq('+gi+')'}">${reqSent[gi]?'⏳ 已送出 · 待 EdData 審批':'🔐 為此組要求批改工具'}</button>
+      <div class="req-box" id="reqBox${gi}" style="display:none;">
+        <select id="reqTool${gi}">
+          <option>智寫科技 · 寫作回饋工具</option>
+          <option>智語科技 · 普通話朗讀評測</option>
+          <option>點讀教育 · 中文分級閱讀庫</option>
+        </select>
+        <button class="go" onclick="submitReq(${gi})">送出申請 →</button>
+        <div class="note">申請會連同「${grp.name}」（${active} 人）的組別身分送到 <b>EdData</b>，由資訊科技統籌審批資料存取層級——這畫面不會直接批出，只負責帶出申請。</div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -197,6 +217,17 @@ function moveStu(name){
   s.g = (s.g+1) % GROUPS.length;
   render();
   toast(name + ' → ' + GROUPS[s.g].name);
+}
+let reqSent = {};
+function toggleReq(gi){
+  const box = document.getElementById('reqBox'+gi);
+  box.style.display = box.style.display==='none' ? '' : 'none';
+}
+function submitReq(gi){
+  const tool = document.getElementById('reqTool'+gi).value;
+  reqSent[gi] = true;
+  render();
+  toast('已送出：「'+GROUPS[gi].name+'」申請使用「'+tool+'」，待 EdData 審批');
 }
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}

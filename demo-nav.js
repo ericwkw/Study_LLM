@@ -34,7 +34,10 @@ const PAGES = [
     ['dept.html','科主任統計視圖（故事 7）','y'],
     ['subscriptions.html','訂閱管理（故事 4）','y'],
     ['student.html','學生／家長入口（故事 8）','r'],
-    ['roster.html','校管系統名冊（故事 2）','y'],
+  ]},
+  {group:'校管系統（SMS）— 與 EdCity.ai 分離運作', items:[
+    ['roster.html','名冊完整度檢視（故事 2）','y'],
+    ['edata-console.html','EdData 資料存取審批','r'],
   ]},
   {group:'平台營運與供應商', items:[
     ['tags.html','標籤審核與管理（故事 6）','r'],
