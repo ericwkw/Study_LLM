@@ -37,12 +37,13 @@ const PAGES = [
   ]},
   {group:'校管系統（SMS）— 與 EdCity.ai 分離運作', items:[
     ['roster.html','名冊完整度檢視（故事 2）','y'],
-    ['edata-console.html','EdData 資料存取審批','r'],
+    ['eddata-console.html','EdData 資料存取審批','r'],
   ]},
   {group:'平台營運與供應商', items:[
     ['tags.html','標籤審核與管理（故事 6）','r'],
     ['vetting.html','供應商審核（故事 3）','y'],
     ['vendor-portal.html','供應商入口（無故事支撐）','y'],
+    ['vendor-data-console.html','資料存取控制台（供應商側，接收 EdData 批出的資料）','r'],
   ]},
 ];
 function init(){

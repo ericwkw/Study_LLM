@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdData 存取審批 — 校管系統（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;--ec-maroon:#7B2539;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#dde3e8;--bg:#eef1f4;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+  /* deliberately the same plain SMS-family shell as roster.html — this is EdData, not the Resources Platform */
+  .role-banner{background:#3d4a56;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
+  .topbar{background:#fff;border-bottom:2px solid var(--line);padding:12px 26px;display:flex;align-items:center;gap:14px;}
+  .topbar img{height:28px;width:auto;}
+  .topbar .sys{font-size:.85rem;font-weight:700;}
+  .topbar .sys small{display:block;font-size:.64rem;color:var(--ink-3);font-weight:500;}
+  .topbar .who{margin-left:auto;font-size:.78rem;color:var(--ink-2);text-align:right;}
+  .topbar .who small{display:block;font-size:.66rem;color:var(--ink-3);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:24px 20px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;
+    color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 18px;line-height:1.65;max-width:56em;}
+
+  .foundation{
+    background:#fff;border-left:4px solid var(--ec-maroon);border-radius:8px;padding:12px 16px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.7;margin-bottom:20px;max-width:60em;
+  }
+  .foundation b{color:var(--ink);}
+
+  h2{font-size:.92rem;font-weight:700;margin:22px 0 11px;}
+
+  /* tier legend */
+  .tier-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+  .tier-card{flex:1;min-width:190px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px;}
+  .tier-card b{font-size:.78rem;display:block;margin-bottom:3px;}
+  .tier-card small{font-size:.68rem;color:var(--ink-3);line-height:1.55;display:block;}
+  .tier-card.t1{border-top:3px solid var(--ec-green);}
+  .tier-card.t2{border-top:3px solid var(--ec-amber);}
+  .tier-card.t3{border-top:3px solid var(--ink-3);opacity:.65;}
+  .tier-card.t3 small.flag{color:#b07c10;font-weight:700;}
+
+  /* vendor-relationship cards — the primary structure */
+  .vendor{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden;}
+  .v-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .v-head .v-ic{width:42px;height:42px;border-radius:11px;background:#eef2f5;color:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;}
+  .v-head .v-body{flex:1;min-width:220px;}
+  .v-head .v-body b{font-size:.92rem;display:block;}
+  .v-head .v-body small{font-size:.72rem;color:var(--ink-3);display:block;margin-top:2px;}
+  .v-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+  .vchip{font-size:.66rem;font-weight:700;border-radius:99px;padding:4px 11px;white-space:nowrap;}
+  .vchip.certified{color:#0c6b48;background:#e6f7ef;}
+  .vchip.pending-vet{color:#8a5a00;background:#fdf1c7;}
+  .vchip.none{color:#b91c1c;background:#fee2e2;}
+  .vchip.entitle{color:var(--ec-blue-dark);background:#e6f4fb;}
+  .vchip.entitle.none-yet{color:var(--ink-3);background:#f5f8fa;}
+
+  .v-section{padding:14px 18px;border-bottom:1px solid var(--line);}
+  .v-section:last-child{border-bottom:none;}
+  .v-section h4{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;margin-bottom:10px;}
+
+  .grant-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #f2f4f6;font-size:.79rem;flex-wrap:wrap;}
+  .grant-row:first-child{border-top:none;}
+  .grant-row .g-tier{font-size:.64rem;font-weight:700;border-radius:99px;padding:3px 10px;background:#e6f7ef;color:#0c6b48;white-space:nowrap;}
+  .grant-row .g-since{font-size:.68rem;color:var(--ink-3);margin-left:auto;white-space:nowrap;}
+  .empty-note{font-size:.76rem;color:var(--ink-3);}
+
+  .block-note{
+    background:#fee2e2;border:1px solid #f5c6c6;border-radius:8px;padding:10px 13px;
+    font-size:.76rem;color:#991b1b;line-height:1.6;margin-bottom:10px;
+  }
+
+  .req{background:#fafcfd;border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-bottom:10px;}
+  .req:last-child{margin-bottom:0;}
+  .req .r-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:9px;}
+  .req .r-head b{font-size:.84rem;display:block;}
+  .req .r-head small{font-size:.7rem;color:var(--ink-3);display:block;margin-top:2px;line-height:1.6;}
+  .req .r-head .status{margin-left:auto;font-size:.64rem;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap;}
+  .status.pending{color:#8a5a00;background:#fdf1c7;}
+  .status.approved{color:#0c6b48;background:#e6f7ef;}
+  .status.denied{color:#b91c1c;background:#fee2e2;}
+
+  /* visual request sentence: actor → tool (context), then a distinct tinted zone for the actual data-release decision */
+  .req-context{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.83rem;margin-bottom:2px;}
+  .req-context .actor{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:var(--ink);}
+  .req-context .actor .ic{width:24px;height:24px;border-radius:50%;background:#eef2f5;color:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:800;flex-shrink:0;}
+  .req-context .verb{color:var(--ink-3);font-size:.76rem;}
+  .req-context .tool-target{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border:1px solid #c4e5f5;border-radius:8px;padding:3px 11px;font-size:.8rem;}
+  .req-context small{width:100%;font-size:.7rem;color:var(--ink-3);margin-top:1px;}
+
+  .release-zone{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:10px;padding:13px 15px;margin:11px 0;}
+  .release-zone .rz-label{font-size:.66rem;font-weight:700;color:#8a5a00;letter-spacing:.05em;margin-bottom:11px;text-transform:uppercase;}
+  .rz-chain{display:flex;flex-direction:column;gap:9px;align-items:stretch;}
+  .rz-step{display:flex;align-items:center;gap:9px;}
+  .rz-arrow{font-size:.72rem;color:#b07c10;font-weight:700;padding-left:4px;white-space:nowrap;}
+  .scope-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 13px;font-size:.78rem;color:var(--ink);font-weight:600;}
+  .scope-chip .sc-ic{flex-shrink:0;}
+  .vendor-target{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:8px;padding:7px 13px;font-size:.8rem;font-weight:700;}
+  .vendor-target .vt-mini{width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:.62rem;flex-shrink:0;}
+
+  .tier-pick{display:flex;gap:8px;flex-wrap:wrap;}
+  .tpick{display:inline-flex;flex-direction:column;gap:2px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 13px;font-size:.74rem;color:var(--ink-2);cursor:pointer;font-family:inherit;text-align:left;min-width:150px;}
+  .tpick:hover{border-color:var(--ec-blue);}
+  .tpick.on{border-color:var(--ec-blue);background:#f4fafd;box-shadow:0 0 0 2px #e6f4fb;font-weight:700;color:var(--ink);}
+  .tpick small{font-weight:400;color:var(--ink-3);font-size:.66rem;}
+  .tpick.disabled{opacity:.5;cursor:not-allowed;}
+  .tpick.disabled:hover{border-color:var(--line);}
+
+  .act{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 15px;font-size:.76rem;color:var(--ec-blue-dark);font-weight:700;cursor:pointer;font-family:inherit;}
+  .act:hover{border-color:var(--ec-blue);}
+  .act:disabled{color:var(--ink-3);cursor:default;border-color:var(--line);background:#fafcfd;}
+  .act.deny{color:#b91c1c;}
+  .act.deny:hover{border-color:#f5c6c6;}
+  .req .btns{display:flex;gap:8px;}
+
+  .empty-msg{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center;font-size:.8rem;color:var(--ink-3);}
+
+  /* audit trail */
+  .audit{margin-top:6px;}
+  .a-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-2);line-height:1.6;}
+  .a-row:first-child{border-top:none;}
+  .a-row .a-ic{flex-shrink:0;}
+  .a-row .a-time{font-size:.68rem;color:var(--ink-3);white-space:nowrap;margin-left:auto;padding-left:10px;}
+
+  .downstream{
+    margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.8;
+  }
+  .downstream b{color:var(--ink);display:block;margin-bottom:4px;font-size:.84rem;}
+  .downstream .flow{font-size:.76rem;color:var(--ink-3);}
+  .downstream .flow em{font-style:normal;color:var(--ec-blue-dark);font-weight:700;}
+
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--ink-2);text-decoration:none;margin-bottom:16px;}
+  .back-link:hover{color:var(--ec-blue-dark);}
+
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="role-banner">校 務 行 政 層 級 — EdData 資 料 存 取 審 批（校 管 系 統）</div>
+<div class="topbar">
+  <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+  <span class="sys">EdData 存取管理<small>校管系統（SMS）的一部分 · 與 EdCity.ai 分離運作，非教學工具畫面</small></span>
+  <span class="who">馮 Sir<small>資訊科技統籌 · EdData 審批人</small></span>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="subscriptions.html">← 返回訂閱管理（EdCity.ai 教師介面）</a>
+
+  <div class="ribbon">🔴 待決策 · 此畫面示意 EdData 成為存取層級系統紀錄後的審批流程——屬架構方向，尚未承諾建置</div>
+
+  <h1>資料存取審批</h1>
+  <div class="sub">你管理的是<b>供應商關係</b>，不是一張張孤立的申請單。每個供應商有自己已核准的層級與組別；新請求要對照這個關係來看，而不是每次由零判斷。</div>
+
+  <div class="foundation">🏗 <b>為何按供應商分組：</b>訂閱管理（EdCity.ai）決定「這間學校用不用這件工具」；這裏決定「用的話，供應商能看到哪一層資料」——而這個決定是<b>累積的</b>：智寫科技今天多要一個組別，跟它三星期前已經拿到的權限是同一段關係，不是新的孤立個案。把請求釘死在供應商底下，才能一眼看到「這間供應商總共能碰到多少學生資料」，而不必翻查散落的歷史記錄拼湊出來。</div>
+
+  <h2>資料層級</h2>
+  <div class="tier-row">
+    <div class="tier-card t1"><b>Tier 1 · 基本資料</b><small>姓名、班別、組別身分。現時已存在，敏感度最低。</small></div>
+    <div class="tier-card t2"><b>Tier 2 · 敏感個人資料</b><small>SEN 標籤、支援計劃狀態等 PDPO 敏感資料。現時已存在，是目前主要把關對象。</small></div>
+    <div class="tier-card t3"><b>Tier 3 · 表現數據</b><small class="flag">⚠ 尚在建立中，暫不開放</small><small>評估與學習表現數據。架構已預留此層級，但累積樣本仍太少，暫不能核實開放。</small></div>
+  </div>
+
+  <h2>供應商關係</h2>
+  <div id="vendorList"></div>
+
+  <h2>稽核記錄</h2>
+  <div class="audit" id="auditList"></div>
+
+  <div class="downstream">
+    <b>審批後的下游影響（自動，毋須人手跟進）</b>
+    <span class="flow">核准層級 → <em>供應商</em> 取得範圍內資料，僅限已核准組別 → <em>Apps／代理</em>（EdCity.ai）顯示「校方已核准」 → 本頁的供應商關係與稽核記錄同步更新，教師與 IT 統籌均可查閱</span>
+  </div>
+
+  <footer class="note">
+    EdData 存取審批 · 校管系統示意畫面 · 內部示範原型，僅供概念演示<br>
+    此畫面與 EdCity.ai 教學工具分屬不同系統，透過 API 交換資料，並非同一應用的另一分頁。
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+const TIER_RANK = {'Tier 1 · 基本資料':1, 'Tier 2 · 敏感個人資料':2, 'Tier 3 · 表現數據':3};
+
+const VENDORS = [
+  {
+    id:'zhixie', name:'智寫科技', product:'寫作回饋工具',
+    vetting:{status:'certified', label:'✓ 已通過基準認證', note:'合規閘 5/5 通過（見供應商審核 vetting.html）'},
+    grants:[
+      {group:'增潤組（9 人）· 中二乙班', tier:'Tier 1 · 基本資料', since:'2026-06-20'},
+    ],
+    pending:[
+      {id:'r1', teacher:'陳老師', group:'支援組（2 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+    ],
+  },
+  {
+    id:'diandu', name:'點讀教育', product:'中文分級閱讀庫',
+    vetting:{status:'certified', label:'✓ 已通過基準認證', note:'合規閘 5/5 通過'},
+    grants:[
+      {group:'全班 · 中一甲班', tier:'Tier 1 · 基本資料', since:'2026-07-15'},
+    ],
+    pending:[],
+  },
+  {
+    id:'unknownvendor', name:'字詞通 AI（新供應商）', product:'AI 詞彙診斷工具',
+    vetting:{status:'none', label:'⚠ 尚未提交供應商審核', note:'未見於供應商審核佇列（vetting.html）——按管治規則，任何層級都不應在此核准，須先完成合規閘'},
+    grants:[],
+    pending:[
+      {id:'r3', teacher:'黃老師', group:'核心組（17 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+    ],
+  },
+];
+
+const AUDIT = [
+  {ic:'✓', text:'馮 Sir 批准黃老師使用點讀教育（中一甲班全班），釋放 Tier 1 · 基本資料予點讀教育', time:'2026-07-15'},
+  {ic:'✓', text:'馮 Sir 批准陳老師使用智寫科技（增潤組），釋放 Tier 1 · 基本資料予智寫科技', time:'2026-06-20'},
+  {ic:'✕', text:'馮 Sir 拒絕釋放表現數據予校外研究機構（Tier 3 尚未開放）', time:'2026-06-02'},
+];
+
+function vetChipClass(status){ return status==='certified' ? 'certified' : status==='pending-vet' ? 'pending-vet' : 'none'; }
+
+function entitlementChip(vendor){
+  if(!vendor.grants.length) return `<span class="vchip entitle none-yet">尚未核准任何層級</span>`;
+  const top = vendor.grants.reduce((a,b)=> TIER_RANK[b.tier]>TIER_RANK[a.tier] ? b : a);
+  return `<span class="vchip entitle">目前最高：${top.tier}</span>`;
+}
+
+function tierPickHtml(vendorId, req, vendorName){
+  return `<div class="release-zone">
+    <div class="rz-label">⚠ 資料釋放決定</div>
+    <div class="rz-chain">
+      <div class="rz-step"><div class="scope-chip"><span class="sc-ic">👥</span>${req.group} 的學生資料</div></div>
+      <div class="rz-arrow">↓ 選擇釋放層級</div>
+      <div class="tier-pick">
+        <button class="tpick" data-t="Tier 1 · 基本資料" onclick="pickTier('${vendorId}','${req.id}',this)"><b>Tier 1</b><small>基本資料</small></button>
+        <button class="tpick" data-t="Tier 2 · 敏感個人資料" onclick="pickTier('${vendorId}','${req.id}',this)"><b>Tier 2</b><small>敏感個人資料</small></button>
+        <button class="tpick disabled" onclick="toast('Tier 3 尚在建立中，暫不能核實開放')"><b>Tier 3</b><small>表現數據 · 暫不開放</small></button>
+      </div>
+      <div class="rz-arrow">↓ 釋放至</div>
+      <div class="rz-step"><div class="vendor-target"><span class="vt-mini">${vendorName[0]}</span>${vendorName}</div></div>
+    </div>
+  </div>`;
+}
+
+function renderVendors(){
+  document.getElementById('vendorList').innerHTML = VENDORS.map(v=>{
+    const grantsHtml = v.grants.length
+      ? v.grants.map(g=>`<div class="grant-row"><span>${g.group}</span><span class="g-tier">${g.tier}</span><span class="g-since">生效於 ${g.since}</span></div>`).join('')
+      : `<div class="empty-note">此供應商目前未獲任何組別的資料存取權</div>`;
+
+    const blocked = v.vetting.status!=='certified';
+    const pendingHtml = v.pending.length
+      ? v.pending.map(r=>{
+          const statusLabel = r.status==='pending' ? '⏳ 待審批' : r.status==='approved' ? '✓ 已核准 · '+r.tier : '✕ 已拒絕';
+          return `<div class="req" id="req-${v.id}-${r.id}">
+            <div class="r-head">
+              <div class="req-context">
+                <span class="actor"><span class="ic">${r.teacher[0]}</span>${r.teacher}</span>
+                <span class="verb">申請使用 →</span>
+                <span class="tool-target">${v.name}</span>
+                <small>${r.src}</small>
+              </div>
+              <span class="status ${r.status}">${statusLabel}</span>
+            </div>
+            ${blocked ? `<div class="block-note">🚫 此供應商尚未通過供應商審核，按管治規則不能核准任何資料層級——請先完成合規閘，或拒絕此請求。</div>` : ''}
+            ${r.status==='pending' && !blocked ? tierPickHtml(v.id, r, v.name) : ''}
+            <div class="btns">
+              <button class="act" id="approve-${v.id}-${r.id}" ${r.status!=='pending'||blocked?'disabled':''} onclick="approve('${v.id}','${r.id}')">✓ 核准</button>
+              <button class="act deny" ${r.status!=='pending'?'disabled':''} onclick="deny('${v.id}','${r.id}')">拒絕</button>
+            </div>
+          </div>`;
+        }).join('')
+      : `<div class="empty-note">此供應商目前沒有待審批的請求</div>`;
+
+    return `<div class="vendor" id="vendor-${v.id}">
+      <div class="v-head">
+        <div class="v-ic">${v.name[0]}</div>
+        <div class="v-body"><b>${v.name}</b><small>${v.product}</small></div>
+        <div class="v-badges">
+          <span class="vchip ${vetChipClass(v.vetting.status)}">${v.vetting.label}</span>
+          ${entitlementChip(v)}
+        </div>
+      </div>
+      <div class="v-section">
+        <h4>目前已核准的組別</h4>
+        ${grantsHtml}
+      </div>
+      <div class="v-section">
+        <h4>待審批請求</h4>
+        ${pendingHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  VENDORS.forEach(v=> v.pending.forEach(r=>{
+    if(r.status==='pending' && r._pickedTier){
+      const btn = document.querySelector('#req-'+v.id+'-'+r.id+' .tpick[data-t="'+r._pickedTier+'"]');
+      if(btn) btn.classList.add('on');
+    }
+  }));
+}
+
+function findReq(vendorId, reqId){
+  const v = VENDORS.find(x=>x.id===vendorId);
+  const r = v.pending.find(x=>x.id===reqId);
+  return {v, r};
+}
+function pickTier(vendorId, reqId, btn){
+  const {r} = findReq(vendorId, reqId);
+  r._pickedTier = btn.dataset.t;
+  document.querySelectorAll('#req-'+vendorId+'-'+reqId+' .tpick').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function approve(vendorId, reqId){
+  const {v, r} = findReq(vendorId, reqId);
+  if(v.vetting.status!=='certified'){ toast('此供應商尚未通過供應商審核，不能核准'); return; }
+  if(!r._pickedTier){ toast('請先選擇資料層級，再核准'); return; }
+  r.status='approved'; r.tier=r._pickedTier;
+  v.grants.push({group:r.group, tier:r.tier, since:'2026-07-21'});
+  AUDIT.unshift({ic:'✓', text:'馮 Sir 批准'+r.teacher+'使用'+v.name+'（'+r.group+'），釋放'+r.tier+'予'+v.name, time:'2026-07-21'});
+  renderVendors(); renderAudit();
+  toast('已核准：釋放'+r.tier+'予'+v.name);
+}
+function deny(vendorId, reqId){
+  const {v, r} = findReq(vendorId, reqId);
+  r.status='denied';
+  AUDIT.unshift({ic:'✕', text:'馮 Sir 拒絕「'+r.teacher+' · '+r.group+'」使用'+v.name+'的請求', time:'2026-07-21'});
+  renderVendors(); renderAudit();
+  toast('已拒絕：'+v.name);
+}
+function renderAudit(){
+  document.getElementById('auditList').innerHTML = AUDIT.map(a=>
+    `<div class="a-row"><span class="a-ic">${a.ic}</span><span>${a.text}</span><span class="a-time">${a.time}</span></div>`
+  ).join('');
+}
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+renderVendors();
+renderAudit();
+</script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
