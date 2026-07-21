@@ -5,7 +5,7 @@ const CSS = `
   border-radius:99px;padding:11px 18px;font-size:.8rem;font-weight:600;cursor:pointer;
   font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;box-shadow:0 8px 24px rgba(20,30,40,.25);}
 .dn-panel{position:fixed;bottom:70px;right:22px;z-index:91;background:#fff;border:1px solid #e6ebf0;
-  border-radius:16px;box-shadow:0 18px 48px rgba(20,30,40,.2);width:300px;padding:14px;display:none;
+  border-radius:16px;box-shadow:0 18px 48px rgba(20,30,40,.2);width:400px;max-width:calc(100vw - 44px);padding:14px;display:none;
   font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
   max-height:min(70vh,560px);overflow-y:auto;overscroll-behavior:contain;}
 .dn-panel.show{display:block;}
@@ -15,7 +15,7 @@ const CSS = `
   font-size:.8rem;color:#55636f;text-decoration:none;}
 .dn-panel a:hover{background:#f2f6f9;}
 .dn-panel a.here{background:#e6f4fb;color:#0072ab;font-weight:600;}
-.dn-panel .tag{margin-left:auto;font-size:.58rem;font-weight:700;border-radius:99px;padding:2px 7px;}
+.dn-panel .tag{margin-left:auto;font-size:.58rem;font-weight:700;border-radius:99px;padding:2px 7px;white-space:nowrap;flex-shrink:0;}
 .dn-panel .tag.y{color:#8a6d00;background:#fdf1c7;}
 .dn-panel .tag.r{color:#b91c1c;background:#fee2e2;}
 .dn-panel .legend{font-size:.62rem;color:#8a97a3;margin-top:10px;padding:8px 4px 0;border-top:1px solid #e6ebf0;line-height:1.6;}
