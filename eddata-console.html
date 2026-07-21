@@ -195,7 +195,7 @@ const VENDORS = [
     id:'zhixie', name:'智寫科技', product:'寫作回饋工具',
     vetting:{status:'certified', label:'✓ 已通過基準認證', note:'合規閘 5/5 通過（見供應商審核 vetting.html）'},
     grants:[
-      {group:'增潤組（9 人）· 中二乙班', tier:'Tier 1 · 基本資料', since:'2026-06-20'},
+      {group:'增潤組（3 人）· 中二乙班', tier:'Tier 1 · 基本資料', since:'2026-06-20'},
     ],
     pending:[
       {id:'r1', teacher:'陳老師', group:'支援組（2 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
@@ -214,7 +214,7 @@ const VENDORS = [
     vetting:{status:'none', label:'⚠ 尚未提交供應商審核', note:'未見於供應商審核佇列（vetting.html）——按管治規則，任何層級都不應在此核准，須先完成合規閘'},
     grants:[],
     pending:[
-      {id:'r3', teacher:'黃老師', group:'核心組（17 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+      {id:'r3', teacher:'黃老師', group:'核心組（5 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
     ],
   },
 ];
@@ -270,7 +270,7 @@ function renderVendors(){
               </div>
               <span class="status ${r.status}">${statusLabel}</span>
             </div>
-            ${blocked ? `<div class="block-note">🚫 此供應商尚未通過供應商審核，按管治規則不能核准任何資料層級——請先完成合規閘，或拒絕此請求。</div>` : ''}
+            ${blocked ? `<div class="block-note">🚫 此供應商尚未通過供應商審核，按管治規則不能核准任何資料層級，請先完成合規閘，或拒絕此請求。</div>` : ''}
             ${r.status==='pending' && !blocked ? tierPickHtml(v.id, r, v.name) : ''}
             <div class="btns">
               <button class="act" id="approve-${v.id}-${r.id}" ${r.status!=='pending'||blocked?'disabled':''} onclick="approve('${v.id}','${r.id}')">✓ 核准</button>
