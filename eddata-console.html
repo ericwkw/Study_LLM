@@ -6,7 +6,7 @@
 <title>EdData 存取審批 — 校管系統（示意）</title>
 <style>
   :root{
-    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;--ec-maroon:#7B2539;
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;--ec-maroon:#7B2539;--ec-purple:#7C5CDB;
     --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#dde3e8;--bg:#eef1f4;font-size:18px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -120,6 +120,24 @@
 
   .empty-msg{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center;font-size:.8rem;color:var(--ink-3);}
 
+  /* vendor-initiated trial requests — visually distinct from the main vendor-relationship cards */
+  .trial-zone{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden;}
+  .trial-zone .t-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#f9f7fd;}
+  .trial-zone .t-head .v-ic{background:#f1edfb;color:var(--ec-purple);}
+  .trial-zone .t-head b{font-size:.86rem;display:block;}
+  .trial-zone .t-head small{font-size:.7rem;color:var(--ink-3);display:block;margin-top:2px;}
+  .trial-zone .t-badges{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .tchip{font-size:.64rem;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap;}
+  .tchip.src{color:var(--ec-purple);background:#f1edfb;}
+  .tchip.pending{color:#8a5a00;background:#fdf1c7;}
+  .tchip.active{color:#0c6b48;background:#e6f7ef;}
+  .tchip.declined{color:#b91c1c;background:#fee2e2;}
+  .tchip.cooldown{color:var(--ink-2);background:#f5f8fa;border:1px solid var(--line);}
+  .trial-zone .t-body{padding:12px 16px;font-size:.79rem;color:var(--ink-2);line-height:1.65;}
+  .trial-zone .t-body .reason{background:#fee2e2;border-radius:8px;padding:9px 12px;margin-top:8px;font-size:.76rem;color:#991b1b;}
+  .trial-zone .t-foot{padding:11px 16px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;flex-wrap:wrap;}
+  .trial-zone .t-foot .cd-note{font-size:.72rem;color:var(--ink-3);}
+
   /* audit trail */
   .audit{margin-top:6px;}
   .a-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-2);line-height:1.6;}
@@ -172,6 +190,10 @@
   <h2>供應商關係</h2>
   <div id="vendorList"></div>
 
+  <h2>供應商發起的試用請求</h2>
+  <div class="sub" style="margin:0 0 12px;max-width:56em;">供應商也可以主動發起試用，但必須綁定一位已確認的老師與組別——不能繞過老師直接向校方要求存取。試用固定為 Tier 1 · 基本資料，最長 14 天；屆滿後如要繼續使用，仍須經「供應商關係」按正式流程申請正式層級。</div>
+  <div id="trialList"></div>
+
   <h2>稽核記錄</h2>
   <div class="audit" id="auditList"></div>
 
@@ -217,6 +239,13 @@ const VENDORS = [
       {id:'r3', teacher:'黃老師', group:'核心組（5 人）· 中二乙班', src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
     ],
   },
+];
+
+const TRIALS = [
+  {id:'t1', vendor:'點讀教育', teacher:'陳老師', group:'增潤組（3 人）· 中二乙班', tool:'中文分級閱讀庫 · 進階版試用',
+   status:'pending', expiresAt:'2026-08-04', declineReason:null, cooldownUntil:null},
+  {id:'t2', vendor:'語音通 AI', teacher:'黃老師', group:'核心組（5 人）· 中二乙班', tool:'AI 朗讀評測（試用版）',
+   status:'declined', expiresAt:null, declineReason:'試用期內評語準確度不足，未能分辨聲調錯誤與地道口音差異。', cooldownUntil:'2026-11-05'},
 ];
 
 const AUDIT = [
@@ -308,6 +337,64 @@ function renderVendors(){
   }));
 }
 
+function renderTrials(){
+  document.getElementById('trialList').innerHTML = TRIALS.map(t=>{
+    let badges = `<span class="tchip src">供應商發起 · ${t.teacher}已確認</span>`;
+    if(t.status==='pending') badges += `<span class="tchip pending">⏳ 待你確認</span>`;
+    if(t.status==='active') badges += `<span class="tchip active">✓ 試用中 · 至 ${t.expiresAt}</span>`;
+    if(t.status==='declined') badges += `<span class="tchip declined">✕ 已拒絕</span>`;
+
+    let body = `<div class="t-body"><b>${t.group}</b> 的學生資料，供 ${t.teacher} 試用 Tier 1 · 基本資料`;
+    if(t.status==='active') body += `（進行中，至 ${t.expiresAt}）`;
+    body += `。`;
+    if(t.status==='declined'){
+      body += `<div class="reason">拒絕原因：${t.declineReason}</div>`;
+    }
+    body += `</div>`;
+
+    let foot = '';
+    if(t.status==='pending'){
+      foot = `<div class="t-foot">
+        <button class="act" onclick="confirmTrial('${t.id}')">✓ 確認試用（Tier 1 · 14 天）</button>
+        <button class="act deny" onclick="declineTrial('${t.id}')">拒絕</button>
+      </div>`;
+    } else if(t.status==='active'){
+      foot = `<div class="t-foot"><span class="cd-note">試用期滿後，如${t.teacher}認為值得繼續，請回到上方「供應商關係」正式申請存取層級。</span></div>`;
+    } else if(t.status==='declined'){
+      foot = `<div class="t-foot">
+        <span class="tchip cooldown">🔒 冷靜期至 ${t.cooldownUntil}</span>
+        <span class="cd-note">在此日期前，${t.vendor}不能就同一組別再次發起試用請求。</span>
+        <button class="act" onclick="toast('🔒 冷靜期至 ${t.cooldownUntil}，暫時不能重新提交')">供應商嘗試重新提交（示範）</button>
+      </div>`;
+    }
+
+    return `<div class="trial-zone" id="trial-${t.id}">
+      <div class="t-head">
+        <div class="v-ic">${t.vendor[0]}</div>
+        <div><b>${t.vendor}</b><small>${t.tool}</small></div>
+        <div class="t-badges">${badges}</div>
+      </div>
+      ${body}
+      ${foot}
+    </div>`;
+  }).join('');
+}
+function confirmTrial(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='active';
+  AUDIT.unshift({ic:'✓', text:'馮 Sir 確認'+t.vendor+'對'+t.group+'的試用請求（Tier 1 · 至'+t.expiresAt+'），由'+t.teacher+'發起確認', time:'2026-07-21'});
+  renderTrials(); renderAudit();
+  toast('已確認試用：'+t.vendor+' · 至 '+t.expiresAt);
+}
+function declineTrial(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='declined';
+  t.declineReason = t.declineReason || '暫不符合本組現時教學需要。';
+  t.cooldownUntil = t.cooldownUntil || '2026-10-19';
+  AUDIT.unshift({ic:'✕', text:'馮 Sir 拒絕'+t.vendor+'對'+t.group+'的試用請求，冷靜期至'+t.cooldownUntil, time:'2026-07-21'});
+  renderTrials(); renderAudit();
+  toast('已拒絕試用：冷靜期至 '+t.cooldownUntil);
+}
 function findReq(vendorId, reqId){
   const v = VENDORS.find(x=>x.id===vendorId);
   const r = v.pending.find(x=>x.id===reqId);
@@ -344,6 +431,7 @@ function renderAudit(){
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderVendors();
+renderTrials();
 renderAudit();
 </script>
 <script src="demo-nav.js"></script>

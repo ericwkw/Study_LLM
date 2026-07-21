@@ -54,8 +54,9 @@
   .dim-split td{background:#f7fdf9;color:#0c6b48;font-size:.7rem;font-weight:700;letter-spacing:.06em;padding:8px 16px;}
   .dim-note{font-size:.72rem;color:var(--ink-2);margin-top:10px;line-height:1.6;max-width:52em;}
 
+  .trial-section{margin-top:26px;}
   .trial{
-    margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;
     display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;
   }
   .trial .t-ic{width:44px;height:44px;border-radius:12px;background:#f1edfb;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
@@ -64,6 +65,15 @@
   .trial p{font-size:.78rem;color:var(--ink-2);line-height:1.65;margin-top:5px;}
   .trial .gate{font-size:.7rem;color:var(--ec-maroon);background:#faf1f3;border:1px solid #e5cdd4;border-radius:99px;padding:4px 11px;display:inline-block;margin-top:9px;}
   .trial .btns{display:flex;gap:9px;flex-shrink:0;align-self:center;}
+  .trial.progress .t-ic{background:#fdf1c7;}
+  .trial.passed .t-ic{background:#e6f7ef;}
+  .trial.declined .t-ic{background:#fee2e2;}
+  .trial .state-chip{font-size:.68rem;font-weight:700;border-radius:99px;padding:4px 11px;display:inline-block;margin-top:9px;}
+  .trial .state-chip.progress{color:#8a5a00;background:#fdf1c7;}
+  .trial .state-chip.passed{color:#0c6b48;background:#e6f7ef;}
+  .trial .state-chip.declined{color:#b91c1c;background:#fee2e2;}
+  .trial .reason-box{background:#fee2e2;border-radius:8px;padding:9px 12px;margin-top:9px;font-size:.75rem;color:#991b1b;line-height:1.6;width:100%;}
+  .trial .cooldown-note{font-size:.72rem;color:var(--ink-3);margin-top:8px;width:100%;}
   .btn{border:none;border-radius:10px;padding:10px 17px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
   .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-2);font-weight:600;}
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
@@ -136,18 +146,10 @@
   </table>
   <div class="dim-note">作為政府資助機構，成效不應只看考試表現。持續學習的意欲與成績同樣重要，此視圖兩者並列。</div>
 
-  <h2>另一個崗位：工具試用評估</h2>
-  <div class="trial">
-    <div class="t-ic">🧪</div>
-    <div class="t-body">
-      <b>「智寫」寫作回饋工具 — 全科訂閱申請</b>
-      <p>供應商申請中文科全科採用。按管治規則，<b>全科訂閱須先由你實測評估</b>：以真實學生作文檢驗回饋質素，再向資訊科技統籌（訂閱管理）提交建議。個別教師自行試用，則毋須經過此步。</p>
-      <span class="gate">⏳ 待你評估 · 全科訂閱在此之前不會生效</span>
-    </div>
-    <div class="btns">
-      <button class="btn" onclick="toast('原型示範：開始一週實測評估')">開始評估</button>
-      <button class="btn ghost" onclick="toast('原型示範：查看供應商合規資料')">查看資料</button>
-    </div>
+  <div class="trial-section">
+    <h2>另一個崗位：工具試用評估</h2>
+    <div class="sub" style="margin:0;">全科訂閱須先由你實測評估，才能交資訊科技統籌批出——個別教師自行試用毋須經過此步。若評估不通過，會記錄原因，供應商在冷靜期內不能就同一工具再次申請全科評估。</div>
+    <div id="trialList"></div>
   </div>
 
   <footer class="note">EdCity 科組視圖 · 故事 7「The Department Picture」示意畫面 · 內部示範原型，僅供概念演示</footer>
@@ -156,8 +158,69 @@
 
 <div class="toast" id="toast"></div>
 <script>
+const TRIALS = [
+  {id:'d1', vendor:'智寫科技', product:'寫作回饋工具', status:'pending', declineReason:null, cooldownUntil:null},
+  {id:'d2', vendor:'語音通 AI', product:'AI 朗讀評測全科版', status:'declined',
+   declineReason:'試用期內，朗讀評測未能準確分辨地道口音與真正發音錯誤，容易誤導學生。', cooldownUntil:'2026-11-05'},
+];
+
+function renderTrials(){
+  document.getElementById('trialList').innerHTML = TRIALS.map(t=>{
+    let stateChip = '', body = '', btns = '';
+    if(t.status==='pending'){
+      stateChip = `<span class="state-chip progress">⏳ 待你評估 · 全科訂閱在此之前不會生效</span>`;
+      body = `<p>供應商申請中文科全科採用。按管治規則，<b>全科訂閱須先由你實測評估</b>：以真實學生作文檢驗回饋質素，再向資訊科技統籌（訂閱管理）提交建議。</p>`;
+      btns = `<button class="btn" onclick="startEval('${t.id}')">開始評估</button>
+              <button class="btn ghost" onclick="toast('原型示範：查看供應商合規資料')">查看資料</button>`;
+    } else if(t.status==='progress'){
+      stateChip = `<span class="state-chip progress">🧪 實測評估中 · 第 3/7 天</span>`;
+      body = `<p>正以真實學生作文檢驗回饋質素。完成一週後，請在下方記錄評估結果——通過會交資訊科技統籌批出全科訂閱，不通過須說明原因，並進入冷靜期。</p>`;
+      btns = `<button class="btn" onclick="passEval('${t.id}')">✓ 通過，建議全科採用</button>
+              <button class="btn ghost" onclick="declineEval('${t.id}')">✕ 不通過</button>`;
+    } else if(t.status==='passed'){
+      stateChip = `<span class="state-chip passed">✓ 已建議全科採用</span>`;
+      body = `<p>評估通過，建議已交資訊科技統籌（訂閱管理），全科訂閱能否批出由他決定名額與方案。</p>`;
+      btns = `<button class="btn ghost" onclick="toast('原型示範：前往訂閱管理查看批出進度')">查看訂閱管理 →</button>`;
+    } else if(t.status==='declined'){
+      stateChip = `<span class="state-chip declined">✕ 評估不通過</span>`;
+      body = `<div class="reason-box">評估不通過原因：${t.declineReason}</div>
+              <div class="cooldown-note">🔒 冷靜期至 ${t.cooldownUntil}，在此日期前，${t.vendor}不能就「${t.product}」再次申請全科評估。</div>`;
+      btns = `<button class="btn ghost" onclick="toast('🔒 冷靜期至 ${t.cooldownUntil}，暫時不能重新申請全科評估')">供應商嘗試重新申請（示範）</button>`;
+    }
+    return `<div class="trial ${t.status==='pending'?'':t.status}" id="trial-${t.id}">
+      <div class="t-ic">🧪</div>
+      <div class="t-body">
+        <b>「${t.vendor}」${t.product} — 全科訂閱申請</b>
+        ${body}
+        ${stateChip}
+      </div>
+      <div class="btns">${btns}</div>
+    </div>`;
+  }).join('');
+}
+function startEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='progress';
+  renderTrials();
+  toast('已開始一週實測評估');
+}
+function passEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='passed';
+  renderTrials();
+  toast('評估通過，已交資訊科技統籌處理全科訂閱');
+}
+function declineEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='declined';
+  t.declineReason = t.declineReason || '評估期內未達本科教學需要的水平。';
+  t.cooldownUntil = t.cooldownUntil || '2026-10-19';
+  renderTrials();
+  toast('已記錄評估不通過，冷靜期至 '+t.cooldownUntil);
+}
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
+renderTrials();
 </script>
 <script src="demo-nav.js"></script>
 </body>
