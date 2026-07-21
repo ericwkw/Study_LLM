@@ -86,6 +86,14 @@
   .plan-state.warn{color:#b07c10;background:#fdf6ec;border:1px solid #f3e3c3;}
   .plan-state.danger{color:var(--ec-red);background:#fdecec;border:1px solid #f3c6c9;}
 
+  .tabs{display:flex;gap:22px;margin:16px 0 22px;border-bottom:1px solid var(--line);}
+  .tab-btn{background:none;border:none;padding:10px 2px;font-size:.86rem;font-weight:600;color:var(--ink-3);
+    cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;display:flex;align-items:center;gap:7px;}
+  .tab-btn.active{color:var(--ink);border-bottom-color:var(--ec-purple);}
+  .tab-btn .tab-count{font-size:.64rem;font-weight:700;color:#8a5a00;background:#fdf1c7;border-radius:99px;padding:1px 8px;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
   .toast.show{opacity:.94;}
   footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
@@ -133,72 +141,79 @@
   <h1>訂閱管理</h1>
   <div class="sub">全校訂閱的教育城審核工具集中在同一畫面，續期日期與適用範圍一目了然。<b>批出授權後，工具會自動出現在教師介面</b>，毋須另建帳號或派發密碼。</div>
 
-  <h2>待處理申請</h2>
-  <div class="req direct">
-    <div class="ic">🧑‍🏫</div>
-    <div class="body">
-      <b>兩位中文科教師申請試用「智寫」寫作回饋工具</b>
-      <p>陳老師、黃老師 · 個人試用性質，非科組承諾。按管治規則，小規模試用<b>可直接批出</b>，毋須科主任評估。</p>
-      <span class="scope">✓ 小規模試用 · 可直接批出</span>
-    </div>
-    <div class="btns">
-      <button class="btn" id="grantBtn" onclick="grant(this)">批出（限 2 人）</button>
-      <button class="btn ghost" onclick="toast('原型示範：查看申請詳情')">詳情</button>
-    </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="pending" onclick="showTab('pending')">待處理申請<span class="tab-count" id="pendingCount" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="plans" onclick="showTab('plans')">供應商方案名額</button>
+    <button class="tab-btn" data-tab="existing" onclick="showTab('existing')">現有訂閱</button>
   </div>
-  <div class="req gated">
-    <div class="ic">🏫</div>
-    <div class="body">
-      <b>中文科申請全科採用「智寫」寫作回饋工具</b>
-      <p>科主任提出全科訂閱。按管治規則，<b>須待科主任完成實測評估並提交建議</b>（見科組視圖）方可批出。全科採用與小規模試用，把關程度自然不同。</p>
-      <span class="scope">⏳ 待科主任評估建議 · 暫不能批出</span>
-    </div>
-    <div class="btns">
-      <button class="btn" disabled>批出</button>
-      <button class="btn ghost" onclick="toast('原型示範：提醒科主任完成評估')">催辦</button>
-    </div>
-  </div>
-  <div id="capacityAlerts"></div>
 
-  <div class="plan-zone">
-    <h2>供應商方案名額</h2>
-    <div class="sub" style="margin:0 0 4px;">每個方案的教師與學生名額上限。用量達八成即提早示警，讓你在教師提交請求前，先看到快要滿額的方案。</div>
+  <section class="tab-pane active" data-pane="pending">
+    <div class="req direct">
+      <div class="ic">🧑‍🏫</div>
+      <div class="body">
+        <b>兩位中文科教師申請試用「智寫」寫作回饋工具</b>
+        <p>陳老師、黃老師 · 個人試用性質，非科組承諾。按管治規則，小規模試用<b>可直接批出</b>，毋須科主任評估。</p>
+        <span class="scope">✓ 小規模試用 · 可直接批出</span>
+      </div>
+      <div class="btns">
+        <button class="btn" id="grantBtn" onclick="grant(this)">批出（限 2 人）</button>
+        <button class="btn ghost" onclick="toast('原型示範：查看申請詳情')">詳情</button>
+      </div>
+    </div>
+    <div class="req gated">
+      <div class="ic">🏫</div>
+      <div class="body">
+        <b>中文科申請全科採用「智寫」寫作回饋工具</b>
+        <p>科主任提出全科訂閱。按管治規則，<b>須待科主任完成實測評估並提交建議</b>（見科組視圖之工具試用評估）方可批出。全科採用與小規模試用，把關程度自然不同。</p>
+        <span class="scope">⏳ 待科主任評估建議 · 暫不能批出</span>
+      </div>
+      <div class="btns">
+        <button class="btn" disabled>批出</button>
+        <button class="btn ghost" onclick="toast('原型示範：提醒科主任完成評估')">催辦</button>
+      </div>
+    </div>
+    <div id="capacityAlerts"></div>
+  </section>
+
+  <section class="tab-pane" data-pane="plans">
+    <div class="sub" style="margin:0 0 14px;">每個方案的教師與學生名額上限。用量達八成即提早示警，讓你在教師提交請求前，先看到快要滿額的方案。</div>
     <div class="plan-grid" id="planGrid"></div>
     <div class="note-row">名額用量與 <a href="eddata-console.html" style="color:var(--ec-blue-dark);font-weight:700;">EdData 存取審批</a> 共用同一份供應商資料（vendor-data.js），已核准組別的學生人數會自動滙總，不會出現兩邊數字不一致的情況。</div>
-  </div>
+  </section>
 
-  <h2>現有訂閱</h2>
-  <table>
-    <thead><tr><th>工具</th><th>續期</th><th>範圍</th><th>狀態</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><span class="tool">AI 中文作文批改</span><span class="vend">Sayo Academy · 教育城已審核</span></td>
-        <td>2027-08-31</td>
-        <td><span class="chip dept">中文科 · 全科</span></td>
-        <td><span class="chip ok">✓ 使用中</span></td>
-      </tr>
-      <tr>
-        <td><span class="tool">普通話朗讀評測</span><span class="vend">智語科技 · 教育城已審核</span></td>
-        <td>2026-12-31</td>
-        <td><span class="chip dept">中文科 · 全科</span></td>
-        <td><span class="chip ok">✓ 使用中</span></td>
-      </tr>
-      <tr>
-        <td><span class="tool">中文分級閱讀庫</span><span class="vend">點讀教育 · 教育城已審核</span></td>
-        <td>2026-08-15</td>
-        <td><span class="chip ind" id="diandu-teacher-count">個別教師 × 3</span></td>
-        <td><span class="chip warn">⚠ 34 天後續期</span></td>
-      </tr>
-      <tr>
-        <td><span class="tool">古典詩詞互動課件</span><span class="vend">文淵智學 · 教育城已審核</span></td>
-        <td>已於 2026-06-30 屆滿</td>
-        <td><span class="chip ind">個別教師 × 1</span></td>
-        <td><span class="chip warn">已屆滿 · 歷史數據保留</span></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="note-row">訂閱屆滿後，工具會從教師介面移除，但<b>已收集的標籤數據會保留為歷史紀錄</b>，不會因不續期而消失。教師介面（Apps／代理）中「校方已採購」的標示，正是由此處的授權驅動。</div>
-  <div class="note-row">🔐 本頁只決定「用不用這件工具」；教師組別的<b>資料存取層級</b>是另一個決定，記錄在 <a href="eddata-console.html" style="color:var(--ec-blue-dark);font-weight:700;">EdData 存取審批</a>（校管系統，另一系統）。</div>
+  <section class="tab-pane" data-pane="existing">
+    <table>
+      <thead><tr><th>工具</th><th>續期</th><th>範圍</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tool">AI 中文作文批改</span><span class="vend">Sayo Academy · 教育城已審核</span></td>
+          <td>2027-08-31</td>
+          <td><span class="chip dept">中文科 · 全科</span></td>
+          <td><span class="chip ok">✓ 使用中</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool">普通話朗讀評測</span><span class="vend">智語科技 · 教育城已審核</span></td>
+          <td>2026-12-31</td>
+          <td><span class="chip dept">中文科 · 全科</span></td>
+          <td><span class="chip ok">✓ 使用中</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool">中文分級閱讀庫</span><span class="vend">點讀教育 · 教育城已審核</span></td>
+          <td>2026-08-15</td>
+          <td><span class="chip ind" id="diandu-teacher-count">個別教師 × 3</span></td>
+          <td><span class="chip warn">⚠ 34 天後續期</span></td>
+        </tr>
+        <tr>
+          <td><span class="tool">古典詩詞互動課件</span><span class="vend">文淵智學 · 教育城已審核</span></td>
+          <td>已於 2026-06-30 屆滿</td>
+          <td><span class="chip ind">個別教師 × 1</span></td>
+          <td><span class="chip warn">已屆滿 · 歷史數據保留</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note-row">訂閱屆滿後，工具會從教師介面移除，但<b>已收集的標籤數據會保留為歷史紀錄</b>，不會因不續期而消失。教師介面（Apps／代理）中「校方已採購」的標示，正是由此處的授權驅動。</div>
+    <div class="note-row">🔐 本頁只決定「用不用這件工具」；教師組別的<b>資料存取層級</b>是另一個決定，記錄在 <a href="eddata-console.html" style="color:var(--ec-blue-dark);font-weight:700;">EdData 存取審批</a>（校管系統，另一系統）。</div>
+  </section>
 
   <footer class="note">EdCity 訂閱管理 · 故事 4「The Subscription Drawer」示意畫面 · 內部示範原型，僅供概念演示</footer>
 </div>
@@ -275,9 +290,25 @@ function renderCapacityAlerts(){
     });
   });
   document.getElementById('capacityAlerts').innerHTML = alerts.join('');
+
+  // 2 static cards (direct trial + gated dept request) always count, plus any capacity alerts
+  const countEl = document.getElementById('pendingCount');
+  const total = 2 + alerts.length;
+  countEl.style.display = 'inline-block';
+  countEl.textContent = total;
 }
 
-function grant(btn){btn.textContent='已批出 ✓';btn.disabled=true;toast('已批出試用權限 · 工具將自動出現在兩位教師的介面');}
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+}
+
+function grant(btn){
+  btn.textContent='已批出 ✓';btn.disabled=true;
+  toast('已批出試用權限 · 工具將自動出現在兩位教師的介面');
+  const countEl = document.getElementById('pendingCount');
+  countEl.textContent = Math.max(0, parseInt(countEl.textContent||'0',10)-1);
+}
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderCapacityAlerts();

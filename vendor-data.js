@@ -11,23 +11,66 @@
  * human-readable group label, so consumption can be summed exactly instead of
  * parsed out of Chinese text like "（3 人）".
  */
+/* Shared teaching-group roster — single source for groups.html's drag-and-drop board
+ * AND for detecting membership drift on vendor requests/grants. Group scope in a
+ * grant/request is a snapshot (memberSnapshot, taken when the request was made), not
+ * a live-synced number — Eric's call: access shouldn't silently change just because
+ * membership did. But we still need ONE ground truth to detect that drift against,
+ * which is why the roster itself lives here rather than staying local to groups.html. */
+const ROSTER = {
+  className:'中二乙班',
+  groups:[
+    {id:'stretch', name:'增潤組', color:'var(--ec-purple)', goal:'進度較快，適合延伸閱讀與較深的寫作任務'},
+    {id:'core', name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度，做標準課業與練習'},
+    {id:'support', name:'支援組', color:'var(--ec-green)', goal:'需要多些時間，由你親自帶領'},
+  ],
+  students:[
+    {n:'王思穎', g:'stretch'},{n:'林一心', g:'stretch'},{n:'徐朗', g:'stretch'},
+    {n:'陳嘉欣', g:'core'},{n:'何梓晴', g:'core'},{n:'黃俊傑', g:'core'},{n:'吳詠芝', g:'core'},{n:'周天恩', g:'core'},
+    {n:'李俊希', g:'support'},{n:'鄭家朗', g:'support'},
+    {n:'簡愛琳', g:'core', left:true},
+  ],
+};
+function groupMembers(groupId){ return ROSTER.students.filter(s=>s.g===groupId && !s.left); }
+function groupHeadcount(groupId){ return groupMembers(groupId).length; }
+function wholeClassMembers(){ return ROSTER.students.filter(s=>!s.left); }
+function groupLabel(groupId){
+  if(groupId==='__whole_class__') return '全班 · '+ROSTER.className;
+  const g = ROSTER.groups.find(x=>x.id===groupId);
+  return g ? g.name+'（'+groupHeadcount(groupId)+' 人）· '+ROSTER.className : groupId;
+}
+
+/* Compares a request/grant's memberSnapshot (names at the time it was made) against
+ * the group's CURRENT live membership. Returns null if nothing has changed, otherwise
+ * {added, removed} name lists — surfaced as a "please reconfirm" nudge, never used to
+ * silently change what's already been approved. */
+function membershipDrift(entry){
+  if(!entry.groupId || !entry.memberSnapshot) return null;
+  const current = entry.groupId==='__whole_class__' ? wholeClassMembers().map(s=>s.n) : groupMembers(entry.groupId).map(s=>s.n);
+  const before = entry.memberSnapshot;
+  const added = current.filter(n=>!before.includes(n));
+  const removed = before.filter(n=>!current.includes(n));
+  if(!added.length && !removed.length) return null;
+  return {added, removed};
+}
+
 const VENDORS = [
   {
     id:'zhixie', name:'智寫科技', product:'寫作回饋工具',
     vetting:{status:'certified', label:'✓ 已通過基準認證', note:'合規閘 5/5 通過（見供應商審核 vetting.html）'},
     grants:[
-      {group:'增潤組（3 人）· 中二乙班', headcount:3, teacher:'陳老師', tier:'Tier 1 · 基本資料', since:'2026-06-20'},
+      {group:'增潤組（3 人）· 中二乙班', groupId:'stretch', memberSnapshot:['王思穎','林一心','徐朗'], headcount:3, teacher:'陳老師', tier:'Tier 1 · 基本資料', since:'2026-06-20'},
     ],
     pending:[
-      {id:'r1', teacher:'陳老師', group:'支援組（2 人）· 中二乙班', headcount:2, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
-      {id:'r2', teacher:'黃老師', group:'核心組（5 人）· 中二乙班', headcount:5, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+      {id:'r1', teacher:'陳老師', group:'支援組（2 人）· 中二乙班', groupId:'support', memberSnapshot:['李俊希','鄭家朗'], headcount:2, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+      {id:'r2', teacher:'黃老師', group:'核心組（6 人）· 中二乙班', groupId:'core', memberSnapshot:['陳嘉欣','何梓晴','黃俊傑','吳詠芝','周天恩','簡愛琳'], headcount:6, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
     ],
   },
   {
     id:'diandu', name:'點讀教育', product:'中文分級閱讀庫',
     vetting:{status:'certified', label:'✓ 已通過基準認證', note:'合規閘 5/5 通過'},
     grants:[
-      {group:'全班 · 中一甲班', headcount:32, teacher:'黃老師', tier:'Tier 1 · 基本資料', since:'2026-07-15'},
+      {group:'全班 · 中一甲班', groupId:null, memberSnapshot:null, headcount:32, teacher:'黃老師', tier:'Tier 1 · 基本資料', since:'2026-07-15'},
     ],
     pending:[],
   },
@@ -36,7 +79,7 @@ const VENDORS = [
     vetting:{status:'none', label:'⚠ 尚未提交供應商審核', note:'未見於供應商審核佇列（vetting.html），按管治規則，任何層級都不應在此核准，須先完成合規閘'},
     grants:[],
     pending:[
-      {id:'r3', teacher:'黃老師', group:'核心組（5 人）· 中二乙班', headcount:5, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
+      {id:'r3', teacher:'黃老師', group:'核心組（6 人）· 中二乙班', groupId:'core', memberSnapshot:['陳嘉欣','何梓晴','黃俊傑','吳詠芝','周天恩','簡愛琳'], headcount:6, src:'來自教學分組（groups.html）', status:'pending', _pickedTier:null},
     ],
   },
 ];
@@ -62,6 +105,30 @@ const TRIALS = [
    tool:'AI 詞彙診斷追蹤（試用版）', status:'awaiting_teacher', expiresAt:null,
    declineReason:null, cooldownUntil:null, declinedBy:null},
 ];
+
+/* Does requesting `groupId` for `vendorId` overlap with access that vendor already
+ * has (granted or pending) for this class? Whole-class vs. per-group is the one
+ * overlap this prototype checks — returns a human note to show the requester and
+ * (via the pending entry's overlapNote field) the approver, or null if no overlap. */
+function scopeOverlapNote(vendorId, groupId){
+  const v = VENDORS.find(x=>x.id===vendorId);
+  if(!v) return null;
+  const subGroupIds = ROSTER.groups.map(g=>g.id);
+  const covered = new Set([
+    ...v.grants.map(g=>g.groupId).filter(Boolean),
+    ...v.pending.filter(p=>p.status==='pending').map(p=>p.groupId).filter(Boolean),
+  ]);
+  if(groupId==='__whole_class__'){
+    const already = subGroupIds.filter(id=>covered.has(id));
+    if(already.length){
+      const names = already.map(id=>ROSTER.groups.find(g=>g.id===id).name).join('、');
+      return '此供應商已就 '+names+' 持有存取或待審批請求，全班申請會與此重疊，建議由資訊科技統籌一併檢視。';
+    }
+  } else if(covered.has('__whole_class__')){
+    return '此供應商已持有全班存取或待審批請求，這個分組申請可能重疊，建議由資訊科技統籌一併檢視。';
+  }
+  return null;
+}
 
 /* Commercial plan caps — a separate fact from the data-tier grants above.
  * Owned conceptually by subscriptions.html (this is a contract/seat fact, not

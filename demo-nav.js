@@ -21,31 +21,41 @@ const CSS = `
 .dn-panel .legend{font-size:.62rem;color:#8a97a3;margin-top:10px;padding:8px 4px 0;border-top:1px solid #e6ebf0;line-height:1.6;}
 `;
 const PAGES = [
-  {group:'教師 — 現有原型', items:[
+  {group:'👩‍🏫 教師（陳老師）', items:[
     ['index.html','AI 工具首頁',''],
     ['chat.html','AI 對話（科目助理）',''],
     ['agents.html','Apps／代理庫',''],
     ['marking.html','AI 批改（故事 1）','y'],
-    ['groups.html','教學分組','y'],
-    ['trial-invites.html','試用邀請（供應商發起）','r'],
     ['materials.html','教材準備（三大用例）','y'],
+    ['groups.html','教學分組','y'],
+    ['group-access-requests.html','學生工具申請（含全班／分組、成員異動提示）','y'],
+    ['trial-invites.html','試用邀請（供應商發起）','r'],
     ['material-library.html','教材庫（我的教材）','y'],
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],
   ]},
-  {group:'其他角色 — 故事場景', items:[
-    ['dept.html','科主任統計視圖（故事 7）','y'],
-    ['subscriptions.html','訂閱管理（故事 4）','y'],
-    ['student.html','學生／家長入口（故事 8）','r'],
+  {group:'📈 科主任（李主任）', items:[
+    ['dept.html','科組統計視圖（故事 7）','y'],
+    ['dept-trial-evaluations.html','工具試用評估','y'],
   ]},
-  {group:'校管系統（SMS）— 與 EdCity.ai 分離運作', items:[
-    ['roster.html','名冊完整度檢視（故事 2）','y'],
+  {group:'🔧 資訊科技統籌（馮 Sir）', items:[
+    ['subscriptions.html','訂閱管理（故事 4）','y'],
     ['eddata-console.html','EdData 資料存取審批','r'],
   ]},
-  {group:'平台營運與供應商', items:[
+  {group:'📋 校務處（何主任）', items:[
+    ['roster.html','名冊完整度檢視（故事 2）','y'],
+  ]},
+  {group:'🎒 學生／家長（Karen）', items:[
+    ['student.html','學生／家長入口（故事 8）','r'],
+  ]},
+  {group:'🏷 內容審核員（平台營運）', items:[
     ['tags.html','標籤審核與管理（故事 6）','r'],
+  ]},
+  {group:'🤝 供應商關係主任（方小姐 · 平台營運）', items:[
     ['vetting.html','供應商審核（故事 3）','y'],
+  ]},
+  {group:'🏢 供應商（智寫科技）', items:[
     ['vendor-portal.html','供應商入口（無故事支撐）','y'],
-    ['vendor-data-console.html','資料存取控制台（供應商側，接收 EdData 批出的資料）','r'],
+    ['vendor-data-console.html','資料存取控制台（接收 EdData 批出的資料）','r'],
   ]},
 ];
 function init(){

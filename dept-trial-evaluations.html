@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EdCity 科組視圖 — 故事 7：科主任統計（示意）</title>
+<title>EdCity 工具試用評估 — 科組視圖（示意）</title>
 <style>
   :root{
     --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
@@ -30,31 +30,9 @@
   .main{flex:1;min-width:0;padding:26px 34px 80px;}
   .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
   h1{font-size:1.5rem;font-weight:800;}
-  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:46em;line-height:1.6;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:52em;line-height:1.6;}
+  .off-system-note{font-size:.72rem;color:var(--ink-3);margin:6px 0 20px;max-width:52em;line-height:1.6;}
 
-  .principle{
-    margin:16px 0 22px;background:#effaf5;border:1px solid #bfe8d7;border-radius:12px;
-    padding:12px 16px;font-size:.78rem;color:#0c6b48;line-height:1.65;max-width:52em;
-  }
-  .principle b{display:block;margin-bottom:2px;}
-
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:22px;}
-  .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
-  .stat .k{font-size:.72rem;color:var(--ink-3);margin-bottom:8px;}
-  .stat .v{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:9px;}
-  .stat .dir{font-size:.95rem;}
-  .up{color:var(--ec-green);} .flat{color:var(--ec-amber);} .down{color:var(--ec-red);}
-
-  h2{font-size:1rem;font-weight:700;margin:26px 0 12px;}
-  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-  th,td{text-align:left;padding:12px 16px;font-size:.82rem;border-bottom:1px solid var(--line);}
-  th{font-size:.7rem;letter-spacing:.08em;color:var(--ink-3);font-weight:600;background:#fafcfd;}
-  tr:last-child td{border-bottom:none;}
-  .trend{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.8rem;}
-  .dim-split td{background:#f7fdf9;color:#0c6b48;font-size:.7rem;font-weight:700;letter-spacing:.06em;padding:8px 16px;}
-  .dim-note{font-size:.72rem;color:var(--ink-2);margin-top:10px;line-height:1.6;max-width:52em;}
-
-  .trial-section{margin-top:26px;}
   .trial{
     margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;
     display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;
@@ -63,7 +41,6 @@
   .trial .t-body{flex:1;min-width:240px;}
   .trial b{font-size:.9rem;display:block;}
   .trial p{font-size:.78rem;color:var(--ink-2);line-height:1.65;margin-top:5px;}
-  .trial .gate{font-size:.7rem;color:var(--ec-maroon);background:#faf1f3;border:1px solid #e5cdd4;border-radius:99px;padding:4px 11px;display:inline-block;margin-top:9px;}
   .trial .btns{display:flex;gap:9px;flex-shrink:0;align-self:center;}
   .trial.progress .t-ic{background:#fdf1c7;}
   .trial.passed .t-ic{background:#e6f7ef;}
@@ -97,8 +74,8 @@
   <nav class="nav">
     <div class="nav-group">
       <h6>領導視圖</h6>
-      <a href="dept.html" class="active">📈 科組統計</a>
-      <a href="dept-trial-evaluations.html">🧪 工具試用評估</a>
+      <a href="dept.html">📈 科組統計</a>
+      <a href="dept-trial-evaluations.html" class="active">🧪 工具試用評估</a>
     </div>
     <div class="nav-group" style="margin-top:18px;">
       <h6>教師視圖</h6>
@@ -116,44 +93,81 @@
 <div style="padding:26px 0 0;">
   <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
 
-  <h1>中文科 · 科組統計</h1>
-  <div class="sub">滙總全科五位教師的數據，只顯示<b>趨勢方向</b>（進步／持平／回落），按年級及技能維度呈現。2025/26 下學期。</div>
+  <h1>工具試用評估</h1>
+  <div class="sub">全科訂閱須先由你實測評估，才能交資訊科技統籌批出；個別教師自行試用毋須經過此步。若評估不通過，會記錄原因，供應商在冷靜期內不能就同一工具再次申請全科評估。</div>
+  <div class="off-system-note">邀約試用的接洽（供應商聯絡、約時間）維持在系統之外進行，如電郵或電話；下方的評估紀錄由你接洽後自行建立。</div>
 
-  <div class="principle">
-    <b>🛡️ 刻意的設計：不設教師排名</b>
-    排名比較的前提，是假設每位教師的評分尺度完全一致；事實並非如此，這樣比較也不公平。此視圖要回答的是「新閱讀計劃是否見效」，而不是「哪位教師的班進步最快」。至於跨教師校準數據的存取權限，仍待領導層決定。
-  </div>
+  <div id="trialList"></div>
 
-  <div class="cards">
-    <div class="stat"><div class="k">全科整體趨勢</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
-    <div class="stat"><div class="k">中一級</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
-    <div class="stat"><div class="k">中二級</div><div class="v flat"><span class="dir">▶</span>大致持平</div></div>
-    <div class="stat"><div class="k">中三級</div><div class="v down"><span class="dir">▼</span>需要關注</div></div>
-  </div>
-
-  <h2>技能維度趨勢（全科）</h2>
-  <table>
-    <thead><tr><th>技能維度</th><th>學期趨勢</th><th>備註</th></tr></thead>
-    <tbody>
-      <tr><td>閱讀理解 — 推論</td><td><span class="trend up">▲ 進步中</span></td><td>新閱讀計劃重點範疇</td></tr>
-      <tr><td>閱讀理解 — 主旨</td><td><span class="trend up">▲ 進步中</span></td><td>—</td></tr>
-      <tr><td>寫作 — 結構組織</td><td><span class="trend flat">▶ 大致持平</span></td><td>—</td></tr>
-      <tr><td>文言字詞</td><td><span class="trend down">▼ 需要關注</span></td><td>中三級回落較明顯</td></tr>
-      <tr class="dim-split"><td colspan="3">學習持續性 — 與成績並列的成效維度，非附註</td></tr>
-      <tr><td>課外自主閱讀（自願借閱／平台自選篇章）</td><td><span class="trend up">▲ 進步中</span></td><td>非考核指標</td></tr>
-      <tr><td>自願重寫／訂正率（沒有分數誘因下）</td><td><span class="trend flat">▶ 大致持平</span></td><td>非考核指標</td></tr>
-    </tbody>
-  </table>
-  <div class="dim-note">作為政府資助機構，成效不應只看考試表現。持續學習的意欲與成績同樣重要，此視圖兩者並列。</div>
-
-  <footer class="note">EdCity 科組視圖 · 故事 7「The Department Picture」示意畫面 · 內部示範原型，僅供概念演示</footer>
+  <footer class="note">EdCity 工具試用評估 · 科組視圖延伸畫面 · 內部示範原型，僅供概念演示</footer>
 </div>
 </main>
 
 <div class="toast" id="toast"></div>
 <script>
+const TRIALS = [
+  {id:'d1', vendor:'智寫科技', product:'寫作回饋工具', status:'pending', declineReason:null, cooldownUntil:null},
+  {id:'d2', vendor:'語音通 AI', product:'AI 朗讀評測全科版', status:'declined',
+   declineReason:'試用期內，朗讀評測未能準確分辨地道口音與真正發音錯誤，容易誤導學生。', cooldownUntil:'2026-11-05'},
+];
+
+function renderTrials(){
+  document.getElementById('trialList').innerHTML = TRIALS.map(t=>{
+    let stateChip = '', body = '', btns = '';
+    if(t.status==='pending'){
+      stateChip = `<span class="state-chip progress">⏳ 待你評估 · 全科訂閱在此之前不會生效</span>`;
+      body = `<p>供應商申請中文科全科採用。按管治規則，<b>全科訂閱須先由你實測評估</b>：以真實學生作文檢驗回饋質素，再向資訊科技統籌（訂閱管理）提交建議。</p>`;
+      btns = `<button class="btn" onclick="startEval('${t.id}')">開始評估</button>
+              <button class="btn ghost" onclick="toast('原型示範：查看供應商合規資料')">查看資料</button>`;
+    } else if(t.status==='progress'){
+      stateChip = `<span class="state-chip progress">🧪 實測評估中 · 第 3/7 天</span>`;
+      body = `<p>正以真實學生作文檢驗回饋質素。完成一週後，請在下方記錄評估結果：通過會交資訊科技統籌批出全科訂閱，不通過須說明原因，並進入冷靜期。</p>`;
+      btns = `<button class="btn" onclick="passEval('${t.id}')">✓ 通過，建議全科採用</button>
+              <button class="btn ghost" onclick="declineEval('${t.id}')">✕ 不通過</button>`;
+    } else if(t.status==='passed'){
+      stateChip = `<span class="state-chip passed">✓ 已建議全科採用</span>`;
+      body = `<p>評估通過，建議已交資訊科技統籌（訂閱管理），全科訂閱能否批出由他決定名額與方案。</p>`;
+      btns = `<button class="btn ghost" onclick="toast('原型示範：前往訂閱管理查看批出進度')">查看訂閱管理 →</button>`;
+    } else if(t.status==='declined'){
+      stateChip = `<span class="state-chip declined">✕ 評估不通過</span>`;
+      body = `<div class="reason-box">評估不通過原因：${t.declineReason}</div>
+              <div class="cooldown-note">🔒 冷靜期至 ${t.cooldownUntil}，在此日期前，${t.vendor}不能就「${t.product}」再次申請全科評估。</div>`;
+      btns = `<button class="btn ghost" onclick="toast('🔒 冷靜期至 ${t.cooldownUntil}，暫時不能重新申請全科評估')">供應商嘗試重新申請（示範）</button>`;
+    }
+    return `<div class="trial ${t.status==='pending'?'':t.status}" id="trial-${t.id}">
+      <div class="t-ic">🧪</div>
+      <div class="t-body">
+        <b>「${t.vendor}」${t.product} — 全科訂閱申請</b>
+        ${body}
+        ${stateChip}
+      </div>
+      <div class="btns">${btns}</div>
+    </div>`;
+  }).join('');
+}
+function startEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='progress';
+  renderTrials();
+  toast('已開始一週實測評估');
+}
+function passEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='passed';
+  renderTrials();
+  toast('評估通過，已交資訊科技統籌處理全科訂閱');
+}
+function declineEval(id){
+  const t = TRIALS.find(x=>x.id===id);
+  t.status='declined';
+  t.declineReason = t.declineReason || '評估期內未達本科教學需要的水平。';
+  t.cooldownUntil = t.cooldownUntil || '2026-10-19';
+  renderTrials();
+  toast('已記錄評估不通過，冷靜期至 '+t.cooldownUntil);
+}
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
+renderTrials();
 </script>
 <script src="demo-nav.js"></script>
 </body>

@@ -11,7 +11,18 @@
     --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;}
+
+  .sys-sidebar{width:200px;flex-shrink:0;background:#20272e;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#93a4b1;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
+  .sys-nav{padding:10px 8px;flex:1;}
+  .sys-nav a{display:block;padding:9px 12px;border-radius:8px;color:#c3d0da;text-decoration:none;font-size:.8rem;margin-bottom:2px;}
+  .sys-nav a:hover{background:rgba(255,255,255,.06);}
+  .sys-nav a.active{background:rgba(255,255,255,.12);color:#fff;font-weight:700;}
+  .sys-sidebar-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);}
+  .sys-sidebar-foot a{font-size:.74rem;color:#93a4b1;text-decoration:none;}
+  .sys-sidebar-foot a:hover{color:#fff;}
+  .sys-main{flex:1;min-width:0;}
 
   .role-banner{background:#2b3a47;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;
     padding:9px 26px;position:sticky;top:0;z-index:50;}
@@ -65,6 +76,31 @@
     background:#e6f4fb;border:1px solid #c4e5f5;border-radius:12px;padding:11px 15px;
     font-size:.76rem;color:var(--ec-blue-dark);line-height:1.65;margin-top:4px;
   }
+
+  .invite-form{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px;}
+  .invite-form label{font-size:.72rem;color:var(--ink-3);display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
+  .invite-form input,.invite-form select{font-family:inherit;font-size:.82rem;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;}
+  .invite-form button{flex-shrink:0;}
+  .invite-block-note{margin-top:10px;background:#fee2e2;border:1px solid #f5c6c6;border-radius:8px;padding:9px 13px;font-size:.75rem;color:#991b1b;line-height:1.6;}
+  .invite-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-top:1px solid #f2f6f8;font-size:.79rem;}
+  .invite-row:first-child{border-top:none;}
+  .invite-row .i-body{flex:1;min-width:200px;}
+  .invite-row .i-body b{display:block;font-size:.82rem;}
+  .invite-row .i-body small{display:block;color:var(--ink-3);font-size:.7rem;margin-top:2px;}
+  .invite-chip{font-size:.66rem;font-weight:700;border-radius:99px;padding:4px 11px;flex-shrink:0;}
+  .invite-chip.awaiting{color:#8a6d00;background:#fdf1c7;}
+  .invite-chip.pending_it{color:var(--ec-blue-dark);background:#e6f4fb;}
+  .invite-chip.active{color:var(--ec-green);background:#effaf5;}
+  .invite-chip.graduated{color:#0c6b48;background:#e6f7ef;}
+  .invite-chip.declined{color:#b91c1c;background:#fee2e2;}
+  .empty-note{font-size:.76rem;color:var(--ink-3);padding:6px 0;}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+  .tab-btn{border:none;background:none;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--ink-3);
+    padding:10px 4px;margin-right:22px;cursor:pointer;border-bottom:2px solid transparent;}
+  .tab-btn.active{color:var(--ec-blue-dark);border-bottom-color:var(--ec-blue);}
+  .tab-count{font-size:.64rem;font-weight:700;background:#fdf1c7;color:#8a6d00;border-radius:99px;padding:2px 7px;margin-left:6px;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
   .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
   .toast.show{opacity:.94;}
   footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
@@ -72,6 +108,18 @@
 </head>
 <body>
 
+<aside class="sys-sidebar">
+  <div class="sh-label">供應商側系統</div>
+  <nav class="sys-nav">
+    <a href="vendor-portal.html" class="active">📈 EdMarket 認證進度</a>
+    <a href="vendor-data-console.html">🔓 資料存取控制台</a>
+  </nav>
+  <div class="sys-sidebar-foot">
+    <a href="index.html">← 返回 EdCity.ai</a>
+  </div>
+</aside>
+
+<div class="sys-main">
 <div class="role-banner">外 部 — 供 應 商 入 口（教 育 城 平 台 之 外 的 參 與 者）</div>
 <div class="topbar">
   <img src="edcity_logo.svg" alt="香港教育城 EdCity">
@@ -86,56 +134,156 @@
   <h1>你的申請 — 寫作回饋工具</h1>
   <div class="sub">申請編號 EM-2026-0147 · 提交於 2026-06-28 · 目標：獲認證後上架 EdMarket，經學校訂閱進入教師介面</div>
 
-  <div class="stepper">
-    <div class="step done"><span class="dot">✓</span><b>提交申請</b><small>6 月 28 日</small></div>
-    <div class="step now"><span class="dot">2</span><b>合規閘審核</b><small>4/5 通過 · 待補交</small></div>
-    <div class="step"><span class="dot">3</span><b>基準認證</b><small>—</small></div>
-    <div class="step"><span class="dot">4</span><b>上架 EdMarket</b><small>—</small></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="cert" onclick="showTab('cert')">認證進度</button>
+    <button class="tab-btn" data-tab="invite" onclick="showTab('invite')">邀請老師試用<span class="tab-count" id="inviteCount"></span></button>
+    <button class="tab-btn" data-tab="access" onclick="showTab('access')">已獲學校批出的資料存取</button>
   </div>
 
-  <div class="card">
-    <h3>合規閘進度 — 準則公開，非過即不過</h3>
-    <div class="gate-row"><span class="st p">✓</span><span>個人資料（PDPO）與數據治理<small>你提交的數據流程圖及儲存方案已獲核實</small></span></div>
-    <div class="gate-row"><span class="st p">✓</span><span>內容安全（含國家安全內容過濾）<small>過濾機制測試通過</small></span></div>
-    <div class="gate-row"><span class="st p">✓</span><span>中英雙語無障礙<small>兩種語言介面均達標</small></span></div>
-    <div class="gate-row"><span class="st p">✓</span><span>學生身份處理方案<small>已核實</small></span></div>
-    <div class="gate-row fail"><span class="st f">✗</span><span>課程對應證據 — <b>需補交</b><small>審核備註如下</small>
-      <span class="fix-note">「課程對齊」不能只是宣傳語句。請提交內容與官方課程框架的<b>實際對應文件</b>（例如練習類型對應學習重點編碼），並準備在覆核會議上即場示範。</span>
-    </span></div>
-    <div style="margin-top:14px;display:flex;gap:9px;">
-      <button class="btn" id="submitBtn" onclick="resubmit(this)">上傳對應文件</button>
-      <button class="btn ghost" onclick="toast('原型示範：查看公開審核準則全文')">查看公開準則</button>
+  <section class="tab-pane active" data-pane="cert">
+    <div class="stepper">
+      <div class="step done"><span class="dot">✓</span><b>提交申請</b><small>6 月 28 日</small></div>
+      <div class="step now"><span class="dot">2</span><b>合規閘審核</b><small>4/5 通過 · 待補交</small></div>
+      <div class="step"><span class="dot">3</span><b>基準認證</b><small>—</small></div>
+      <div class="step"><span class="dot">4</span><b>上架 EdMarket</b><small>—</small></div>
     </div>
-  </div>
 
-  <div class="card">
-    <h3>技術對接 — 讓你的工具說平台的語言</h3>
-    <div class="conform"><span class="ic">🔗</span><span>單一登入（SSO）對接<small>學校授權後，教師在教育城介面內直接開啟你的工具，無需另行登入</small></span><span class="chip ok">✓ 測試通過</span></div>
-    <div class="conform"><span class="ic">🏷</span><span>共用分類法輸出<small>你的工具回報的技能數據須使用平台共用標籤（科目 × 技能 × 掌握程度），才能匯入教師與科組視圖</small></span><span class="chip gated">🔴 待分類法發布</span></div>
-    <div class="conform"><span class="ic">📊</span><span>過渡安排<small>分類法發布前，你的數據會以並列方式顯示：不會被拒諸門外，但暫不與平台數據合併</small></span><span class="chip ok">已確認</span></div>
-  </div>
-
-  <div class="remind">ℹ️ 提醒：「符合教育城基準準則」是合規認證，<b>不是教育城的採購推薦</b>。教育城秉持採購中立：工具上架後，由學校依據公開的適配資料自行判斷。</div>
-
-  <div class="card">
-    <h3>已獲學校批出的資料存取</h3>
-    <div class="conform"><span class="ic">🔐</span><span>認證與上架是一回事，個別學校批出多少資料是另一回事——每間學校經 EdData 獨立審批，範圍不會因為認證而自動擴大<small>已有學校批出存取權限？查看實際接收到的資料範圍與帳戶狀態</small></span></div>
-    <div style="margin-top:12px;">
-      <a class="btn" href="vendor-data-console.html" style="display:inline-flex;align-items:center;text-decoration:none;">🔓 前往資料存取控制台 →</a>
+    <div class="card">
+      <h3>合規閘進度 — 準則公開，非過即不過</h3>
+      <div class="gate-row"><span class="st p">✓</span><span>個人資料（PDPO）與數據治理<small>你提交的數據流程圖及儲存方案已獲核實</small></span></div>
+      <div class="gate-row"><span class="st p">✓</span><span>內容安全（含國家安全內容過濾）<small>過濾機制測試通過</small></span></div>
+      <div class="gate-row"><span class="st p">✓</span><span>中英雙語無障礙<small>兩種語言介面均達標</small></span></div>
+      <div class="gate-row"><span class="st p">✓</span><span>學生身份處理方案<small>已核實</small></span></div>
+      <div class="gate-row fail"><span class="st f">✗</span><span>課程對應證據 — <b>需補交</b><small>審核備註如下</small>
+        <span class="fix-note">「課程對齊」不能只是宣傳語句。請提交內容與官方課程框架的<b>實際對應文件</b>（例如練習類型對應學習重點編碼），並準備在覆核會議上即場示範。</span>
+      </span></div>
+      <div style="margin-top:14px;display:flex;gap:9px;">
+        <button class="btn" id="submitBtn" onclick="resubmit(this)">上傳對應文件</button>
+        <button class="btn ghost" onclick="toast('原型示範：查看公開審核準則全文')">查看公開準則</button>
+      </div>
     </div>
-  </div>
+
+    <div class="card">
+      <h3>技術對接 — 讓你的工具說平台的語言</h3>
+      <div class="conform"><span class="ic">🔗</span><span>單一登入（SSO）對接<small>學校授權後，教師在教育城介面內直接開啟你的工具，無需另行登入</small></span><span class="chip ok">✓ 測試通過</span></div>
+      <div class="conform"><span class="ic">🏷</span><span>共用分類法輸出<small>你的工具回報的技能數據須使用平台共用標籤（科目 × 技能 × 掌握程度），才能匯入教師與科組視圖</small></span><span class="chip gated">🔴 待分類法發布</span></div>
+      <div class="conform"><span class="ic">📊</span><span>過渡安排<small>分類法發布前，你的數據會以並列方式顯示：不會被拒諸門外，但暫不與平台數據合併</small></span><span class="chip ok">已確認</span></div>
+    </div>
+
+    <div class="remind">ℹ️ 提醒：「符合教育城基準準則」是合規認證，<b>不是教育城的採購推薦</b>。教育城秉持採購中立：工具上架後，由學校依據公開的適配資料自行判斷。</div>
+  </section>
+
+  <section class="tab-pane" data-pane="invite">
+    <div class="card">
+      <h3>邀請老師試用工具</h3>
+      <div class="sub" style="margin:0 0 14px;">你必須已經和該老師接觸過（如電郵、電話、學校活動）才能發出邀請——這不是繞過學校的資料查詢，而是為既有接洽補一個正式起點。老師確認後，邀請會交由資訊科技統籌核實試用時限與資料層級，才會正式開始；試用固定為 Tier 1 · 基本資料，最長 14 天。</div>
+      <div class="invite-form">
+        <label>老師姓名<input type="text" id="inv-teacher" value="陳老師"></label>
+        <label>組別範圍<select id="inv-group"></select></label>
+        <label>試用工具／方案名稱<input type="text" id="inv-tool" placeholder="例如：寫作回饋工具 · 進階版試用"></label>
+        <button class="btn" onclick="sendInvite()">📨 發出試用邀請</button>
+      </div>
+      <div id="inviteBlock"></div>
+      <h4 style="font-size:.8rem;margin:16px 0 8px;color:var(--ink-2);">已發出的邀請</h4>
+      <div id="inviteList"></div>
+    </div>
+  </section>
+
+  <section class="tab-pane" data-pane="access">
+    <div class="card">
+      <h3>已獲學校批出的資料存取</h3>
+      <div class="conform"><span class="ic">🔐</span><span>認證與上架是一回事，個別學校批出多少資料是另一回事——每間學校經 EdData 獨立審批，範圍不會因為認證而自動擴大<small>已有學校批出存取權限？查看實際接收到的資料範圍與帳戶狀態</small></span></div>
+      <div style="margin-top:12px;">
+        <a class="btn" href="vendor-data-console.html" style="display:inline-flex;align-items:center;text-decoration:none;">🔓 前往資料存取控制台 →</a>
+      </div>
+    </div>
+  </section>
 
   <footer class="note">
     EdCity 供應商入口 · 供應商側示意畫面 · 內部示範原型，僅供概念演示<br>
     此畫面沒有對應的用戶故事；內容由故事 3（審核方視角）鏡像推導而成，當中假設（例如供應商可否看到審核備註全文）仍待驗證。
   </footer>
 </div>
+</div>
 
 <div class="toast" id="toast"></div>
+<script src="vendor-data.js"></script>
 <script>
 function resubmit(btn){btn.textContent='已上傳 · 待覆核 ✓';btn.disabled=true;toast('對應文件已提交 · EdMarket 將安排覆核會議');}
+
+/* This vendor persona is 智寫科技 (zhixie). Trials created here are pushed into the
+ * SHARED TRIALS array from vendor-data.js — the same array trial-invites.html (teacher
+ * confirm) and eddata-console.html (IT confirm) read from — so an invite sent here
+ * actually appears on 陳老師's screen, closing the loop that was previously just asserted. */
+const MY_VENDOR_ID = 'zhixie';
+const MY_VENDOR_NAME = '智寫科技';
+
+function populateGroupSelect(){
+  const sel = document.getElementById('inv-group');
+  sel.innerHTML = ROSTER.groups.map(g=>`<option value="${g.id}">${g.name}（${groupHeadcount(g.id)} 人）· ${ROSTER.className}</option>`).join('')
+    + `<option value="__whole_class__">全班 · ${ROSTER.className}</option>`;
+}
+
+function inviteStatusLabel(s){
+  return {awaiting_teacher:'⏳ 待老師確認', pending_it:'🔎 待資訊科技統籌核實', active:'✓ 試用中',
+    graduated:'🎓 已轉為正式申請', declined:'✕ 已被拒絕'}[s] || s;
+}
+
+function renderInvites(){
+  const mine = TRIALS.filter(t=>t.vendorId===MY_VENDOR_ID);
+  document.getElementById('inviteList').innerHTML = mine.length ? mine.map(t=>`
+    <div class="invite-row">
+      <div class="i-body">
+        <b>${t.teacher} · ${t.group}</b>
+        <small>${t.tool}${t.status==='declined' ? ' · '+t.declineReason : ''}${t.cooldownUntil ? '（冷靜期至 '+t.cooldownUntil+'，此組別在此之前不能再次邀請）' : ''}</small>
+      </div>
+      <span class="invite-chip ${t.status}">${inviteStatusLabel(t.status)}</span>
+    </div>`).join('') : '<div class="empty-note">尚未發出任何邀請</div>';
+  const openCount = mine.filter(t=>['awaiting_teacher','pending_it'].includes(t.status)).length;
+  document.getElementById('inviteCount').textContent = openCount ? openCount : '';
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+}
+
+function sendInvite(){
+  const teacher = document.getElementById('inv-teacher').value.trim() || '陳老師';
+  const groupId = document.getElementById('inv-group').value;
+  const tool = document.getElementById('inv-tool').value.trim() || MY_VENDOR_NAME+' · 試用';
+  const groupText = groupLabel(groupId);
+  const block = document.getElementById('inviteBlock');
+
+  const existing = TRIALS.filter(t=>t.vendorId===MY_VENDOR_ID && t.group===groupText);
+  const inFlight = existing.find(t=>['awaiting_teacher','pending_it','active'].includes(t.status));
+  if(inFlight){
+    block.innerHTML = `<div class="invite-block-note">🚫 此組別已有一個進行中的邀請（${inviteStatusLabel(inFlight.status)}），請待老師或資訊科技統籌回覆後再發出新邀請。</div>`;
+    toast('此組別已有進行中的邀請');
+    return;
+  }
+  const cooling = existing.find(t=>t.status==='declined' && t.cooldownUntil);
+  if(cooling){
+    block.innerHTML = `<div class="invite-block-note">🔒 冷靜期至 ${cooling.cooldownUntil}，在此日期前不能就「${groupText}」再次邀請試用（上次原因：${cooling.declineReason||'未提供'}）。</div>`;
+    toast('冷靜期內，暫時不能重新邀請');
+    return;
+  }
+  block.innerHTML = '';
+
+  const headcount = groupId==='__whole_class__' ? wholeClassMembers().length : groupHeadcount(groupId);
+  TRIALS.push({
+    id:'v-'+Date.now(), vendor:MY_VENDOR_NAME, vendorId:MY_VENDOR_ID, teacher, group:groupText, headcount,
+    tool, status:'awaiting_teacher', expiresAt:null, declineReason:null, cooldownUntil:null, declinedBy:null,
+  });
+  renderInvites();
+  document.getElementById('inv-tool').value = '';
+  toast('已發出邀請 · 待'+teacher+'在「試用邀請」確認');
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+populateGroupSelect();
+renderInvites();
 </script>
 <script src="demo-nav.js"></script>
 </body>

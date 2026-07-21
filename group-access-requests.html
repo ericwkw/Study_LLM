@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdCity 學生工具申請 — 課堂層級（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+  .sidebar{width:248px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar .logo-wrap{padding:20px 16px 14px;border-bottom:1px solid var(--line);}
+  .sidebar .logo-wrap img{width:100%;height:auto;display:block;}
+  .sidebar .logo-sub{font-size:.68rem;color:var(--ink-3);margin-top:8px;letter-spacing:.04em;}
+  .role-chip{display:inline-flex;align-items:center;gap:6px;font-size:.64rem;font-weight:700;color:var(--ec-blue-dark);background:#e6f4fb;border:1px solid #c4e5f5;border-radius:99px;padding:4px 10px;margin-top:9px;}
+  .nav{padding:14px 10px;flex:1;overflow-y:auto;}
+  .nav-group h6{font-size:.66rem;font-weight:600;color:var(--ec-blue);letter-spacing:.12em;padding:0 10px 8px;text-transform:uppercase;}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none;font-size:.85rem;margin-bottom:2px;}
+  .nav a:hover{background:#f2f6f9;}
+  .nav a.active{background:#e6f4fb;color:var(--ec-blue-dark);font-weight:600;}
+  .nav a .ic{width:17px;height:17px;flex-shrink:0;}
+  .sidebar .user{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+  .sidebar .user .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;}
+  .sidebar .user .meta b{font-size:.8rem;display:block;}
+  .sidebar .user .meta span{font-size:.68rem;color:var(--ink-3);}
+
+  .main{flex:1;min-width:0;padding:26px 34px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;color:#8a6d00;background:#fdf1c7;border:1px solid #f0dfa0;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 4px;max-width:50em;line-height:1.6;}
+
+  h2{font-size:.95rem;font-weight:700;margin:22px 0 12px;}
+
+  .tabs{display:flex;gap:22px;margin:16px 0 22px;border-bottom:1px solid var(--line);}
+  .tab-btn{background:none;border:none;padding:10px 2px;font-size:.86rem;font-weight:600;color:var(--ink-3);
+    cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;display:flex;align-items:center;gap:7px;}
+  .tab-btn.active{color:var(--ink);border-bottom-color:var(--ec-blue-dark);}
+  .tab-btn .tab-count{font-size:.64rem;font-weight:700;color:#b91c1c;background:#fee2e2;border-radius:99px;padding:1px 8px;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+
+  .scope-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:8px;}
+  .scope-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .scope-card.whole{border:1px solid #c4e5f5;background:#f7fbfe;}
+  .scope-card .sc-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .scope-card .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .scope-card b{font-size:.88rem;}
+  .scope-card .n{margin-left:auto;font-size:.7rem;color:var(--ink-3);}
+  .scope-card .goal{font-size:.7rem;color:var(--ink-3);margin-bottom:12px;line-height:1.5;}
+  .scope-card select{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.78rem;font-family:inherit;margin-bottom:8px;color:var(--ink);background:#fff;}
+  .scope-card .go{width:100%;border:none;border-radius:8px;padding:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;background:var(--ec-blue);color:#fff;}
+  .overlap-note{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:8px;padding:8px 10px;font-size:.7rem;color:#8a5a00;line-height:1.6;margin-top:8px;}
+  .not-covered{font-size:.7rem;color:var(--ink-3);line-height:1.6;margin-top:14px;max-width:52em;}
+
+  .req-card{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+  .req-card .rc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .req-card .rc-head b{font-size:.86rem;display:block;}
+  .req-card .rc-head small{font-size:.72rem;color:var(--ink-3);display:block;margin-top:2px;}
+  .req-card .rc-badges{margin-left:auto;}
+  .rchip{font-size:.64rem;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap;}
+  .rchip.pending{color:#8a5a00;background:#fdf1c7;}
+  .rchip.approved{color:#0c6b48;background:#e6f7ef;}
+  .rchip.denied{color:#b91c1c;background:#fee2e2;}
+  .drift-banner{background:#fee2e2;border-top:1px solid #f5c6c6;padding:11px 16px;font-size:.75rem;color:#991b1b;line-height:1.6;}
+  .drift-banner b{display:block;margin-bottom:2px;}
+  .overlap-flag{background:#fdf6ec;border-top:1px solid #f3e3c3;padding:9px 16px;font-size:.72rem;color:#8a5a00;line-height:1.6;}
+
+  .empty-msg{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center;font-size:.8rem;color:var(--ink-3);}
+
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
+  @media (max-width:900px){.sidebar{display:none;}.main{padding:18px;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+    <div class="logo-sub">AI 教學工具平台 · 原型 v0.1</div>
+    <div class="role-chip">🧑‍🏫 課堂層級 · 教師視圖</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <h6>AI 工具</h6>
+      <a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>AI 工具</a>
+      <a href="chat.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-9 8.36 8.5 8.5 0 01-3.4-.7L3 21l1.84-5.6A8.38 8.38 0 013.5 11.5a8.5 8.5 0 018.5-8.5 8.38 8.38 0 019 8.5z"/></svg>AI 對話</a>
+      <a href="agents.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>Apps／代理</a>
+      <a href="marking.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>AI 批改</a>
+      <a href="materials.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>教材準備</a>
+    </div>
+    <div class="nav-group" style="margin-top:18px;">
+      <h6>課堂管理</h6>
+      <a href="groups.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>教學分組</a>
+      <a href="group-access-requests.html" class="active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 100-8 4 4 0 000 8zM3 21c0-3.87 4-7 9-7s9 3.13 9 7"/></svg>學生工具申請</a>
+      <a href="trial-invites.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a2 2 0 002 2h12a2 2 0 002-2l-5-12V2M9 2h6"/></svg>試用邀請</a>
+      <a href="material-library.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M4 8v10a2 2 0 002 2h12a2 2 0 002-2V8M10 12h4"/></svg>教材庫</a>
+      <a href="insights.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"/></svg>班級學習面貌</a>
+    </div>
+  </nav>
+  <div class="user">
+    <div class="avatar">W</div>
+    <div class="meta"><b>Eric Wu</b><span>eric.wu@school.edu.hk</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="ribbon">🟡 提案中 · 此畫面為設計方案，功能未建置</div>
+
+  <h1>學生工具申請</h1>
+  <div class="sub">為分組或全班申請批改工具的資料存取權，與「教學分組」的組建工作分開處理；這裏一律讀取分組的即時人數，不會用到過時的名單。</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="new" onclick="showTab('new')">提出新請求</button>
+    <button class="tab-btn" data-tab="mine" onclick="showTab('mine')">我的請求與狀態<span class="tab-count" id="driftCount" style="display:none;"></span></button>
+  </div>
+
+  <section class="tab-pane active" data-pane="new">
+    <h2>按分組申請</h2>
+    <div class="scope-grid" id="groupScopeGrid"></div>
+
+    <h2>整班一次申請</h2>
+    <div class="scope-grid" id="wholeScopeGrid"></div>
+
+    <div class="not-covered">已全校授權的工具（例如智語科技）毋須在此另行申請，本頁只處理需要按分組審批資料層級的工具。</div>
+  </section>
+
+  <section class="tab-pane" data-pane="mine">
+    <div id="myRequestsList"></div>
+  </section>
+
+  <footer class="note">EdCity 學生工具申請 · 教學分組延伸畫面 · 內部示範原型，僅供概念演示</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="vendor-data.js"></script>
+<script>
+const REQUESTABLE_VENDORS = ['zhixie','diandu','unknownvendor'];
+
+function vendorOptionsHtml(){
+  return VENDORS.filter(v=>REQUESTABLE_VENDORS.includes(v.id))
+    .map(v=>`<option value="${v.id}">${v.name} · ${v.product}</option>`).join('');
+}
+
+function renderScopeCards(){
+  document.getElementById('groupScopeGrid').innerHTML = ROSTER.groups.map(g=>{
+    const n = groupHeadcount(g.id);
+    return `<div class="scope-card">
+      <div class="sc-head"><span class="dot" style="background:${g.color}"></span><b>${g.name}</b><span class="n">${n} 人</span></div>
+      <div class="goal">${g.goal}</div>
+      <select id="vendorPick-${g.id}">${vendorOptionsHtml()}</select>
+      <button class="go" onclick="submitRequest('${g.id}')">送出申請 →</button>
+      <div id="overlapNote-${g.id}"></div>
+    </div>`;
+  }).join('');
+  const wc = wholeClassMembers().length;
+  document.getElementById('wholeScopeGrid').innerHTML = `<div class="scope-card whole">
+    <div class="sc-head"><b>全班</b><span class="n">${wc} 人</span></div>
+    <div class="goal">不分組別，整班學生的資料一併申請，適合全班統一使用的工具。</div>
+    <select id="vendorPick-__whole_class__">${vendorOptionsHtml()}</select>
+    <button class="go" onclick="submitRequest('__whole_class__')">送出申請 →</button>
+    <div id="overlapNote-__whole_class__"></div>
+  </div>`;
+}
+
+function submitRequest(groupId){
+  const vendorId = document.getElementById('vendorPick-'+groupId).value;
+  const v = VENDORS.find(x=>x.id===vendorId);
+  const overlap = scopeOverlapNote(vendorId, groupId);
+  const noteEl = document.getElementById('overlapNote-'+groupId);
+  if(overlap){ noteEl.innerHTML = `<div class="overlap-note">⚠ ${overlap}</div>`; }
+  else { noteEl.innerHTML = ''; }
+
+  const memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers().map(s=>s.n) : groupMembers(groupId).map(s=>s.n);
+  const headcount = memberSnapshot.length;
+  const reqId = 'gr-'+Date.now();
+  v.pending.push({
+    id:reqId, teacher:'Eric Wu', group:groupLabel(groupId), groupId, memberSnapshot, headcount,
+    src:'來自學生工具申請（group-access-requests.html）', status:'pending', _pickedTier:null,
+    overlapNote: overlap,
+  });
+  renderMyRequests();
+  toast('已送出：'+(groupId==='__whole_class__'?'全班':ROSTER.groups.find(g=>g.id===groupId).name)+' 申請使用「'+v.name+'」，待 EdData 審批');
+}
+
+function myRelevantEntries(){
+  // grants + pending requests whose groupId belongs to this class's roster (or whole class)
+  const validIds = ['__whole_class__', ...ROSTER.groups.map(g=>g.id)];
+  const out = [];
+  VENDORS.forEach(v=>{
+    v.grants.forEach(g=>{ if(validIds.includes(g.groupId)) out.push({v, entry:g, kind:'grant'}); });
+    v.pending.forEach(p=>{ if(validIds.includes(p.groupId)) out.push({v, entry:p, kind:'pending'}); });
+  });
+  return out;
+}
+
+function renderMyRequests(){
+  const items = myRelevantEntries();
+  let driftCount = 0;
+
+  document.getElementById('myRequestsList').innerHTML = items.length ? items.map(({v,entry,kind})=>{
+    const drift = membershipDrift(entry);
+    if(drift) driftCount++;
+    const statusChip = kind==='grant' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
+      : entry.status==='pending' ? `<span class="rchip pending">⏳ 待審批</span>`
+      : entry.status==='approved' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
+      : `<span class="rchip denied">✕ 已拒絕</span>`;
+    const teacherLabel = entry.teacher ? entry.teacher+' · ' : '';
+    let driftHtml = '';
+    if(drift){
+      const parts = [];
+      if(drift.added.length) parts.push('新增：'+drift.added.join('、'));
+      if(drift.removed.length) parts.push('移除：'+drift.removed.join('、'));
+      driftHtml = `<div class="drift-banner"><b>⚠ 分組成員已改變</b>自${kind==='grant'?'核准':'申請'}後，${parts.join('；')}。存取範圍維持原狀，不會自動調整；如需涵蓋新成員或縮減範圍，請重新提出請求或聯絡資訊科技統籌。</div>`;
+    }
+    const overlapHtml = entry.overlapNote ? `<div class="overlap-flag">⚠ ${entry.overlapNote}</div>` : '';
+    return `<div class="req-card">
+      <div class="rc-head">
+        <div><b>${teacherLabel}${entry.group}</b><small>${v.name} · ${v.product}</small></div>
+        <div class="rc-badges">${statusChip}</div>
+      </div>
+      ${driftHtml}${overlapHtml}
+    </div>`;
+  }).join('') : `<div class="empty-msg">目前沒有與教學分組相關的請求或已核准存取</div>`;
+
+  const countEl = document.getElementById('driftCount');
+  if(driftCount>0){ countEl.style.display='inline-block'; countEl.textContent = driftCount; }
+  else { countEl.style.display='none'; }
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+}
+
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+renderScopeCards();
+renderMyRequests();
+</script>
+<script src="usage-modal.js"></script>
+<script src="demo-nav.js"></script>
+</body>
+</html>
