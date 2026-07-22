@@ -13,9 +13,14 @@
   body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;}
 
   /* shared "system" sidebar — separate visual language from the EdCity.ai teacher sidebar,
-     so it's clear this is navigation WITHIN the SMS/EdData system, not the teaching-tools app */
-  .sys-sidebar{width:200px;flex-shrink:0;background:#2b3540;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
-  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#93a4b1;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
+     so it's clear this is navigation WITHIN the SMS/EdData system, not the teaching-tools app.
+     Corrected per Eric: EdData is a records layer UNDER SMS, not a separate system (see
+     eddata-console.html's own topbar copy + the confirmed systems-relationships memory) —
+     giving it its own accent color overstated that boundary. Same blue family as roster.html,
+     just a darker shade, signaling "still SMS, one level deeper" rather than a third system.
+     The actor distinction (何主任 vs 馮 Sir) is instead carried by the topbar avatar below. */
+  .sys-sidebar{width:200px;flex-shrink:0;background:#0c2c40;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;border-top:4px solid var(--ec-blue-dark);}
+  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#8fcdf0;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
   .sys-nav{padding:12px 10px;flex:1;}
   .sys-nav a{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;color:#c7d2da;text-decoration:none;font-size:.8rem;margin-bottom:2px;}
   .sys-nav a:hover{background:rgba(255,255,255,.06);}
@@ -26,12 +31,17 @@
   .sys-main{flex:1;min-width:0;}
 
   /* deliberately the same plain SMS-family shell as roster.html — this is EdData, not the Resources Platform */
-  .role-banner{background:#3d4a56;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
-  .topbar{background:#fff;border-bottom:2px solid var(--line);padding:12px 26px;display:flex;align-items:center;gap:14px;}
+  .role-banner{background:#0f3347;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
+  .topbar{background:#fff;border-bottom:3px solid var(--ec-blue-dark);padding:12px 26px;display:flex;align-items:center;gap:14px;}
   .topbar img{height:28px;width:auto;}
-  .topbar .sys{font-size:.85rem;font-weight:700;}
+  .topbar .sys{font-size:.85rem;font-weight:700;color:var(--ec-blue-dark);}
   .topbar .sys small{display:block;font-size:.64rem;color:var(--ink-3);font-weight:500;}
-  .topbar .who{margin-left:auto;font-size:.78rem;color:var(--ink-2);text-align:right;}
+  /* Actor avatar — this is the thing that should say "different user," not the
+   * page chrome. 馮 Sir's avatar uses purple as a personal/role tag (EdData
+   * approver), distinct from 何主任's blue tag on roster.html, while the
+   * surrounding system shell stays in the same SMS blue family on both pages. */
+  .topbar .who{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--ink-2);text-align:right;}
+  .topbar .who .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;}
   .topbar .who small{display:block;font-size:.66rem;color:var(--ink-3);}
 
   .wrap{max-width:960px;margin:0 auto;padding:24px 20px 80px;}
@@ -206,7 +216,7 @@
 <div class="topbar">
   <img src="edcity_logo.svg" alt="香港教育城 EdCity">
   <span class="sys">EdData 存取管理<small>校管系統（SMS）的一部分 · 與 EdCity.ai 分離運作，非教學工具畫面</small></span>
-  <span class="who">馮 Sir<small>資訊科技統籌 · EdData 審批人</small></span>
+  <span class="who"><span>馮 Sir<small>資訊科技統籌 · EdData 審批人</small></span><span class="avatar">馮</span></span>
 </div>
 
 <div class="wrap">
@@ -220,6 +230,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="relations" onclick="showTab('relations')">供應商關係</button>
     <button class="tab-btn" data-tab="trials" onclick="showTab('trials')">供應商發起試用<span class="tab-count" id="trialCount" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="identity" onclick="showTab('identity')">身分紀錄請求<span class="tab-count" id="identityCount" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="audit" onclick="showTab('audit')">稽核記錄</button>
   </div>
 
@@ -244,6 +255,21 @@
     <h2>供應商發起的試用請求</h2>
     <div class="sub" style="margin:0 0 12px;max-width:56em;">供應商也可以主動發起試用，但必須綁定一位已確認的老師與組別，不能繞過老師直接向校方要求存取。老師確認後才會交到你手上；試用固定為 Tier 1 · 基本資料，最長 14 天。屆滿後如值得繼續使用，可直接「轉為正式申請」，不必重新填寫。</div>
     <div id="trialList"></div>
+  </section>
+
+  <section class="tab-pane" data-pane="identity">
+    <h2>新生建立請求</h2>
+    <div class="sub" style="margin:0 0 12px;max-width:56em;">校務處在「批量編班」遇到一個從未存在於系統的姓名時，在此提出建立請求，而不是由校方直接建立學生身分記錄——正式的學生身分記錄由 EdData 保存，校務處只負責組織「這位學生在哪一班」。</div>
+    <div id="intakeReqList"></div>
+
+    <h2 style="margin-top:26px;">教師狀態變更請求</h2>
+    <div class="sub" style="margin:0 0 12px;max-width:56em;">教師的在職狀態屬於正式僱傭記錄，同樣由 EdData 保存；校務處在「教師名冊」只能提出變更請求，須經你核准後才會實際生效。</div>
+    <div id="statusReqList"></div>
+
+    <div class="downstream">
+      <b>核准後的下游影響</b>
+      <span class="flow">新生請求核准 → <em>學生編班</em>會出現這位學生，並獲派學生編號 → 教學分組等畫面才會看到她。教師狀態請求核准 → <em>任教編配</em>的重新編配選單才會反映新的在職狀態。本頁與校務處控制台是不同頁面，此原型沒有跨頁面資料儲存——核准動作只在本頁的瀏覽階段內生效。</span>
+    </div>
   </section>
 
   <section class="tab-pane" data-pane="audit">
@@ -504,10 +530,113 @@ function renderAudit(){
     `<div class="a-row"><span class="a-ic">${a.ic}</span><span>${a.text}</span><span class="a-time">${a.time}</span></div>`
   ).join('');
 }
+
+/* Identity-record requests (new-student intake + teacher status changes) — the
+ * EdData-side half of the request/execute split now used in roster.html. Same
+ * .req card pattern as vendor requests above, so this reads as the same kind
+ * of decision, not a new UI language. */
+const STATUS_LABEL_ED = {active:'在職', leave:'請假', departed:'已離職'};
+
+function renderIdentityTabCount(){
+  const pendingIntake = STUDENT_INTAKE_REQUESTS.filter(r=>r.status==='pending').length;
+  const pendingStatus = TEACHER_STATUS_REQUESTS.filter(r=>r.status==='pending').length;
+  const total = pendingIntake + pendingStatus;
+  const el = document.getElementById('identityCount');
+  if (total>0){ el.style.display='inline-block'; el.textContent=total; } else { el.style.display='none'; }
+}
+
+function renderIntakeRequests(){
+  document.getElementById('intakeReqList').innerHTML = STUDENT_INTAKE_REQUESTS.length ? STUDENT_INTAKE_REQUESTS.map(r=>{
+    const cls = CLASSES[r.suggestedClassId];
+    const statusLabel = r.status==='pending' ? '⏳ 待審批' : r.status==='approved' ? '✓ 已核准（尚未編班）' : '✕ 已拒絕';
+    return `<div class="req" id="intake-${r.id}">
+      <div class="r-head">
+        <div class="req-context">
+          <span class="actor"><span class="ic">${r.requestedBy[0]}</span>${r.requestedBy}</span>
+          <span class="verb">請求建立新生 →</span>
+          <span class="tool-target">${r.name}</span>
+          <small>校務處建議班別（非最終）：${cls ? cls.className : r.suggestedClassId}　·　HKID 尾4碼：${r.hkid||'—'}　家長聯絡電話：${r.contact||'—'}　SEN 備註：${r.sen||'—'}</small>
+        </div>
+        <span class="status ${r.status}">${statusLabel}</span>
+      </div>
+      ${r.status==='pending' ? `<div class="btns">
+        <button class="act" onclick="approveIntake('${r.id}')">✓ 核准並建立學生記錄</button>
+        <button class="act deny" onclick="denyIntake('${r.id}')">拒絕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty-msg">目前沒有待處理的新生建立請求</div>`;
+  renderIdentityTabCount();
+}
+/* Approval creates the student's identity — that's EdData's job, full stop.
+ * It does NOT place them in the class 何主任 suggested; class assignment is an
+ * SMS-organizational decision, made separately on roster.html's 學生編班 tab
+ * once the student shows up there as "未編班" (see UNASSIGNED_STUDENTS). This
+ * is the fix for the conflation Eric caught: approval was previously doing both
+ * jobs in one click. */
+function approveIntake(id){
+  const r = STUDENT_INTAKE_REQUESTS.find(x=>x.id===id);
+  // Sensitive fields (hkid/contact/sen) deliberately stop here — they're not
+  // carried into the student record SMS itself keeps, same rule as the bulk
+  // import preview in roster.html.
+  const entry = {n:r.name, sid: nextStudentId()};
+  UNASSIGNED_STUDENTS.push(entry);
+  r.status = 'approved';
+  AUDIT.unshift({ic:'✓', text:'馮 Sir 核准建立新生 '+r.name+'（學生編號 '+entry.sid+'，尚未編班），由'+r.requestedBy+'提出請求', time:'2026-07-22'});
+  renderIntakeRequests(); renderAudit();
+  toast('已建立學生記錄：'+r.name+'（'+entry.sid+'）— 尚未編班，須由校務處在 SMS 指派班別');
+}
+function denyIntake(id){
+  const r = STUDENT_INTAKE_REQUESTS.find(x=>x.id===id);
+  r.status = 'denied';
+  AUDIT.unshift({ic:'✕', text:'馮 Sir 拒絕'+r.requestedBy+'提出的新生建立請求（'+r.name+'）', time:'2026-07-22'});
+  renderIntakeRequests(); renderAudit();
+  toast('已拒絕：'+r.name);
+}
+
+function renderStatusRequests(){
+  document.getElementById('statusReqList').innerHTML = TEACHER_STATUS_REQUESTS.length ? TEACHER_STATUS_REQUESTS.map(r=>{
+    const statusLabel = r.status==='pending' ? '⏳ 待審批' : r.status==='approved' ? '✓ 已核准' : '✕ 已拒絕';
+    return `<div class="req" id="statusreq-${r.id}">
+      <div class="r-head">
+        <div class="req-context">
+          <span class="actor"><span class="ic">${r.requestedBy[0]}</span>${r.requestedBy}</span>
+          <span class="verb">請求將狀態改為 →</span>
+          <span class="tool-target">${STATUS_LABEL_ED[r.newStatus]}</span>
+          <small>對象：${r.teacherName}</small>
+        </div>
+        <span class="status ${r.status}">${statusLabel}</span>
+      </div>
+      ${r.status==='pending' ? `<div class="btns">
+        <button class="act" onclick="approveStatus('${r.id}')">✓ 核准並更新僱傭記錄</button>
+        <button class="act deny" onclick="denyStatus('${r.id}')">拒絕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty-msg">目前沒有待處理的教師狀態變更請求</div>`;
+  renderIdentityTabCount();
+}
+function approveStatus(id){
+  const r = TEACHER_STATUS_REQUESTS.find(x=>x.id===id);
+  const t = TEACHERS.find(x=>x.name===r.teacherName);
+  if (t) t.status = r.newStatus;
+  r.status = 'approved';
+  AUDIT.unshift({ic:'✓', text:'馮 Sir 核准將'+r.teacherName+'的僱傭狀態改為「'+STATUS_LABEL_ED[r.newStatus]+'」，由'+r.requestedBy+'提出請求', time:'2026-07-22'});
+  renderStatusRequests(); renderAudit();
+  toast('已更新僱傭狀態：'+r.teacherName+' → '+STATUS_LABEL_ED[r.newStatus]);
+}
+function denyStatus(id){
+  const r = TEACHER_STATUS_REQUESTS.find(x=>x.id===id);
+  r.status = 'denied';
+  AUDIT.unshift({ic:'✕', text:'馮 Sir 拒絕'+r.requestedBy+'提出的教師狀態變更請求（'+r.teacherName+'）', time:'2026-07-22'});
+  renderStatusRequests(); renderAudit();
+  toast('已拒絕請求：'+r.teacherName);
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderVendors();
 renderTrials();
+renderIntakeRequests();
+renderStatusRequests();
 renderAudit();
 </script>
 <script src="demo-nav.js"></script>

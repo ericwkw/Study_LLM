@@ -12,8 +12,13 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;}
 
-  .sys-sidebar{width:200px;flex-shrink:0;background:#2b3540;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
-  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#93a4b1;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
+  /* System color-coding: SMS = blue. The sidebar's actual background carries the
+   * color (not just a thin accent stripe) so the system is unmistakable at a
+   * glance — matched by eddata-console.html (purple), vendor-portal.html and
+   * vendor-data-console.html (maroon), all still the same dark, "plainer than
+   * EdCity.ai" shell shape, just a different hue per system. */
+  .sys-sidebar{width:200px;flex-shrink:0;background:#123a52;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;border-top:4px solid var(--ec-blue);}
+  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#8fcdf0;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
   .sys-nav{padding:10px 8px;flex:1;}
   .sys-nav a{display:block;padding:9px 12px;border-radius:8px;color:#c3d0da;text-decoration:none;font-size:.8rem;margin-bottom:2px;}
   .sys-nav a:hover{background:rgba(255,255,255,.06);}
@@ -24,12 +29,19 @@
   .sys-main{flex:1;min-width:0;}
 
   /* deliberately plainer shell — this is SMS, not the Resources Platform */
-  .role-banner{background:#3d4a56;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
-  .topbar{background:#fff;border-bottom:2px solid var(--line);padding:12px 26px;display:flex;align-items:center;gap:14px;}
+  .role-banner{background:#1a4763;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
+  .topbar{background:#fff;border-bottom:3px solid var(--ec-blue-dark);padding:12px 26px;display:flex;align-items:center;gap:14px;}
   .topbar img{height:28px;width:auto;}
-  .topbar .sys{font-size:.85rem;font-weight:700;}
+  .topbar .sys{font-size:.85rem;font-weight:700;color:var(--ec-blue-dark);}
   .topbar .sys small{display:block;font-size:.64rem;color:var(--ink-3);font-weight:500;}
-  .topbar .who{margin-left:auto;font-size:.78rem;color:var(--ink-2);}
+  /* Actor avatar — the "different user" signal lives here, not in page-level color:
+   * 何主任's avatar is tagged blue (same family as the SMS shell she's on), while
+   * 馮 Sir's on eddata-console.html is tagged purple — a personal/role color, not
+   * a system color, since eddata-console.html is still part of SMS, just a
+   * different actor's screen within it. */
+  .topbar .who{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--ink-2);}
+  .topbar .who .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-blue-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;}
+  .topbar .who small{display:block;font-size:.66rem;color:var(--ink-3);text-align:right;}
 
   .wrap{max-width:880px;margin:0 auto;padding:24px 20px 80px;}
   .ribbons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
@@ -97,6 +109,25 @@
   .group-head td{background:#f6f8fa;font-weight:700;font-size:.72rem;color:var(--ink-2);padding:8px 14px;letter-spacing:.02em;border-bottom:1px solid var(--line);}
   .group-head .grp-count{float:right;color:var(--ink-3);font-weight:500;}
   .class-accent{border-left:4px solid var(--line);}
+
+  .bulk-input textarea{width:100%;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.76rem;border:1px solid var(--line);border-radius:8px;padding:10px 12px;resize:vertical;}
+  .bulk-actions{display:flex;gap:10px;margin:10px 0 4px;flex-wrap:wrap;align-items:center;}
+  .bulk-actions .file-act{position:relative;overflow:hidden;}
+  .bulk-actions .file-act input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .bulk-hint{font-size:.72rem;color:var(--ink-3);}
+  .bulk-summary{background:#eef6fb;border:1px solid #cfe6f3;border-radius:8px;padding:10px 14px;font-size:.79rem;color:var(--ink);margin:14px 0;}
+  .bulk-toggle{font-size:.76rem;color:var(--ink-2);display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+  .bulk-toggle .toggle-note{color:var(--ink-3);font-size:.7rem;}
+  tr.bulk-row td{vertical-align:top;}
+  select.ambig-pick{font-family:inherit;font-size:.76rem;border:1px solid var(--line);border-radius:6px;padding:5px 8px;}
+
+  /* Gmail-style selection: the whole row lights up, not just a tiny checkbox —
+   * per Eric's screenshot reference, selection state should be visible at a
+   * glance across a table of hundreds of rows. */
+  tr.row-selected td{background:#e8f0fe;}
+  .bulk-select-banner{background:#e8f0fe;border:1px solid #adc8f5;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.79rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .sort-toolbar{display:flex;align-items:center;gap:8px;}
+  .stale-batch{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:8px;padding:10px 14px;font-size:.78rem;color:var(--ink-2);margin-bottom:14px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -116,7 +147,7 @@
 <div class="topbar">
   <img src="edcity_logo.svg" alt="香港教育城 EdCity">
   <span class="sys">學校管理系統（SMS）<small>紀錄系統 · 與教學工具分離運作</small></span>
-  <span class="who">何主任 · 校務處文書主任</span>
+  <span class="who"><span>何主任<small>校務處文書主任</small></span><span class="avatar">何</span></span>
 </div>
 
 <div class="wrap">
@@ -128,6 +159,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="teachers" onclick="showTab('teachers')">教師名冊 <span class="tab-count" id="countTeachers"></span></button>
     <button class="tab-btn" data-tab="assign" onclick="showTab('assign')">任教編配 <span class="tab-count" id="countAssign"></span></button>
+    <button class="tab-btn" data-tab="bulk" onclick="showTab('bulk')">批量編班 <span class="tab-count" id="countBulk"></span></button>
     <button class="tab-btn" data-tab="students" onclick="showTab('students')">學生編班 <span class="tab-count" id="countStudents"></span></button>
   </div>
 
@@ -170,21 +202,61 @@
     </div>
   </section>
 
+  <section class="tab-pane" data-pane="bulk">
+    <h1>批量編班</h1>
+    <div class="sub">貼上或上載 CSV，一次處理多位學生的班別——用於<b>學期中的例外情況</b>：個別插班生、學期中改組等。系統會逐行判斷：這個名字是新生，還是已存在、要轉班？</div>
+    <div class="scope-note" style="margin:0 0 16px;">⚠️ <b>不是</b>開學時全校性收生的機制——那是官方學籍紀錄（來源待確認）進入 EdData 的問題，屬於另一個尚未設計的範圍，不應該和這裡的「學期中個別例外」混為一談。詳見下方「此原型刻意不做的事」。</div>
+
+    <div class="foundation">🏗 判斷方式：若填有<b>學生編號</b>並能在現有名冊中對應到一位在校學生，直接視為「現有轉班」（編號不會重複，不需要人手核實）；沒有編號時退而求其次，改以姓名比對——若姓名唯一對應到一位在校學生，視為「現有轉班」；找不到對應，視為「新生」；若姓名對應到多於一位同名學生，會請你手動核實，不會自動猜測。</div>
+
+    <div class="bulk-input">
+      <textarea id="bulkCsvInput" rows="6" placeholder="姓名,學生編號(選填),目標班別代碼,HKID尾4碼(選填),家長聯絡電話(選填),SEN備註(選填)"></textarea>
+    </div>
+    <div class="bulk-actions">
+      <label class="act file-act">📎 上載 CSV 檔案<input type="file" id="bulkCsvFile" accept=".csv,text/csv" onchange="loadCsvFile(this)"></label>
+      <button class="act" onclick="loadSampleCsv()">載入示範資料</button>
+      <button class="act" onclick="parseBulkCsv()">解析並預覽</button>
+      <span class="bulk-hint">有效班別代碼：<span id="validClassCodes"></span></span>
+    </div>
+
+    <div id="bulkPreviewWrap"></div>
+
+    <div class="downstream" style="margin-top:20px;">
+      <b>此原型刻意不做的事（已決定，非遺漏）</b>
+      <p class="why">批量匯入牽涉真實學生的敏感個人資料，範圍比單一轉班大得多——以下兩點刻意留白，是判斷過的結果，不是還沒做完：</p>
+      <div class="sync-steps">
+        <div class="sync-step"><span class="num">1</span><span><b>批次紀錄與局部復原</b> — 執行後無法查到「這是哪一次匯入」，也無法只還原批次中的一位學生；要做到這樣，需要一整套批次紀錄與復原機制，遠超這個示意原型的範圍</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>敏感資料應否離開 EdData</b> — HKID、SEN 備註等資料應否曾以 CSV 形式存在於校務處的電腦上，是校本資料管治政策問題，不是介面設計可以代為決定的事</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>開學時的全校性學籍收生</b> — 曾經誤把這個畫面當成「一次過收生」的機制；每一筆新生都要 EdData 個別審批，對插班等零星個案沒問題，但用來處理全校規模的收生會需要逐一核准數百筆請求。真正的年度收生應該是另一條路徑（很可能由官方學籍來源直接進入 EdData，而非經校務處逐筆上載 CSV 請求），來源與機制仍待確認，不在這個畫面的範圍內</span></div>
+      </div>
+      <p class="why-caveat">⚠️ 這裡示範的是「安全欄位預設可見、敏感欄位需手動展開」的介面模式，不代表已回答「敏感資料應否以此形式匯出」這個問題。<br>另外：即使填有 HKID／家長聯絡電話／SEN 備註，確認執行後校管系統也<b>不會保留</b>這些欄位——只用作匯入當刻核對是否配對到正確學生；正式的身分與個人記錄應由 EdData 保存，校管系統只負責「怎樣編班」。</p>
+    </div>
+  </section>
+
   <section class="tab-pane" data-pane="students">
     <h1>學生編班</h1>
     <div class="sub">哪位學生屬於哪一班，同樣由校務處在此編配——這與「教學分組」不同：教學分組是老師按教學需要自行劃分的小組，只有老師自己看到；學生編班是正式的班別歸屬，教學分組、批改入檔、學生入口都跟著它走。</div>
 
-    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。</div>
+    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。<br>🆕 新生的身分由 EdData 核准建立（見「批量編班」），但核准當下<b>不會</b>自動編班——會先以「未編班」狀態出現在下方，指派班別是獨立的一步，一律在這裡完成。</div>
 
     <div class="table-toolbar">
       <input type="text" id="studentSearch" placeholder="🔍 搜尋學生姓名…" oninput="renderStudents()">
       <select id="studentClassFilter" onchange="renderStudents()">
         <option value="">全部班別</option>
       </select>
+      <div class="sort-toolbar">
+        <select id="studentSortBy" onchange="renderStudents()">
+          <option value="name">依姓名排序</option>
+          <option value="status">依狀態排序</option>
+        </select>
+        <button class="act" id="sortDirBtn" onclick="toggleSortDir()">↑ 升序</button>
+      </div>
     </div>
 
+    <div id="bulkSelectBar"></div>
+
     <table>
-      <thead><tr><th>學生</th><th>班別</th><th>狀態</th><th></th></tr></thead>
+      <thead><tr><th></th><th>學生</th><th>學生編號</th><th>班別</th><th>狀態</th><th></th></tr></thead>
       <tbody id="studentTbody"></tbody>
     </table>
 
@@ -284,38 +356,138 @@ function populateStudentClassFilter(){
     sel.appendChild(opt);
   });
 }
+/* Manual bulk touch-up (Story 2's "move a specific few students after import")
+ * lives here, as checkboxes on the roster you're already looking at — separate
+ * from 批量編班's file-driven pipeline, which operates on rows you haven't
+ * looked at yet. Selection is keyed by `${classId}::${name}` and persists across
+ * re-renders (search/filter typing), so checking a few students then refining
+ * the search doesn't silently drop the selection. */
+let BULK_SELECTED = new Set();
+
+let STUDENT_SORT_DIR = 'asc';
+function toggleSortDir(){
+  STUDENT_SORT_DIR = STUDENT_SORT_DIR === 'asc' ? 'desc' : 'asc';
+  document.getElementById('sortDirBtn').textContent = STUDENT_SORT_DIR === 'asc' ? '↑ 升序' : '↓ 降序';
+  renderStudents();
+}
+
 function renderStudents(){
   // tab count reflects total currently-enrolled students, not the filtered/searched view —
   // filtering the table shouldn't make the tab label lie about how many students exist.
-  const totalEnrolled = CLASS_LIST.reduce((sum,c)=>sum + c.students.filter(s=>!s.left).length, 0);
+  // Includes UNASSIGNED_STUDENTS — they're real, EdData-approved students, just not yet
+  // organized into a class, so they still count as "enrolled" for this purpose.
+  const totalEnrolled = CLASS_LIST.reduce((sum,c)=>sum + c.students.filter(s=>!s.left).length, 0) + UNASSIGNED_STUDENTS.length;
   document.getElementById('countStudents').textContent = '('+totalEnrolled+')';
   const searchTerm = (document.getElementById('studentSearch').value || '').trim();
   const filterClass = document.getElementById('studentClassFilter').value;
+  const sortBy = document.getElementById('studentSortBy').value;
+  const dir = STUDENT_SORT_DIR === 'asc' ? 1 : -1;
   const rows = [];
+  // 未編班 group — where a student lands right after 馮 Sir approves an intake
+  // request, per Eric's correction: EdData creates the identity, but assigning
+  // a class is a separate, later SMS-organizational step, not bundled into
+  // approval. Shown first (only when not filtering to a single class), with its
+  // own 編班 action rather than 轉班, since there's no "from" class yet.
+  if (!filterClass && UNASSIGNED_STUDENTS.length) {
+    const unassignedMatched = UNASSIGNED_STUDENTS.filter(s => !searchTerm || s.n.includes(searchTerm));
+    if (unassignedMatched.length) {
+      rows.push(`<tr class="group-head"><td colspan="6" style="border-left:4px solid var(--ec-amber);">未編班學生<span class="st warn" style="margin-left:10px;">⚠ 需要指派班別</span><span class="grp-count">${unassignedMatched.length} 人</span></td></tr>`);
+      unassignedMatched.forEach(s=>{
+        rows.push(`<tr data-unassigned="1" data-sid="${s.sid}"><td style="border-left:4px solid var(--ec-amber);"></td><td><b>${s.n}</b></td><td>${s.sid||'—'}</td><td>—</td><td><span class="st warn">未編班</span></td><td><button class="act" onclick="startUnassignedAssign('${s.sid}')">編班</button></td></tr>`);
+      });
+    }
+  }
   CLASS_LIST.forEach((c, idx)=>{
     if (filterClass && c.id !== filterClass) return;
     const matched = c.students.filter(s => !searchTerm || s.n.includes(searchTerm));
     if (!matched.length) return;
+    // Sort within each class group — sorting across the whole flat list would
+    // fight the class-grouping that already does the main job of telling rows
+    // apart; this just orders students inside a group that's already scoped.
+    matched.sort((a,b)=>{
+      if (sortBy === 'status'){ const av=a.left?1:0, bv=b.left?1:0; return (av-bv)*dir; }
+      return a.n.localeCompare(b.n, 'zh-Hant-u-co-stroke') * dir;
+    });
     const accent = CLASS_ACCENT[idx % CLASS_ACCENT.length];
     // Completeness signal folded in from the old standalone 班級名冊 tab: rather than
     // a separate audit screen with fictional class names disconnected from the real
     // roster, it's now derived from the same CLASSES data this table already reads —
     // a class is "incomplete" if a departed student is still lingering in its list.
+    // Worded around the RECORD, not the student — "待清理" originally read as if
+    // the student were the thing to be cleaned up, which isn't the right target.
     const leftCount = c.students.filter(s=>s.left).length;
     const statusBadge = leftCount > 0
-      ? `<span class="st warn" style="margin-left:10px;">⚠ ${leftCount} 位已轉出，待清理</span>`
-      : `<span class="st ok" style="margin-left:10px;">✓ 沒有待清理的轉班記錄</span>`;
-    rows.push(`<tr class="group-head"><td colspan="4" style="border-left:4px solid ${accent};">${c.className}${statusBadge}<span class="grp-count">${matched.length} 人</span></td></tr>`);
+      ? `<span class="st warn" style="margin-left:10px;">⚠ ${leftCount} 筆已轉出學生的記錄待移除</span>`
+      : `<span class="st ok" style="margin-left:10px;">✓ 沒有待移除的轉出記錄</span>`;
+    rows.push(`<tr class="group-head"><td colspan="6" style="border-left:4px solid ${accent};">${c.className}${statusBadge}<span class="grp-count">${matched.length} 人</span></td></tr>`);
     matched.forEach(s=>{
       const status = s.left ? '<span class="st warn">已轉出</span>' : '<span class="st ok">在校</span>';
       const action = s.left ? '' : `<button class="act" onclick="startClassTransfer('${c.id}','${s.n}')">轉班</button>`;
-      rows.push(`<tr data-class="${c.id}" data-name="${s.n}"><td style="border-left:4px solid ${accent};"><b>${s.n}</b></td><td>${c.className}</td><td>${status}</td><td>${action}</td></tr>`);
+      const key = c.id+'::'+s.n;
+      const selected = BULK_SELECTED.has(key);
+      const checkbox = s.left ? '' : `<input type="checkbox" class="row-check" data-key="${key}" ${selected?'checked':''} onchange="toggleRowSelect(this)">`;
+      rows.push(`<tr data-class="${c.id}" data-name="${s.n}" class="${selected?'row-selected':''}"><td style="border-left:4px solid ${accent};">${checkbox}</td><td><b>${s.n}</b></td><td>${s.sid||'—'}</td><td>${c.className}</td><td>${status}</td><td>${action}</td></tr>`);
     });
   });
-  if (!rows.length) rows.push('<tr><td colspan="4" style="text-align:center;color:var(--ink-3);padding:26px;">沒有符合條件的學生</td></tr>');
+  if (!rows.length) rows.push('<tr><td colspan="6" style="text-align:center;color:var(--ink-3);padding:26px;">沒有符合條件的學生</td></tr>');
   document.getElementById('studentTbody').innerHTML = rows.join('');
   document.getElementById('studentScopeNote').innerHTML =
     '⚠️ 此分頁讀寫的是與「教學分組」「學生工具申請」「試用邀請」相同的班別資料（本頁開啟期間即時生效），但這個原型沒有跨頁面的資料儲存——離開此頁後再打開其他畫面，看到的仍是原本的示範資料。';
+  renderBulkSelectBar();
+}
+function toggleRowSelect(el){
+  const tr = el.closest('tr');
+  if (el.checked) { BULK_SELECTED.add(el.dataset.key); tr.classList.add('row-selected'); }
+  else { BULK_SELECTED.delete(el.dataset.key); tr.classList.remove('row-selected'); }
+  renderBulkSelectBar();
+}
+/* Bar lives ABOVE the table (see HTML), not appended below it — with hundreds
+ * of rows, a bottom-of-page action bar goes invisible the moment you select
+ * anyone above the fold. Same "visible next step" fix already applied once to
+ * the single-row 轉班 picker, now applied to the bulk case too. Styling matches
+ * Gmail's selection blue per Eric's reference screenshots. */
+function renderBulkSelectBar(){
+  const bar = document.getElementById('bulkSelectBar');
+  if (!BULK_SELECTED.size){ bar.innerHTML = ''; return; }
+  bar.innerHTML = `
+    <div class="bulk-select-banner">
+      已選 <b>${BULK_SELECTED.size}</b> 位學生
+      <button class="act" onclick="startBulkMove()">批量轉班</button>
+      <button class="act" onclick="clearBulkSelect()">清除選擇</button>
+      <div id="bulkMoveBox" style="flex-basis:100%;"></div>
+    </div>`;
+}
+function clearBulkSelect(){ BULK_SELECTED.clear(); renderStudents(); }
+function startBulkMove(){
+  const options = CLASS_LIST.map(c=>`<option value="${c.id}">${c.className}</option>`).join('');
+  document.getElementById('bulkMoveBox').innerHTML = `
+    <div style="margin-top:8px;">
+      將已選學生全部轉入
+      <select id="bulkMovePick">${options}</select>
+      <button class="act" onclick="confirmBulkMove()">確認批量轉班</button>
+      <button class="act" onclick="document.getElementById('bulkMoveBox').innerHTML=''">取消</button>
+      <div class="impact" style="margin-top:6px;font-size:.72rem;">⚠️ 確認後立即生效，本頁開啟期間無法直接復原，需逐一手動轉回。若某位學生已在目標班別，該筆會被略過。</div>
+    </div>`;
+}
+function confirmBulkMove(){
+  const toClassId = document.getElementById('bulkMovePick').value;
+  const toClass = CLASSES[toClassId];
+  let moved = 0, skipped = 0;
+  BULK_SELECTED.forEach(key=>{
+    const [fromClassId, name] = key.split('::');
+    if (fromClassId === toClassId){ skipped++; return; }
+    const fromClass = CLASSES[fromClassId];
+    const idx = fromClass.students.findIndex(s=>s.n===name && !s.left);
+    if (idx === -1){ skipped++; return; }
+    const s = fromClass.students[idx];
+    fromClass.students.splice(idx, 1);
+    const groupOk = toClass.groups.some(g=>g.id===s.g);
+    toClass.students.push({n:s.n, sid:s.sid, g: groupOk ? s.g : toClass.groups[0].id});
+    moved++;
+  });
+  BULK_SELECTED.clear();
+  renderStudents();
+  toast('批量轉班完成：已轉入 '+moved+' 位（'+toClass.className+'），略過 '+skipped+' 位');
 }
 /* Inline picker: inserted as a row directly under the student that was clicked,
  * not appended to a fixed box at the bottom of the page. With ~16 students on
@@ -327,7 +499,7 @@ function startClassTransfer(fromClassId, name){
   const anchorRow = document.querySelector(`tr[data-class="${fromClassId}"][data-name="${name}"]`);
   const tr = document.createElement('tr');
   tr.className = 'transfer-row';
-  tr.innerHTML = `<td colspan="4" style="padding:0;">
+  tr.innerHTML = `<td colspan="6" style="padding:0;">
     <div class="reassign-row" style="margin:10px 14px;border-radius:8px;">
       將 <b>${name}</b> 由 <b>${CLASSES[fromClassId].className}</b> 轉班至
       <select id="classTransferPick">${options}</select>
@@ -348,9 +520,46 @@ function confirmClassTransfer(fromClassId, name){
   fromClass.students.splice(idx, 1); // in-place removal — CLASS_LIST holds the same array reference, so reassigning it here would silently desync
   // destination class may not have the same group ids (e.g. 1c has no 增潤組) — default to its first group
   const groupStillExists = toClass.groups.some(g=>g.id===s.g);
-  toClass.students.push({n:s.n, g: groupStillExists ? s.g : toClass.groups[0].id});
+  toClass.students.push({n:s.n, sid:s.sid, g: groupStillExists ? s.g : toClass.groups[0].id});
   renderStudents();
   toast('已將 '+name+' 轉入 '+toClass.className);
+}
+
+/* Assigning a class to a student who just landed in UNASSIGNED_STUDENTS (an
+ * EdData-approved intake, per Eric's correction) — deliberately its own pair of
+ * functions rather than reusing startClassTransfer/confirmClassTransfer, since
+ * there's no "from" class here, only a "to" class. Once assigned, the student is
+ * indistinguishable from any other — same object shape, same CLASSES array. */
+function startUnassignedAssign(sid){
+  document.querySelectorAll('.transfer-row').forEach(r=>r.remove());
+  const s = UNASSIGNED_STUDENTS.find(x=>x.sid===sid);
+  if (!s) return;
+  const options = CLASS_LIST.map(c=>`<option value="${c.id}">${c.className}</option>`).join('');
+  const anchorRow = document.querySelector(`tr[data-unassigned="1"][data-sid="${sid}"]`);
+  const tr = document.createElement('tr');
+  tr.className = 'transfer-row';
+  tr.innerHTML = `<td colspan="6" style="padding:0;">
+    <div class="reassign-row" style="margin:10px 14px;border-radius:8px;">
+      將 <b>${s.n}</b>（${s.sid}）編入
+      <select id="unassignedPick">${options}</select>
+      <button class="act" onclick="confirmUnassignedAssign('${sid}')">確認編班</button>
+      <button class="act" onclick="this.closest('tr').remove()">取消</button>
+      <div class="impact" style="margin-top:6px;font-size:.72rem;">⚠️ 確認後立即生效，本頁開啟期間無法直接復原。</div>
+    </div>
+  </td>`;
+  anchorRow.insertAdjacentElement('afterend', tr);
+  if (tr.scrollIntoView) tr.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+function confirmUnassignedAssign(sid){
+  const toClassId = document.getElementById('unassignedPick').value;
+  const toClass = CLASSES[toClassId];
+  const idx = UNASSIGNED_STUDENTS.findIndex(x=>x.sid===sid);
+  if (idx === -1) return;
+  const s = UNASSIGNED_STUDENTS[idx];
+  UNASSIGNED_STUDENTS.splice(idx, 1); // in-place — same shared-array rule as everywhere else in this file
+  toClass.students.push({n:s.n, sid:s.sid, g: toClass.groups[0] ? toClass.groups[0].id : 'core'});
+  renderStudents();
+  toast('已將 '+s.n+' 編入 '+toClass.className);
 }
 
 /* TEACHERS is real shared data (vendor-data.js) — status changes here affect
@@ -359,55 +568,330 @@ function confirmClassTransfer(fromClassId, name){
 const STATUS_LABEL = {active:'在職', leave:'請假', departed:'已離職'};
 function renderTeachers(){
   document.getElementById('countTeachers').textContent = '('+TEACHERS.length+')';
-  document.getElementById('teacherTbody').innerHTML = TEACHERS.map(t=>`
+  document.getElementById('teacherTbody').innerHTML = TEACHERS.map(t=>{
+    // A pending TEACHER_STATUS_REQUESTS entry means 何主任 already asked EdData
+    // to change this — the dropdown is replaced with a plain pending badge so
+    // it's clear the record hasn't actually changed yet and isn't hers to set.
+    const pendingReq = TEACHER_STATUS_REQUESTS.find(r=>r.teacherName===t.name && r.status==='pending');
+    const statusCell = pendingReq
+      ? `${STATUS_LABEL[t.status]}　<span class="st warn">⏳ 已請求改為「${STATUS_LABEL[pendingReq.newStatus]}」，待 EdData 審批</span>`
+      : `<select onchange="proposeTeacherStatus(this,'${t.name}')">
+          <option value="active" ${t.status==='active'?'selected':''}>在職</option>
+          <option value="leave" ${t.status==='leave'?'selected':''}>請假</option>
+          <option value="departed" ${t.status==='departed'?'selected':''}>已離職</option>
+        </select>`;
+    return `
     <tr data-teacher="${t.name}">
       <td><b>${t.name}</b></td>
       <td>${subjectName(t.subjectId)}</td>
       <td>${t.contact}</td>
-      <td>
-        <select onchange="proposeTeacherStatus(this,'${t.name}')">
-          <option value="active" ${t.status==='active'?'selected':''}>在職</option>
-          <option value="leave" ${t.status==='leave'?'selected':''}>請假</option>
-          <option value="departed" ${t.status==='departed'?'selected':''}>已離職</option>
-        </select>
-      </td>
+      <td>${statusCell}</td>
       <td></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 /* Status changes ripple straight into 任教編配's reassignment picker (activeTeachers()),
  * so — unlike a cosmetic field edit — this needs an explicit confirm step, not an
  * instant commit on <select onchange>. The dropdown proposes; nothing is written to
- * TEACHERS until 確認 is clicked, and 取消 reverts the dropdown via a full re-render. */
+ * TEACHERS until 確認 is clicked, and 取消 reverts the dropdown via a full re-render.
+ *
+ * Only "已離職" goes through EdData: departure ends employment — a genuine
+ * identity/records fact — while 在職/請假 are reversible, organizational states
+ * (a leave doesn't end anyone's employment) that SMS can set directly, same as
+ * before this request/execute pattern existed. Routing every status flip through
+ * an approval queue would make a routine, temporary change (someone going on
+ * leave) wait on EdData for no real reason. */
 function proposeTeacherStatus(selectEl, name){
   const newStatus = selectEl.value;
   const t = TEACHERS.find(x=>x.name===name);
   if (newStatus === t.status) return;
   document.querySelectorAll('.status-confirm-row').forEach(r=>r.remove());
+  const requiresEdData = newStatus === 'departed';
   const impact = newStatus === 'active'
     ? '她會重新出現在「任教編配」的重新編配選單中'
     : '她將從「任教編配」的重新編配選單中移除，無法被指派新的班別';
+  const actionLabel = requiresEdData ? '向 EdData 請求將' : '將';
+  const confirmLabel = requiresEdData ? '送出請求' : '確認';
+  const tail = requiresEdData ? '——核准後'+impact+'。確定送出請求嗎？' : '——'+impact+'。確定嗎？';
   const row = document.createElement('tr');
   row.className = 'status-confirm-row';
   row.innerHTML = `<td colspan="5" style="padding:0;">
     <div class="reassign-row" style="margin:8px 14px;border-radius:8px;">
-      將 <b>${name}</b> 的狀態改為「${STATUS_LABEL[newStatus]}」——${impact}。確定嗎？
-      <button class="act" onclick="confirmTeacherStatus('${name}','${newStatus}')">確認</button>
+      ${actionLabel} <b>${name}</b> 的狀態改為「${STATUS_LABEL[newStatus]}」${tail}
+      <button class="act" onclick="confirmTeacherStatus('${name}','${newStatus}')">${confirmLabel}</button>
       <button class="act" onclick="renderTeachers()">取消</button>
     </div>
   </td>`;
   selectEl.closest('tr').insertAdjacentElement('afterend', row);
 }
 function confirmTeacherStatus(name, status){
+  if (status === 'departed'){
+    // Departure is an identity/records fact (EdData layer), not an organizational
+    // one — SMS can only request it here, mirroring the vendor data-access
+    // request/approve pattern in eddata-console.html. TEACHERS.status is NOT
+    // written here; it only changes once 馮 Sir approves on eddata-console.html.
+    TEACHER_STATUS_REQUESTS.push({
+      id: 'tsr' + Date.now(),
+      teacherName: name,
+      newStatus: status,
+      requestedBy: '何主任',
+      status: 'pending'
+    });
+    renderTeachers();
+    toast('已向 EdData 送出請求：將 '+name+' 的狀態改為「'+STATUS_LABEL[status]+'」，待審批');
+    return;
+  }
+  // 在職／請假 are reversible organizational states — SMS applies these directly.
   const t = TEACHERS.find(x=>x.name===name);
   t.status = status;
   renderTeachers();
   toast(name+' 狀態已更新為「'+STATUS_LABEL[status]+'」');
 }
 
+/* 批量編班 — Corrected scope (Eric, 2026-07-22): this is NOT the annual/official
+ * intake mechanism. It was originally built as if it were ("如開學新收生" in the
+ * old copy), but that's wrong — annual official student records almost certainly
+ * come from an external source (school/government registration system, exact
+ * origin still unconfirmed) and should land in EdData directly, not via SMS
+ * requesting hundreds of individual approvals through this CSV tool. This
+ * pipeline is for MID-YEAR EXCEPTIONS ONLY: an individual transfer student, a
+ * handful of students reassigned mid-term. Each row is judged independently by
+ * whether its name/id matches an existing, currently-enrolled student anywhere
+ * in CLASS_LIST. No match → new-student EdData request (low-volume, one-by-one
+ * approval is appropriate for this scope). Exactly one match → reassignment
+ * (pure SMS-organizational, no EdData involvement). More than one match →
+ * 手動核實, never guessed. Sensitive fields (HKID/contact/SEN) are parsed and
+ * shown for verification only, never persisted — see the tab's own caveat box. */
+let BULK_ROWS = [];
+
+function populateValidClassCodesHint(){
+  document.getElementById('validClassCodes').textContent =
+    CLASS_LIST.map(c=>c.id+'='+c.className).join('、');
+}
+
+function loadCsvFile(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('bulkCsvInput').value = e.target.result; };
+  reader.readAsText(file);
+}
+
+function loadSampleCsv(){
+  // Deliberately includes one of each case this mechanism needs to demonstrate:
+  // a clean new-intake row, a clean reassignment row, an ID-matched reassignment
+  // (never ambiguous, even though 王思穎 is a common-enough name), an ambiguous
+  // NAME-only match (陳嘉欣 exists in both 2b and 1a with different sid — see
+  // vendor-data.js), an unknown class code, and an exact duplicate row.
+  document.getElementById('bulkCsvInput').value =
+`姓名,學生編號,目標班別代碼,HKID尾4碼,家長聯絡電話,SEN備註
+陳大文,,1a,2345,9876 5432,
+黃小柔,,1c,3456,9123 0000,對閱讀有輔助需要
+馬顯宗,,1a,,,
+王思穎,S2001,1a,,,
+陳嘉欣,,1a,,,
+李子明,,3z,,,
+黃小柔,,1c,3456,9123 0000,對閱讀有輔助需要`;
+}
+
+function parseCsvText(text){
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return [];
+  let start = 0;
+  if (lines[0].includes('姓名')) start = 1; // tolerate a header row, don't require one
+  const rows = [];
+  for (let i = start; i < lines.length; i++){
+    const cols = lines[i].split(',').map(c=>c.trim());
+    rows.push({name:cols[0]||'', studentId:cols[1]||'', targetCode:cols[2]||'', hkid:cols[3]||'', contact:cols[4]||'', sen:cols[5]||''});
+  }
+  return rows;
+}
+
+/* ID-first matching: a 學生編號 match is never ambiguous by construction (sids
+ * are unique), so it skips the 手動核實 step entirely — this is the whole
+ * reason to prefer an ID over a name in the first place. Name-only matching
+ * only kicks in when no ID was given, and THAT path can still collide. */
+function judgeBulkRows(rawRows){
+  return rawRows.map((r, i)=>{
+    const problems = [];
+    if (!r.name) problems.push('缺少姓名');
+    const targetClass = CLASSES[r.targetCode];
+    if (!targetClass) problems.push('無效班別代碼「'+r.targetCode+'」');
+    const dupIndex = rawRows.findIndex((o,j)=>j<i && o.name===r.name && o.targetCode===r.targetCode);
+    if (dupIndex > -1) problems.push('與第 '+(dupIndex+1)+' 行完全重複');
+
+    let matches = [];
+    let matchedById = false;
+    if (r.studentId) {
+      CLASS_LIST.forEach(c=>{
+        c.students.forEach(s=>{ if (s.sid === r.studentId && !s.left) matches.push({classId:c.id, className:c.className}); });
+      });
+      matchedById = matches.length > 0;
+    }
+    if (!matchedById && r.name) {
+      CLASS_LIST.forEach(c=>{
+        c.students.forEach(s=>{ if (s.n === r.name && !s.left) matches.push({classId:c.id, className:c.className}); });
+      });
+    }
+    let mode;
+    if (matches.length === 0) mode = 'new';
+    else if (matches.length === 1 || matchedById) mode = 'reassign';
+    else mode = 'ambiguous';
+    if (mode === 'ambiguous') problems.push('姓名同時對應 '+matches.length+' 位在校學生，需要人手核實');
+
+    return {...r, rowIndex:i, mode, matches, matchedById, resolvedClassId: mode==='reassign' ? matches[0].classId : null, problems};
+  });
+}
+
+function parseBulkCsv(){
+  const text = document.getElementById('bulkCsvInput').value;
+  const raw = parseCsvText(text);
+  if (!raw.length){ toast('沒有可解析的資料'); return; }
+  BULK_ROWS = judgeBulkRows(raw);
+  renderBulkPreview();
+}
+
+function resolveAmbiguous(rowIndex, value){
+  const r = BULK_ROWS.find(x=>x.rowIndex===rowIndex);
+  if (!r) return;
+  if (value === '__new__'){ r.mode = 'new'; r.resolvedClassId = null; }
+  else if (value) { r.mode = 'reassign'; r.resolvedClassId = value; }
+  else { return; } // "請選擇…" placeholder — leave as ambiguous until a real choice is made
+  r.problems = r.problems.filter(p=>!p.includes('需要人手核實'));
+  renderBulkPreview();
+}
+
+function bulkRowBadge(r){
+  if (r.mode === 'ambiguous') return `<span class="st warn">⚠ 需要人手核實</span>`;
+  const hardProblems = r.problems.filter(p=>!p.includes('需要人手核實'));
+  if (hardProblems.length) return `<span class="st warn">⚠ ${hardProblems.join('；')}（將略過）</span>`;
+  return `<span class="st ok">✓ 可處理</span>`;
+}
+
+function renderBulkPreview(){
+  const wrap = document.getElementById('bulkPreviewWrap');
+  if (!BULK_ROWS.length){ wrap.innerHTML = ''; document.getElementById('countBulk').textContent = ''; return; }
+  document.getElementById('countBulk').textContent = '('+BULK_ROWS.length+')';
+
+  const showSensitive = document.getElementById('bulkShowSensitive') ? document.getElementById('bulkShowSensitive').checked : false;
+  const newCount = BULK_ROWS.filter(r=>r.mode==='new').length;
+  const reassignCount = BULK_ROWS.filter(r=>r.mode==='reassign').length;
+  const blockedCount = BULK_ROWS.filter(r=>r.mode==='ambiguous' || r.problems.some(p=>!p.includes('需要人手核實'))).length;
+  const canCommit = !BULK_ROWS.some(r=>r.mode==='ambiguous');
+
+  const rowsHtml = BULK_ROWS.map(r=>{
+    const targetClass = CLASSES[r.targetCode];
+    const targetLabel = targetClass ? targetClass.className : `⚠ 無效代碼「${r.targetCode}」`;
+    let judgeCell;
+    if (r.mode === 'ambiguous') {
+      const opts = r.matches.map(m=>`<option value="${m.classId}">現有：${m.className}</option>`).join('');
+      judgeCell = `<select class="ambig-pick" onchange="resolveAmbiguous(${r.rowIndex}, this.value)">
+        <option value="">請選擇…</option>${opts}<option value="__new__">視為新生</option>
+      </select>`;
+    } else if (r.mode === 'reassign') {
+      judgeCell = `↔ 現有轉班（原：${CLASSES[r.resolvedClassId].className}，${r.matchedById ? '以學生編號核對' : '以姓名核對'}）`;
+    } else {
+      judgeCell = '🆕 新生';
+    }
+    const sensitiveCells = showSensitive
+      ? `<td>${r.hkid||'—'}</td><td>${r.contact||'—'}</td><td>${r.sen||'—'}</td>`
+      : '';
+    return `<tr class="bulk-row">
+      <td><b>${r.name||'（無姓名）'}</b></td>
+      <td>${r.studentId||'—'}</td>
+      <td>${judgeCell}</td>
+      <td>${targetLabel}</td>
+      <td>${bulkRowBadge(r)}</td>
+      ${sensitiveCells}
+    </tr>`;
+  }).join('');
+
+  const sensitiveHeaders = showSensitive ? '<th>HKID 尾4碼</th><th>家長聯絡電話</th><th>SEN 備註</th>' : '';
+
+  wrap.innerHTML = `
+    <label class="bulk-toggle"><input type="checkbox" id="bulkShowSensitive" ${showSensitive?'checked':''} onchange="renderBulkPreview()"> 顯示敏感欄位（HKID／家長聯絡電話／SEN 備註）— 預設隱藏 <span class="toggle-note">（僅供核對，執行後不會保留在校管系統內）</span></label>
+    <table>
+      <thead><tr><th>姓名</th><th>學生編號</th><th>判定</th><th>目標班別</th><th>狀態</th>${sensitiveHeaders}</tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="bulk-summary">
+      共 ${BULK_ROWS.length} 筆：${newCount} 筆將建立新生記錄，${reassignCount} 筆將轉班現有學生${blockedCount ? '，' + blockedCount + ' 筆有問題（將略過，不影響其餘資料）' : ''}。
+    </div>
+    <button class="act" ${canCommit ? '' : 'disabled'} onclick="commitBulkBatch()">確認執行批量編班</button>
+    ${canCommit ? '' : '<span class="bulk-hint" style="margin-left:10px;">尚有同名待人手核實的資料，須先選擇處理方式才能執行</span>'}
+  `;
+}
+
+/* Rows that don't make it in are kept, not discarded — the earlier version
+ * wiped BULK_ROWS and the textarea entirely on commit, meaning a rejected row
+ * (bad class code, exact duplicate) simply vanished with no way to recover it
+ * except retyping the whole batch from memory. Now only successfully-committed
+ * rows are removed from the working set; everything else stays visible and
+ * still sits in the textarea so it can be corrected and resubmitted. */
+function commitBulkBatch(){
+  let requested = 0, reassigned = 0;
+  const remaining = [];
+  BULK_ROWS.forEach(r=>{
+    if (r.mode === 'ambiguous'){ remaining.push(r); return; }
+    const targetClass = CLASSES[r.targetCode];
+    if (!targetClass || r.problems.some(p=>p.includes('完全重複'))){ remaining.push(r); return; }
+    if (r.mode === 'new'){
+      // A brand-new student's identity (name + ID) is an EdData fact, not an
+      // SMS-organizational one — SMS can only REQUEST intake here, same as
+      // teacher status changes. hkid/contact/sen ARE carried into the request
+      // (EdData needs them to actually create the identity record), but they
+      // still never land in SMS's own CLASSES data — only in the request object,
+      // which lives on until 馮 Sir approves or denies it on eddata-console.html.
+      // The class code typed in the CSV is only a SUGGESTION for 馮 Sir's context —
+      // approval creates the student unassigned; the admin still has to place them
+      // into a class afterward, on 學生編班, once they show up there as 未編班.
+      STUDENT_INTAKE_REQUESTS.push({
+        id: 'sir' + Date.now() + '-' + r.rowIndex,
+        name: r.name,
+        suggestedClassId: r.targetCode,
+        hkid: r.hkid,
+        contact: r.contact,
+        sen: r.sen,
+        requestedBy: '何主任',
+        status: 'pending'
+      });
+      requested++;
+    } else if (r.mode === 'reassign'){
+      const fromClass = CLASSES[r.resolvedClassId];
+      const idx = r.matchedById
+        ? fromClass.students.findIndex(s=>s.sid===r.studentId && !s.left)
+        : fromClass.students.findIndex(s=>s.n===r.name && !s.left);
+      if (idx === -1){ remaining.push(r); return; }
+      const s = fromClass.students[idx];
+      fromClass.students.splice(idx, 1);
+      const groupOk = targetClass.groups.some(g=>g.id===s.g);
+      const newEntry = {n:s.n, sid:s.sid, g: groupOk ? s.g : targetClass.groups[0].id};
+      targetClass.students.push(newEntry);
+      reassigned++;
+    }
+  });
+  renderStudents();
+  const skippedCount = remaining.length;
+  BULK_ROWS = remaining;
+
+  if (remaining.length){
+    const header = '姓名,學生編號,目標班別代碼,HKID尾4碼,家長聯絡電話,SEN備註';
+    document.getElementById('bulkCsvInput').value = header + '\n' +
+      remaining.map(r=>[r.name,r.studentId,r.targetCode,r.hkid,r.contact,r.sen].join(',')).join('\n');
+  } else {
+    document.getElementById('bulkCsvInput').value = '';
+  }
+  renderBulkPreview();
+  const banner = `<div class="bulk-summary" style="background:#effaf5;border-color:#bfe8d7;">✓ 已處理：${requested} 筆新生已送交 EdData 請求建立（待 馮 Sir 審批後，會先以「未編班」狀態出現在「學生編班」，仍需你手動指派班別），轉班 ${reassigned} 位現有學生已即時生效。${skippedCount ? '尚有 '+skippedCount+' 筆未能處理，已保留在下方及輸入框中——修正後按「解析並預覽」可重新嘗試。' : '全部資料已處理完成。'}轉班結果可到「學生編班」查看；新生請求狀態可請 資訊科技統籌 於 EdData 控制台查看（本頁開啟期間有效，沒有跨頁面的資料儲存）。</div>`;
+  document.getElementById('bulkPreviewWrap').innerHTML = banner + document.getElementById('bulkPreviewWrap').innerHTML;
+  toast('批量編班完成 · '+requested+' 筆新生請求已送出，轉班 '+reassigned+(skippedCount ? '，尚有 '+skippedCount+' 筆待處理' : ''));
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderAssignments();
 populateStudentClassFilter();
+populateValidClassCodesHint();
 renderStudents();
 renderTeachers();
 </script>

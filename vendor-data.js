@@ -27,19 +27,31 @@
  * shouldn't silently change just because membership did. But we still need ONE
  * ground truth to detect that drift against, which is why the roster lives here
  * rather than staying local to groups.html. */
+/* form/formLabel added 2026-07-22 for the SMS bulk-assignment rescope — lets
+ * roster.html group/navigate classes by form (中一/中二/…) instead of a flat
+ * list, which stops mattering once a school has more than a couple of classes.
+ * Existing pages (groups.html, insights.html, trial-invites.html, etc.) only
+ * ever read className/subjectLabel/groups/students off CLASS_LIST entries, so
+ * adding these fields doesn't touch anything else — verified via grep before
+ * making this change. */
 const CLASSES = {
   '2b': {
-    className:'中二乙班', subjectLabel:'中文 · 32 人 · 任教中',
+    className:'中二乙班', subjectLabel:'中文 · 32 人 · 任教中', form:'S2', formLabel:'中二',
     groups:[
       {id:'stretch', name:'增潤組', color:'var(--ec-purple)', goal:'進度較快，適合延伸閱讀與較深的寫作任務'},
       {id:'core', name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度，做標準課業與練習'},
       {id:'support', name:'支援組', color:'var(--ec-green)', goal:'需要多些時間，由你親自帶領'},
     ],
+    /* sid = eddataId, added 2026-07-22: 批量編班's ambiguous-name problem exists
+     * BECAUSE name is the only identity signal available — a real SIS would match
+     * on a stable student ID first, falling back to name only when one isn't
+     * given. Assigning every seed student an sid here makes that precedence
+     * demonstrable, not just theoretical. */
     students:[
-      {n:'王思穎', g:'stretch'},{n:'林一心', g:'stretch'},{n:'徐朗', g:'stretch'},
-      {n:'陳嘉欣', g:'core'},{n:'何梓晴', g:'core'},{n:'黃俊傑', g:'core'},{n:'吳詠芝', g:'core'},{n:'周天恩', g:'core'},
-      {n:'李俊希', g:'support'},{n:'鄭家朗', g:'support'},
-      {n:'簡愛琳', g:'core', left:true},
+      {n:'王思穎', sid:'S2001', g:'stretch'},{n:'林一心', sid:'S2002', g:'stretch'},{n:'徐朗', sid:'S2003', g:'stretch'},
+      {n:'陳嘉欣', sid:'S2004', g:'core'},{n:'何梓晴', sid:'S2005', g:'core'},{n:'黃俊傑', sid:'S2006', g:'core'},{n:'吳詠芝', sid:'S2007', g:'core'},{n:'周天恩', sid:'S2008', g:'core'},
+      {n:'李俊希', sid:'S2009', g:'support'},{n:'鄭家朗', sid:'S2010', g:'support'},
+      {n:'簡愛琳', sid:'S2011', g:'core', left:true},
     ],
   },
   /* Thin/sparse on purpose (per insights.html's existing "本學期剛接手" story) — only
@@ -47,18 +59,83 @@ const CLASSES = {
    * dataset, not a cosmetic label swap, so switching classes actually changes what
    * every 課堂管理 page shows. */
   '1c': {
-    className:'中一丙班', subjectLabel:'中文 · 29 人 · 本學期剛接手',
+    className:'中一丙班', subjectLabel:'中文 · 29 人 · 本學期剛接手', form:'S1', formLabel:'中一',
     groups:[
       {id:'core', name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度，做標準課業與練習'},
       {id:'support', name:'支援組', color:'var(--ec-green)', goal:'剛接手，仍在觀察哪些學生需要較多支援'},
     ],
     students:[
-      {n:'馬顯宗', g:'core'},{n:'蘇文樂', g:'core'},{n:'鄧凱兒', g:'core'},{n:'黎子軒', g:'core'},
-      {n:'方雅晴', g:'support'},{n:'温家豪', g:'support'},
+      {n:'馬顯宗', sid:'S2012', g:'core'},{n:'蘇文樂', sid:'S2013', g:'core'},{n:'鄧凱兒', sid:'S2014', g:'core'},{n:'黎子軒', sid:'S2015', g:'core'},
+      {n:'方雅晴', sid:'S2016', g:'support'},{n:'温家豪', sid:'S2017', g:'support'},
+    ],
+  },
+  /* Materializes 中一甲班/黃老師 — previously only referenced by name in a
+   * classId:null vendor grant and in 任教編配's a3 row, never an actual class.
+   * Giving Form 1 a second class is also what makes 批量編班's form-then-class
+   * navigation demonstrate something real instead of a single-class no-op. */
+  '1a': {
+    className:'中一甲班', subjectLabel:'中文 · 黃老師任教', form:'S1', formLabel:'中一',
+    groups:[
+      {id:'core', name:'核心組', color:'var(--ec-blue)', goal:'跟隨主進度，做標準課業與練習'},
+      {id:'support', name:'支援組', color:'var(--ec-green)', goal:'需要多些時間，由黃老師親自帶領'},
+    ],
+    students:[
+      {n:'袁子軒', sid:'S2018', g:'core'},{n:'區凱琳', sid:'S2019', g:'core'},{n:'譚文昊', sid:'S2020', g:'core'},
+      /* Deliberate homonym with 2b's 陳嘉欣 — gives 批量編班's ambiguous-name
+       * resolution a genuine case to demonstrate against, instead of a contrived
+       * one: two real, differently-enrolled students sharing a name is exactly
+       * the scenario that makes name-only matching unsafe at bulk-import scale.
+       * Different sid (S2021 vs 2b's S2004) — same name, different student. */
+      {n:'陳嘉欣', sid:'S2021', g:'core'},{n:'柯天佑', sid:'S2022', g:'core'},
+      {n:'尹曉彤', sid:'S2023', g:'support'},{n:'費俊安', sid:'S2024', g:'support'},
     ],
   },
 };
 const CLASS_LIST = Object.keys(CLASSES).map(id=>({id, ...CLASSES[id]}));
+
+/* Sequential ID generator for students created via 批量編班's intake path —
+ * simulates what EdData would assign in reality. Starts past every seed sid
+ * above so nothing collides. */
+let STUDENT_SEQ = 2100;
+function nextStudentId(){ return 'S' + (STUDENT_SEQ++); }
+
+/* Identity-record requests — added 2026-07-22 to fix a real layering mistake:
+ * creating a brand-new student's identity (name + ID) or changing a teacher's
+ * actual employment status are EdData-owned actions (identity/records layer),
+ * not SMS-organizational ones. SMS (roster.html) can only REQUEST these now;
+ * EdData (eddata-console.html, 馮 Sir) is where they're actually approved and
+ * take effect — the same request/execute split already used for vendor
+ * data-access grants. Seeded with one pending example each so eddata-console.html
+ * has real content on a fresh load, same convention as VENDORS/TRIALS above.
+ *
+ * Corrected 2026-07-22 (second pass, same day): approving an intake request used
+ * to ALSO push the new student straight into whatever class 何主任 named in her
+ * original request — meaning EdData's approval click was doing SMS's organizational
+ * job (class assignment) in the same step as its own job (identity creation). That
+ * re-created, one layer down, exactly the conflation the request/execute split was
+ * built to remove. `suggestedClassId` (renamed from `targetClassId`) is now only
+ * context for 馮 Sir — non-binding. Approval creates the student in UNASSIGNED_STUDENTS
+ * below; assigning them to an actual class is a separate, later SMS action, using
+ * the same class-assignment mechanism 學生編班 already has for everyone else. */
+const STUDENT_INTAKE_REQUESTS = [
+  {id:'sir0', name:'黎曉盈', suggestedClassId:'1a', hkid:'4471', contact:'9821 3345', sen:'', requestedBy:'何主任', status:'pending'},
+];
+const TEACHER_STATUS_REQUESTS = [
+  {id:'tsr0', teacherName:'李老師', newStatus:'departed', requestedBy:'何主任', status:'pending'},
+];
+
+/* Students whose identity EdData has approved/created, but who have not yet been
+ * organized into a class — the landing spot for a freshly-approved intake request.
+ * 學生編班 (roster.html) surfaces this list at the top of its table with its own
+ * "編班" action, reusing the exact same class-assignment code path used for
+ * ordinary reassignment, so a new student isn't a special case once they reach
+ * this list — they're just a student waiting for the one SMS-organizational step
+ * that was never EdData's to do. Seeded with one example so 學生編班 has real
+ * content to demonstrate this on a fresh load, without first needing a live
+ * approve action on eddata-console.html (a separate page session anyway). */
+const UNASSIGNED_STUDENTS = [
+  {n:'黃梓恩', sid:'S2101'},
+];
 
 /* Canonical subject list — SMS's job, same reasoning as CLASSES/TEACHERS: without
  * this, 教師名冊's "部門" and 任教編配's "科目" were two separate hardcoded strings

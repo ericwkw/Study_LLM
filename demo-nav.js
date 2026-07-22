@@ -42,7 +42,7 @@ const PAGES = [
     ['eddata-console.html','EdData 資料存取審批','r'],
   ]},
   {group:'📋 校務處（何主任）', items:[
-    ['roster.html','校務處控制台（教師名冊／任教編配／學生編班）','y'],
+    ['roster.html','校務處控制台（教師名冊／任教編配／批量編班／學生編班）','y'],
   ]},
   {group:'🎒 學生／家長（Karen）', items:[
     ['student.html','學生／家長入口（故事 8）','r'],
