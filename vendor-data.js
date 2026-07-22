@@ -240,30 +240,43 @@ const VENDORS = [
   },
 ];
 
-/* Vendor-initiated trial requests — shared between trial-invites.html (teacher's
- * confirm/decline inbox), eddata-console.html (IT's confirm/decline queue), and
- * vendor-portal.html (where a vendor sends the invite), so all three pages show
- * the same trial at the same stage instead of each assuming a different state.
+/* Trial requests — shared between trial-invites.html (teacher's confirm/decline
+ * inbox), eddata-console.html (IT's confirm/decline queue), group-access-requests.html
+ * (where a teacher can now START a trial directly), and vendor-portal.html (where
+ * a vendor can also send an invite), so all these pages show the same trial at the
+ * same stage instead of each assuming a different state.
  *
- * Lifecycle: awaiting_teacher → pending_it → active → graduated
- *                            ↘ declined              ↗ (graduate button)
- *                                        pending_it ↗
+ * `origin` distinguishes who started the trial:
+ *   'vendor'  — vendor pitches first; lifecycle: awaiting_teacher → pending_it → active → graduated
+ *                                                              ↘ declined              ↗ (graduate button)
+ *                                                                          pending_it ↗
+ *   'teacher' — added 2026-07-22 (Story 2, wave-one build): a teacher, already looking
+ *               at an already-CERTIFIED vendor, starts the trial directly — skips
+ *               awaiting_teacher entirely (the teacher IS the initiator, nothing to
+ *               confirm) and starts straight at pending_it. This is the concrete fix
+ *               for the "tool trial requires the same full production-scale grant as
+ *               permanent adoption" problem in EdCity_SMS_Consolidation_Stories.md
+ *               Story 2 — vetting/compliance stays mandatory (only certified vendors
+ *               are offered), but the grant itself is lighter: Tier 1 only, single
+ *               class/group scope (never whole-school), 14-day auto-expiry, one-click
+ *               IT sign-off instead of the full tier-picker used for production grants.
+ *
  * A decline at either stage sets declinedBy, a reason, and a cooldownUntil date;
  * during the cooldown the same vendor cannot re-pitch the same class+group. */
 const TRIALS = [
   {id:'t1', vendor:'點讀教育', vendorId:'diandu', teacher:'陳老師', classId:'2b', groupId:'stretch', group:'增潤組（3 人）· 中二乙班', headcount:3,
-   tool:'中文分級閱讀庫 · 進階版試用', status:'pending_it', expiresAt:'2026-08-04',
+   tool:'中文分級閱讀庫 · 進階版試用', status:'pending_it', expiresAt:'2026-08-04', origin:'vendor',
    declineReason:null, cooldownUntil:null, declinedBy:null},
   {id:'t2', vendor:'語音通 AI', vendorId:null, teacher:'黃老師', classId:'2b', groupId:'core', group:'核心組（5 人）· 中二乙班', headcount:5,
-   tool:'AI 朗讀評測（試用版）', status:'declined', expiresAt:null,
+   tool:'AI 朗讀評測（試用版）', status:'declined', expiresAt:null, origin:'vendor',
    declineReason:'試用期內評語準確度不足，未能分辨聲調錯誤與地道口音差異。', cooldownUntil:'2026-11-05', declinedBy:'it'},
   {id:'t3', vendor:'智寫科技', vendorId:'zhixie', teacher:'陳老師', classId:'2b', groupId:'support', group:'支援組（2 人）· 中二乙班', headcount:2,
-   tool:'AI 詞彙診斷追蹤（試用版）', status:'awaiting_teacher', expiresAt:null,
+   tool:'AI 詞彙診斷追蹤（試用版）', status:'awaiting_teacher', expiresAt:null, origin:'vendor',
    declineReason:null, cooldownUntil:null, declinedBy:null},
   /* Second-class example, so trial-invites.html's class-switcher has something
    * real to show under 中一丙班 too. */
   {id:'t4', vendor:'點讀教育', vendorId:'diandu', teacher:'陳老師', classId:'1c', groupId:'support', group:'支援組（2 人）· 中一丙班', headcount:2,
-   tool:'中文分級閱讀庫 · 入門版試用', status:'awaiting_teacher', expiresAt:null,
+   tool:'中文分級閱讀庫 · 入門版試用', status:'awaiting_teacher', expiresAt:null, origin:'vendor',
    declineReason:null, cooldownUntil:null, declinedBy:null},
 ];
 

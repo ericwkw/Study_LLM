@@ -230,7 +230,7 @@
 
   <div class="tabs">
     <button class="tab-btn active" data-tab="relations" onclick="showTab('relations')">供應商關係</button>
-    <button class="tab-btn" data-tab="trials" onclick="showTab('trials')">供應商發起試用<span class="tab-count" id="trialCount" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="trials" onclick="showTab('trials')">試用請求<span class="tab-count" id="trialCount" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="audit" onclick="showTab('audit')">稽核記錄</button>
   </div>
 
@@ -252,8 +252,8 @@
   </section>
 
   <section class="tab-pane" data-pane="trials">
-    <h2>供應商發起的試用請求</h2>
-    <div class="sub" style="margin:0 0 12px;max-width:56em;">供應商也可以主動發起試用，但必須綁定一位已確認的老師與組別，不能繞過老師直接向校方要求存取。老師確認後才會交到你手上；試用固定為 Tier 1 · 基本資料，最長 14 天。屆滿後如值得繼續使用，可直接「轉為正式申請」，不必重新填寫。</div>
+    <h2>試用請求</h2>
+    <div class="sub" style="margin:0 0 12px;max-width:56em;">試用有兩個來源：<b>供應商發起</b>——必須綁定一位已確認的老師與組別，不能繞過老師直接向校方要求存取，老師確認後才會交到你手上；<b>老師發起</b>（2026-07-22 新增）——老師針對一個已通過供應商審核的供應商，直接為自己的一個班別或分組申請試用，不必等供應商先發起，也不必走整個正式申請流程。兩者的試用條件相同：固定 Tier 1 · 基本資料、單一班別或分組（不可整校）、最長 14 天。屆滿後如值得繼續使用，可直接「轉為正式申請」，不必重新填寫。</div>
     <div id="trialList"></div>
   </section>
 
@@ -397,7 +397,9 @@ function renderTrials(){
   else { countEl.style.display='none'; }
 
   document.getElementById('trialList').innerHTML = visible.map(t=>{
-    let badges = `<span class="tchip src">供應商發起 · ${t.teacher}已確認</span>`;
+    let badges = t.origin==='teacher'
+      ? `<span class="tchip src">老師發起 · ${t.teacher}</span>`
+      : `<span class="tchip src">供應商發起 · ${t.teacher}已確認</span>`;
     if(t.status==='pending_it') badges += `<span class="tchip pending">⏳ 待你確認</span>`;
     if(t.status==='active') badges += `<span class="tchip active">✓ 試用中 · 至 ${t.expiresAt}</span>`;
     if(t.status==='declined') badges += `<span class="tchip declined">✕ 已拒絕${t.declinedBy==='teacher'?'（由老師拒絕）':''}</span>`;
@@ -443,10 +445,18 @@ function renderTrials(){
     </div>`;
   }).join('');
 }
+/* Vetting stays mandatory regardless of trial scale (confirmed by Eric —
+ * EdCity_SMS_Consolidation_Stories.md Story 2) — this guard applies to
+ * teacher-initiated trials too, even though group-access-requests.html only
+ * offers certified vendors in its picker. Defense in depth, same rule as
+ * approve() above for full grants. */
 function confirmTrial(id){
   const t = TRIALS.find(x=>x.id===id);
+  const v = t.vendorId ? VENDORS.find(x=>x.id===t.vendorId) : null;
+  if(v && v.vetting.status!=='certified'){ toast('此供應商尚未通過供應商審核，不能確認試用'); return; }
   t.status='active';
-  AUDIT.unshift({ic:'✓', text:'馮 Sir 確認'+t.vendor+'對'+t.group+'的試用請求（Tier 1 · 至'+t.expiresAt+'），由'+t.teacher+'發起確認', time:'2026-07-21'});
+  const originNote = t.origin==='teacher' ? '（老師發起）' : '';
+  AUDIT.unshift({ic:'✓', text:'馮 Sir 確認'+t.vendor+'對'+t.group+'的試用請求（Tier 1 · 至'+t.expiresAt+'）'+originNote, time:'2026-07-22'});
   renderTrials(); renderAudit();
   toast('已確認試用：'+t.vendor+' · 至 '+t.expiresAt);
 }

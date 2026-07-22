@@ -186,15 +186,26 @@ function vendorOptionsHtml(){
   return VENDORS.filter(v=>REQUESTABLE_VENDORS.includes(v.id))
     .map(v=>`<option value="${v.id}">${v.name} · ${v.product}</option>`).join('');
 }
+function isCertified(vendorId){
+  const v = VENDORS.find(x=>x.id===vendorId);
+  return !!v && v.vetting.status==='certified';
+}
 
+/* Trial button — added 2026-07-22 (Story 2, wave-one build): lets a teacher
+ * start a lightweight, time-boxed trial with an already-CERTIFIED vendor,
+ * without going through the full production-scale request below. Vetting
+ * stays mandatory (confirmed by Eric) — the button itself is disabled for any
+ * vendor that isn't certified yet, and confirmTrial() on eddata-console.html
+ * re-checks this server-side-equivalent guard before activating. */
 function renderScopeCards(){
   document.getElementById('groupScopeGrid').innerHTML = classGroups(activeClassId).map(g=>{
     const n = groupHeadcount(activeClassId, g.id);
     return `<div class="scope-card">
       <div class="sc-head"><span class="dot" style="background:${g.color}"></span><b>${g.name}</b><span class="n">${n} 人</span></div>
       <div class="goal">${g.goal}</div>
-      <select id="vendorPick-${g.id}">${vendorOptionsHtml()}</select>
-      <button class="go" onclick="submitRequest('${g.id}')">送出申請 →</button>
+      <select id="vendorPick-${g.id}" onchange="refreshTrialButton('${g.id}')">${vendorOptionsHtml()}</select>
+      <button class="go" onclick="submitRequest('${g.id}')">送出正式申請 →</button>
+      <button class="go trial-go" id="trialBtn-${g.id}" onclick="submitTrialRequest('${g.id}')" style="margin-top:6px;background:#fff;border:1px solid var(--ec-purple);color:var(--ec-purple);">🧪 申請試用（14 天）</button>
       <div id="overlapNote-${g.id}"></div>
     </div>`;
   }).join('');
@@ -202,10 +213,45 @@ function renderScopeCards(){
   document.getElementById('wholeScopeGrid').innerHTML = `<div class="scope-card whole">
     <div class="sc-head"><b>全班</b><span class="n">${wc} 人</span></div>
     <div class="goal">不分組別，整班學生的資料一併申請，適合全班統一使用的工具。</div>
-    <select id="vendorPick-__whole_class__">${vendorOptionsHtml()}</select>
-    <button class="go" onclick="submitRequest('__whole_class__')">送出申請 →</button>
+    <select id="vendorPick-__whole_class__" onchange="refreshTrialButton('__whole_class__')">${vendorOptionsHtml()}</select>
+    <button class="go" onclick="submitRequest('__whole_class__')">送出正式申請 →</button>
+    <button class="go trial-go" id="trialBtn-__whole_class__" onclick="submitTrialRequest('__whole_class__')" style="margin-top:6px;background:#fff;border:1px solid var(--ec-purple);color:var(--ec-purple);">🧪 申請試用（14 天）</button>
     <div id="overlapNote-__whole_class__"></div>
   </div>`;
+  classGroups(activeClassId).forEach(g=>refreshTrialButton(g.id));
+  refreshTrialButton('__whole_class__');
+}
+
+function refreshTrialButton(groupId){
+  const vendorId = document.getElementById('vendorPick-'+groupId).value;
+  const btn = document.getElementById('trialBtn-'+groupId);
+  if(!btn) return;
+  if(isCertified(vendorId)){
+    btn.disabled = false;
+    btn.title = '';
+    btn.style.opacity = '1';
+  } else {
+    btn.disabled = true;
+    btn.title = '此供應商尚未通過供應商審核，須先完成合規閘，才能開始試用';
+    btn.style.opacity = '.5';
+  }
+}
+
+function submitTrialRequest(groupId){
+  const vendorId = document.getElementById('vendorPick-'+groupId).value;
+  const v = VENDORS.find(x=>x.id===vendorId);
+  if(!isCertified(vendorId)){ toast('此供應商尚未通過供應商審核，不能開始試用'); return; }
+  const group = groupId==='__whole_class__' ? '全班' : classGroups(activeClassId).find(x=>x.id===groupId).name;
+  const memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers(activeClassId).map(s=>s.n) : groupMembers(activeClassId, groupId).map(s=>s.n);
+  const headcount = memberSnapshot.length;
+  TRIALS.push({
+    id:'tt-'+Date.now(), vendor:v.name, vendorId:v.id, teacher:'Eric Wu', classId:activeClassId, groupId,
+    group: group+'（'+headcount+' 人）· '+CLASSES[activeClassId].className, headcount,
+    tool:v.product, status:'pending_it', expiresAt:'2026-08-05', origin:'teacher',
+    declineReason:null, cooldownUntil:null, declinedBy:null,
+  });
+  renderMyRequests();
+  toast('已送出試用請求：'+v.name+' · 14 天（Tier 1），待資訊科技統籌確認');
 }
 
 function submitRequest(groupId){
@@ -238,11 +284,23 @@ function myRelevantEntries(){
   return out;
 }
 
+function myRelevantTrials(){
+  return TRIALS.filter(t=>t.classId===activeClassId && t.origin==='teacher');
+}
+
+const TRIAL_STATUS_CHIP = {
+  pending_it:'<span class="rchip pending">⏳ 試用待確認</span>',
+  active:'<span class="rchip approved">✓ 試用中</span>',
+  declined:'<span class="rchip denied">✕ 試用被拒</span>',
+  graduated:'<span class="rchip approved">🎓 已轉為正式申請</span>',
+};
+
 function renderMyRequests(){
   const items = myRelevantEntries();
+  const trials = myRelevantTrials();
   let driftCount = 0;
 
-  document.getElementById('myRequestsList').innerHTML = items.length ? items.map(({v,entry,kind})=>{
+  const grantCards = items.map(({v,entry,kind})=>{
     const drift = membershipDrift(entry);
     if(drift) driftCount++;
     const statusChip = kind==='grant' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
@@ -265,7 +323,21 @@ function renderMyRequests(){
       </div>
       ${driftHtml}${overlapHtml}
     </div>`;
-  }).join('') : `<div class="empty-msg">目前沒有與教學分組相關的請求或已核准存取</div>`;
+  });
+
+  const trialCards = trials.map(t=>{
+    const statusChip = TRIAL_STATUS_CHIP[t.status] || '';
+    const expiryNote = t.status==='active' ? `<small style="display:block;margin-top:2px;">試用至 ${t.expiresAt}</small>` : '';
+    return `<div class="req-card">
+      <div class="rc-head">
+        <div><b>🧪 ${t.group}</b><small>${t.vendor} · ${t.tool}</small>${expiryNote}</div>
+        <div class="rc-badges">${statusChip}</div>
+      </div>
+    </div>`;
+  });
+
+  const allCards = [...trialCards, ...grantCards];
+  document.getElementById('myRequestsList').innerHTML = allCards.length ? allCards.join('') : `<div class="empty-msg">目前沒有與教學分組相關的請求或已核准存取</div>`;
 
   const countEl = document.getElementById('driftCount');
   if(driftCount>0){ countEl.style.display='inline-block'; countEl.textContent = driftCount; }
