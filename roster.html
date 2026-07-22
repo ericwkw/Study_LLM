@@ -283,9 +283,9 @@
 
   <section class="tab-pane" data-pane="roles">
     <h1>角色與權限</h1>
-    <div class="sub">現實系統目前只有「校務行政」一個角色，何主任要逐個帳戶手動賦予或收回權限。呢度示範一個角色可以拆細——每位老師可以同時持有多於一個角色，各自對應一個較窄的可見範圍，而唔係全部人都睇晒全校資料。</div>
+    <div class="sub">現實系統目前只有「校務行政」一個角色，何主任要逐個帳戶手動賦予或收回權限。此處示範角色可以拆細：每位老師可同時持有多於一個角色，各自對應較窄的可見範圍，而非人人都看到全校資料。</div>
 
-    <div class="foundation">🏗 角色是老師身分上的<b>標籤</b>，唔係另一種帳戶——同一個人可以同時係「任教老師」＋「科主任」，或者「任教老師」＋「SEN 統籌」。收回角色只會縮窄佢睇到嘅範圍，唔會影響佢原本任教班別嘅日常操作。</div>
+    <div class="foundation">🏗 角色是老師身分上的<b>標籤</b>，並非另一種帳戶——同一人可同時是「任教老師」及「科主任」，或「任教老師」及「SEN 統籌」。收回角色只會縮窄其可見範圍，不影響原本任教班別的日常操作。</div>
 
     <div id="roleLegend" class="role-legend"></div>
 
@@ -298,13 +298,13 @@
 
     <div class="downstream" style="margin-top:20px;">
       <b>角色收窄咗乜嘢（構想中，此原型只做示意）</b>
-      <p class="why">目的：唔係淨係加多一個標籤，而是實際上縮窄一個人平時睇到嘅資料範圍。以「科主任」為例：</p>
+      <p class="why">目的並非只加一個標籤，而是實際縮窄一個人平時看到的資料範圍。以「科主任」為例：</p>
       <div class="sync-steps">
-        <div class="sync-step"><span class="num">1</span><span><b>科組統計視圖</b>（見 dept.html）— 只有持有「科主任」角色嘅老師先會睇到本科全班別嘅統計，其他任教老師只睇自己任教嘅班別</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>SEN 統籌</b> — 只有持有呢個角色嘅老師先睇到全校 SEN 標籤與支援計劃狀態，其他人（包括科主任）睇唔到</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>校務行政</b> — 依然係目前現實系統入面實際做緊呢啲事嘅角色，呢次拆分想收窄佢嘅範圍，唔係取代佢</span></div>
+        <div class="sync-step"><span class="num">1</span><span><b>科組統計視圖</b>（見 dept.html）— 只有持有「科主任」角色的老師會看到本科全班別的統計，其他任教老師只看到自己任教的班別</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>SEN 統籌</b> — 只有持有此角色的老師看到全校 SEN 標籤與支援計劃狀態，其他人（包括科主任）看不到</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>校務行政</b> — 依然是目前現實系統中實際負責這些事的角色，此次拆分是想收窄其範圍，而非取代它</span></div>
       </div>
-      <p class="why-caveat">⚠️ 呢個原型只喺 dept.html 加咗一句對應說明，實際嘅角色式權限收窄（例如登入後自動隱藏睇唔到嘅畫面）未接通，需要平台知道「而家登入緊嘅係邊個」，同「編配之後理應發生的事」提到嘅缺口一樣。</p>
+      <p class="why-caveat">⚠️ 此原型只在 dept.html 加了一句對應說明，實際的角色式權限收窄（例如登入後自動隱藏看不到的畫面）尚未接通，需要平台知道「目前登入的是誰」，與「編配之後理應發生的事」提到的缺口相同。</p>
     </div>
   </section>
 
@@ -943,7 +943,7 @@ function renderRoles(){
     const roles = t.roles || ['classroom_teacher'];
     const chips = roles.map(rid=>{
       const removable = rid !== 'classroom_teacher';
-      return `<span class="role-chip" style="background:${roleColor(rid)};">${roleLabel(rid)}${removable ? `<span class="role-chip rm" onclick="removeRole('${t.name}','${rid}')" title="收回呢個角色">✕</span>` : ''}</span>`;
+      return `<span class="role-chip" style="background:${roleColor(rid)};">${roleLabel(rid)}${removable ? `<span class="role-chip rm" onclick="removeRole('${t.name}','${rid}')" title="收回此角色">✕</span>` : ''}</span>`;
     }).join('');
     const assignable = ROLE_DEFS.filter(r=>r.id!=='classroom_teacher' && !roles.includes(r.id));
     const addPicker = assignable.length
