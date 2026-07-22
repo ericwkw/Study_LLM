@@ -7,7 +7,7 @@
 <style>
   :root{
     --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
-    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;--ec-teal:#0f8c8c;
     --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -98,6 +98,29 @@
   .sync .ic{font-size:1.1rem;flex-shrink:0;}
   .sync b{color:var(--ink);}
 
+  /* Study groups — deliberately distinct visual language from the per-class
+     board above (teal accent, not blue/purple/green) so nobody mistakes a
+     cross-class study group for one of 教學分組's per-class sub-groups. */
+  .sg-section{margin-top:30px;}
+  .sg-note{background:#effafa;border:1px solid #bfe0e0;border-radius:12px;padding:11px 15px;
+    font-size:.76rem;color:#0f6b6b;line-height:1.65;max-width:56em;margin-bottom:14px;}
+  .sg-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+  .sg-card{background:#fff;border:1px solid var(--line);border-top:3px solid var(--ec-teal);border-radius:14px;padding:15px 17px;}
+  .sg-card .sg-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px;}
+  .sg-card b{font-size:.88rem;}
+  .sg-card .sg-n{margin-left:auto;font-size:.7rem;color:var(--ink-3);white-space:nowrap;}
+  .sg-card .sg-goal{font-size:.72rem;color:var(--ink-3);margin:4px 0 10px;line-height:1.55;}
+  .sg-member{display:inline-flex;align-items:center;gap:5px;background:#f2f9f9;border:1px solid #d9eeee;border-radius:99px;
+    padding:4px 10px;font-size:.7rem;color:var(--ink-2);margin:0 6px 6px 0;}
+  .sg-member small{color:var(--ink-3);}
+  .sg-expiry{font-size:.68rem;color:#8a5a00;background:#fdf1c7;border-radius:99px;padding:3px 10px;display:inline-block;margin-top:4px;}
+  .sg-create{background:#fff;border:1px dashed var(--line);border-radius:14px;padding:16px 18px;margin-top:12px;}
+  .sg-create input[type=text]{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:.8rem;font-family:inherit;margin-bottom:8px;}
+  .sg-create .sg-pick-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .sg-pick-col{flex:1;min-width:180px;border:1px solid var(--line);border-radius:9px;padding:9px;}
+  .sg-pick-col h6{font-size:.68rem;color:var(--ink-3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+  .sg-pick-opt{display:flex;align-items:center;gap:6px;font-size:.76rem;padding:3px 0;}
+
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
   .toast.show{opacity:.94;}
   footer.note{margin-top:40px;font-size:.68rem;color:var(--ink-3);text-align:center;}
@@ -166,6 +189,22 @@
   </div>
 
   <div class="sync"><span class="ic">🔄</span><span><b>自動同步示例：</b>簡愛琳（Karen）上週由乙班轉到丙班，系統已自動把她從所有分組移除（下方以灰色示意）。校管系統的名冊一經更新，這裏亦隨即更新，<b>毋須任何手動步驟</b>。</span></div>
+
+  <div class="sg-section">
+    <h1 style="font-size:1.15rem;">學習小組（跨班）</h1>
+    <div class="sg-note">🗂 這裏管理的是<b>跨班學習小組</b>，與上方的「教學分組」是兩個不同的概念，不要混為一談：教學分組（增潤組／核心組／支援組）只能在同一班內劃分；學習小組可以從你任教的<b>不同班別</b>中挑選學生組成，例如一個不跟班別走的共讀單元。範圍僅限本校——跨校學習小組是已知的未來需要，這次不建置。</div>
+    <div class="sg-board" id="sgBoard"></div>
+    <div class="sg-create">
+      <b style="font-size:.82rem;display:block;margin-bottom:10px;">＋ 新增學習小組</b>
+      <input type="text" id="sgNameInput" placeholder="小組名稱，例如：跨班閱讀圈">
+      <input type="text" id="sgGoalInput" placeholder="小組目的（選填）">
+      <div class="sg-pick-row" id="sgPickRow"></div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--ink-2);margin-bottom:10px;">
+        期限（選填）：<input type="date" id="sgExpiryInput" style="width:auto;padding:6px 9px;">
+      </label>
+      <button class="btn" onclick="createStudyGroup()">建立學習小組</button>
+    </div>
+  </div>
 
   <footer class="note">EdCity 教學分組 · 故事 1「Teaching Groups」延伸示意畫面 · 內部示範原型，僅供概念演示</footer>
 </main>
@@ -248,10 +287,80 @@ function moveStu(name){
   render();
   toast(name + ' → ' + next.name);
 }
+/* Study groups (Story 1, wave-one build) — deliberately rendered independent
+ * of activeClassId, since the whole point is they aren't scoped to one class.
+ * Kept in this same file (not a separate page) because the ownership note
+ * above ("分組只有你看得到") applies equally here — same teacher-only visibility
+ * model, just a different membership shape. */
+let sgIdSeq = STUDY_GROUPS.length + 1;
+
+function renderStudyGroups(){
+  document.getElementById('sgBoard').innerHTML = STUDY_GROUPS.length ? STUDY_GROUPS.map(sg=>{
+    const members = studyGroupMembers(sg.id);
+    const memberChips = members.map(m=>
+      `<span class="sg-member">${m.n}<small>· ${m.className}</small> <span style="cursor:pointer;" onclick="removeStudyGroupMember('${sg.id}','${m.classId}','${m.n}')">✕</span></span>`
+    ).join('') || '<span class="sg-member" style="color:var(--ink-3);">目前沒有成員</span>';
+    const expiryHtml = sg.expiresAt ? `<div class="sg-expiry">⏳ 期限至 ${sg.expiresAt}</div>` : '';
+    return `<div class="sg-card">
+      <div class="sg-head"><b>${sg.name}</b><span class="sg-n">${members.length} 人 · 跨班</span></div>
+      <div class="sg-goal">${sg.goal||'（未填寫目的）'}</div>
+      <div>${memberChips}</div>
+      ${expiryHtml}
+      <div style="margin-top:10px;"><button class="btn ghost" onclick="deleteStudyGroup('${sg.id}')" style="font-size:.72rem;padding:6px 12px;">刪除此學習小組</button></div>
+    </div>`;
+  }).join('') : '<div class="sg-card" style="color:var(--ink-3);text-align:center;">尚未建立任何跨班學習小組</div>';
+}
+
+function renderSgPickRow(){
+  document.getElementById('sgPickRow').innerHTML = CLASS_LIST.map(cl=>{
+    const active = cl.students.filter(s=>!s.left);
+    return `<div class="sg-pick-col">
+      <h6>${cl.className}</h6>
+      ${active.map(s=>`<label class="sg-pick-opt"><input type="checkbox" data-classid="${cl.id}" data-name="${s.n}">${s.n}</label>`).join('') || '<span style="color:var(--ink-3);font-size:.72rem;">無在校學生</span>'}
+    </div>`;
+  }).join('');
+}
+
+function createStudyGroup(){
+  const name = document.getElementById('sgNameInput').value.trim();
+  if(!name){ toast('請先填寫小組名稱'); return; }
+  const goal = document.getElementById('sgGoalInput').value.trim();
+  const expiresAt = document.getElementById('sgExpiryInput').value || null;
+  const checked = [...document.querySelectorAll('#sgPickRow input[type=checkbox]:checked')];
+  if(!checked.length){ toast('請至少選一位學生'); return; }
+  const memberRefs = checked.map(cb=>({classId:cb.dataset.classid, name:cb.dataset.name}));
+  STUDY_GROUPS.push({id:'sg'+(sgIdSeq++), name, goal, teacher:'陳老師', color:'var(--ec-teal)', expiresAt, memberRefs});
+  document.getElementById('sgNameInput').value = '';
+  document.getElementById('sgGoalInput').value = '';
+  document.getElementById('sgExpiryInput').value = '';
+  document.querySelectorAll('#sgPickRow input[type=checkbox]').forEach(cb=>cb.checked=false);
+  renderStudyGroups();
+  toast('已建立學習小組：'+name+'（'+memberRefs.length+' 人）');
+}
+
+function removeStudyGroupMember(sgId, classId, name){
+  const sg = STUDY_GROUPS.find(x=>x.id===sgId);
+  if(!sg) return;
+  sg.memberRefs = sg.memberRefs.filter(r=>!(r.classId===classId && r.name===name));
+  renderStudyGroups();
+  toast('已將 '+name+' 移出學習小組');
+}
+
+function deleteStudyGroup(sgId){
+  const idx = STUDY_GROUPS.findIndex(x=>x.id===sgId);
+  if(idx===-1) return;
+  const name = STUDY_GROUPS[idx].name;
+  STUDY_GROUPS.splice(idx,1);
+  renderStudyGroups();
+  toast('已刪除學習小組：'+name);
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
 renderClassSwitcher();
 render();
+renderStudyGroups();
+renderSgPickRow();
 </script>
 <script src="usage-modal.js"></script>
 <script src="demo-nav.js"></script>

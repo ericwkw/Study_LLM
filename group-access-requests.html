@@ -7,7 +7,7 @@
 <style>
   :root{
     --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-red:#ED1A2E;--ec-green:#00AC6C;
-    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;
+    --ec-maroon:#7B2539;--ec-amber:#F5A623;--ec-purple:#7C5CDB;--ec-teal:#0f8c8c;
     --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#e6ebf0;--bg:#f5f8fa;font-size:18px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -147,6 +147,10 @@
     <h2>整班一次申請</h2>
     <div class="scope-grid" id="wholeScopeGrid"></div>
 
+    <h2>學習小組（跨班，2026-07-22 新增）</h2>
+    <div class="sub" style="margin:0 0 10px;max-width:56em;">這裏列出你在「教學分組」建立的跨班學習小組——不受單一班別限制，適合像共讀單元這類跨班活動申請資料存取。</div>
+    <div class="scope-grid" id="studyGroupScopeGrid"></div>
+
     <div class="not-covered">已全校授權的工具（例如智語科技）毋須在此另行申請，本頁只處理需要按分組審批資料層級的工具。</div>
   </section>
 
@@ -222,6 +226,32 @@ function renderScopeCards(){
   refreshTrialButton('__whole_class__');
 }
 
+/* Study-group scope cards (Story 1, wave-one build) — deliberately rendered
+ * independent of activeClassId, since a study group by definition isn't
+ * scoped to one class. Uses the '__study_group__'+id scope-key convention
+ * documented in vendor-data.js so submitRequest/submitTrialRequest below can
+ * share the same code path as ordinary class/group scopes. */
+function renderStudyGroupScopeCards(){
+  const grid = document.getElementById('studyGroupScopeGrid');
+  if(!STUDY_GROUPS.length){
+    grid.innerHTML = '<div class="scope-card" style="color:var(--ink-3);">尚未在「教學分組」建立任何跨班學習小組</div>';
+    return;
+  }
+  grid.innerHTML = STUDY_GROUPS.map(sg=>{
+    const scopeKey = '__study_group__'+sg.id;
+    const n = studyGroupHeadcount(sg.id);
+    return `<div class="scope-card" style="border-top:3px solid var(--ec-teal);">
+      <div class="sc-head"><span class="dot" style="background:var(--ec-teal)"></span><b>${sg.name}</b><span class="n">${n} 人 · 跨班</span></div>
+      <div class="goal">${sg.goal||'（未填寫目的）'}</div>
+      <select id="vendorPick-${scopeKey}" onchange="refreshTrialButton('${scopeKey}')">${vendorOptionsHtml()}</select>
+      <button class="go" onclick="submitRequest('${scopeKey}')">送出正式申請 →</button>
+      <button class="go trial-go" id="trialBtn-${scopeKey}" onclick="submitTrialRequest('${scopeKey}')" style="margin-top:6px;background:#fff;border:1px solid var(--ec-purple);color:var(--ec-purple);">🧪 申請試用（14 天）</button>
+      <div id="overlapNote-${scopeKey}"></div>
+    </div>`;
+  }).join('');
+  STUDY_GROUPS.forEach(sg=>refreshTrialButton('__study_group__'+sg.id));
+}
+
 function refreshTrialButton(groupId){
   const vendorId = document.getElementById('vendorPick-'+groupId).value;
   const btn = document.getElementById('trialBtn-'+groupId);
@@ -241,12 +271,23 @@ function submitTrialRequest(groupId){
   const vendorId = document.getElementById('vendorPick-'+groupId).value;
   const v = VENDORS.find(x=>x.id===vendorId);
   if(!isCertified(vendorId)){ toast('此供應商尚未通過供應商審核，不能開始試用'); return; }
-  const group = groupId==='__whole_class__' ? '全班' : classGroups(activeClassId).find(x=>x.id===groupId).name;
-  const memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers(activeClassId).map(s=>s.n) : groupMembers(activeClassId, groupId).map(s=>s.n);
+
+  let group, memberSnapshot, classId;
+  if(isStudyGroupScope(groupId)){
+    const sgId = studyGroupIdFromScope(groupId);
+    group = studyGroupLabel(sgId);
+    memberSnapshot = studyGroupMembers(sgId).map(s=>s.n);
+    classId = null; // deliberate — see vendor-data.js's scope-key comment
+  } else {
+    group = groupId==='__whole_class__' ? '全班' : classGroups(activeClassId).find(x=>x.id===groupId).name;
+    memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers(activeClassId).map(s=>s.n) : groupMembers(activeClassId, groupId).map(s=>s.n);
+    classId = activeClassId;
+    group = group+'（'+memberSnapshot.length+' 人）· '+CLASSES[activeClassId].className;
+  }
   const headcount = memberSnapshot.length;
   TRIALS.push({
-    id:'tt-'+Date.now(), vendor:v.name, vendorId:v.id, teacher:'Eric Wu', classId:activeClassId, groupId,
-    group: group+'（'+headcount+' 人）· '+CLASSES[activeClassId].className, headcount,
+    id:'tt-'+Date.now(), vendor:v.name, vendorId:v.id, teacher:'陳老師', classId, groupId,
+    group, headcount,
     tool:v.product, status:'pending_it', expiresAt:'2026-08-05', origin:'teacher',
     declineReason:null, cooldownUntil:null, declinedBy:null,
   });
@@ -257,25 +298,42 @@ function submitTrialRequest(groupId){
 function submitRequest(groupId){
   const vendorId = document.getElementById('vendorPick-'+groupId).value;
   const v = VENDORS.find(x=>x.id===vendorId);
-  const overlap = scopeOverlapNote(vendorId, activeClassId, groupId);
   const noteEl = document.getElementById('overlapNote-'+groupId);
-  if(overlap){ noteEl.innerHTML = `<div class="overlap-note">⚠ ${overlap}</div>`; }
-  else { noteEl.innerHTML = ''; }
 
-  const memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers(activeClassId).map(s=>s.n) : groupMembers(activeClassId, groupId).map(s=>s.n);
+  let groupLbl, memberSnapshot, classId, overlap, successLabel;
+  if(isStudyGroupScope(groupId)){
+    const sgId = studyGroupIdFromScope(groupId);
+    groupLbl = studyGroupLabel(sgId);
+    memberSnapshot = studyGroupMembers(sgId).map(s=>s.n);
+    classId = null; // deliberate — cross-class scope-overlap checking (which assumes
+    // a single class) doesn't apply here; see vendor-data.js's scope-key comment.
+    overlap = null;
+    successLabel = STUDY_GROUPS.find(x=>x.id===sgId).name;
+  } else {
+    overlap = scopeOverlapNote(vendorId, activeClassId, groupId);
+    memberSnapshot = groupId==='__whole_class__' ? wholeClassMembers(activeClassId).map(s=>s.n) : groupMembers(activeClassId, groupId).map(s=>s.n);
+    classId = activeClassId;
+    groupLbl = groupLabel(activeClassId, groupId);
+    successLabel = groupId==='__whole_class__' ? '全班' : classGroups(activeClassId).find(g=>g.id===groupId).name;
+  }
+  if(overlap){ noteEl.innerHTML = `<div class="overlap-note">⚠ ${overlap}</div>`; }
+  else if(noteEl){ noteEl.innerHTML = ''; }
+
   const headcount = memberSnapshot.length;
   const reqId = 'gr-'+Date.now();
   v.pending.push({
-    id:reqId, teacher:'Eric Wu', group:groupLabel(activeClassId, groupId), classId:activeClassId, groupId, memberSnapshot, headcount,
+    id:reqId, teacher:'陳老師', group:groupLbl, classId, groupId, memberSnapshot, headcount,
     src:'來自學生工具申請（group-access-requests.html）', status:'pending', _pickedTier:null,
     overlapNote: overlap,
   });
   renderMyRequests();
-  toast('已送出：'+(groupId==='__whole_class__'?'全班':classGroups(activeClassId).find(g=>g.id===groupId).name)+' 申請使用「'+v.name+'」，待 EdData 審批');
+  toast('已送出：'+successLabel+' 申請使用「'+v.name+'」，待 EdData 審批');
 }
 
 function myRelevantEntries(){
-  // grants + pending requests belonging to the active class (or whole class within it)
+  // grants + pending requests belonging to the active class (or whole class within it) —
+  // study-group-scoped entries (classId:null) are shown separately below, always,
+  // regardless of which class is active, since they were never scoped to one.
   const out = [];
   VENDORS.forEach(v=>{
     v.grants.forEach(g=>{ if(g.classId===activeClassId) out.push({v, entry:g, kind:'grant'}); });
@@ -284,8 +342,21 @@ function myRelevantEntries(){
   return out;
 }
 
+function myStudyGroupEntries(){
+  const out = [];
+  VENDORS.forEach(v=>{
+    v.grants.forEach(g=>{ if(isStudyGroupScope(g.groupId)) out.push({v, entry:g, kind:'grant'}); });
+    v.pending.forEach(p=>{ if(isStudyGroupScope(p.groupId)) out.push({v, entry:p, kind:'pending'}); });
+  });
+  return out;
+}
+
 function myRelevantTrials(){
   return TRIALS.filter(t=>t.classId===activeClassId && t.origin==='teacher');
+}
+
+function myStudyGroupTrials(){
+  return TRIALS.filter(t=>isStudyGroupScope(t.groupId) && t.origin==='teacher');
 }
 
 const TRIAL_STATUS_CHIP = {
@@ -295,52 +366,67 @@ const TRIAL_STATUS_CHIP = {
   graduated:'<span class="rchip approved">🎓 已轉為正式申請</span>',
 };
 
+function renderGrantCard(v, entry, kind, driftCounter){
+  // driftCounter is a {n:0} box rather than a return value, since callers need
+  // to accumulate across two separate lists (class-scoped + study-group-scoped)
+  const drift = membershipDrift(entry);
+  if(drift) driftCounter.n++;
+  const statusChip = kind==='grant' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
+    : entry.status==='pending' ? `<span class="rchip pending">⏳ 待審批</span>`
+    : entry.status==='approved' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
+    : `<span class="rchip denied">✕ 已拒絕</span>`;
+  const teacherLabel = entry.teacher ? entry.teacher+' · ' : '';
+  let driftHtml = '';
+  if(drift){
+    const parts = [];
+    if(drift.added.length) parts.push('新增：'+drift.added.join('、'));
+    if(drift.removed.length) parts.push('移除：'+drift.removed.join('、'));
+    driftHtml = `<div class="drift-banner"><b>⚠ 分組成員已改變</b>自${kind==='grant'?'核准':'申請'}後，${parts.join('；')}。存取範圍維持原狀，不會自動調整；如需涵蓋新成員或縮減範圍，請重新提出請求或聯絡資訊科技統籌。</div>`;
+  }
+  const overlapHtml = entry.overlapNote ? `<div class="overlap-flag">⚠ ${entry.overlapNote}</div>` : '';
+  return `<div class="req-card">
+    <div class="rc-head">
+      <div><b>${teacherLabel}${entry.group}</b><small>${v.name} · ${v.product}</small></div>
+      <div class="rc-badges">${statusChip}</div>
+    </div>
+    ${driftHtml}${overlapHtml}
+  </div>`;
+}
+
+function renderTrialCard(t){
+  const statusChip = TRIAL_STATUS_CHIP[t.status] || '';
+  const expiryNote = t.status==='active' ? `<small style="display:block;margin-top:2px;">試用至 ${t.expiresAt}</small>` : '';
+  return `<div class="req-card">
+    <div class="rc-head">
+      <div><b>🧪 ${t.group}</b><small>${t.vendor} · ${t.tool}</small>${expiryNote}</div>
+      <div class="rc-badges">${statusChip}</div>
+    </div>
+  </div>`;
+}
+
 function renderMyRequests(){
   const items = myRelevantEntries();
   const trials = myRelevantTrials();
-  let driftCount = 0;
+  const sgItems = myStudyGroupEntries();
+  const sgTrials = myStudyGroupTrials();
+  const driftCounter = {n:0};
 
-  const grantCards = items.map(({v,entry,kind})=>{
-    const drift = membershipDrift(entry);
-    if(drift) driftCount++;
-    const statusChip = kind==='grant' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
-      : entry.status==='pending' ? `<span class="rchip pending">⏳ 待審批</span>`
-      : entry.status==='approved' ? `<span class="rchip approved">✓ 已核准 · ${entry.tier}</span>`
-      : `<span class="rchip denied">✕ 已拒絕</span>`;
-    const teacherLabel = entry.teacher ? entry.teacher+' · ' : '';
-    let driftHtml = '';
-    if(drift){
-      const parts = [];
-      if(drift.added.length) parts.push('新增：'+drift.added.join('、'));
-      if(drift.removed.length) parts.push('移除：'+drift.removed.join('、'));
-      driftHtml = `<div class="drift-banner"><b>⚠ 分組成員已改變</b>自${kind==='grant'?'核准':'申請'}後，${parts.join('；')}。存取範圍維持原狀，不會自動調整；如需涵蓋新成員或縮減範圍，請重新提出請求或聯絡資訊科技統籌。</div>`;
-    }
-    const overlapHtml = entry.overlapNote ? `<div class="overlap-flag">⚠ ${entry.overlapNote}</div>` : '';
-    return `<div class="req-card">
-      <div class="rc-head">
-        <div><b>${teacherLabel}${entry.group}</b><small>${v.name} · ${v.product}</small></div>
-        <div class="rc-badges">${statusChip}</div>
-      </div>
-      ${driftHtml}${overlapHtml}
-    </div>`;
-  });
+  const trialCards = trials.map(t=>renderTrialCard(t));
+  const grantCards = items.map(({v,entry,kind})=>renderGrantCard(v,entry,kind,driftCounter));
+  const sgTrialCards = sgTrials.map(t=>renderTrialCard(t));
+  const sgGrantCards = sgItems.map(({v,entry,kind})=>renderGrantCard(v,entry,kind,driftCounter));
 
-  const trialCards = trials.map(t=>{
-    const statusChip = TRIAL_STATUS_CHIP[t.status] || '';
-    const expiryNote = t.status==='active' ? `<small style="display:block;margin-top:2px;">試用至 ${t.expiresAt}</small>` : '';
-    return `<div class="req-card">
-      <div class="rc-head">
-        <div><b>🧪 ${t.group}</b><small>${t.vendor} · ${t.tool}</small>${expiryNote}</div>
-        <div class="rc-badges">${statusChip}</div>
-      </div>
-    </div>`;
-  });
+  const classSection = [...trialCards, ...grantCards];
+  const sgSection = [...sgTrialCards, ...sgGrantCards];
 
-  const allCards = [...trialCards, ...grantCards];
-  document.getElementById('myRequestsList').innerHTML = allCards.length ? allCards.join('') : `<div class="empty-msg">目前沒有與教學分組相關的請求或已核准存取</div>`;
+  let html = classSection.length ? classSection.join('') : `<div class="empty-msg">目前沒有與教學分組相關的請求或已核准存取</div>`;
+  if(sgSection.length){
+    html += `<h2 style="margin-top:26px;">跨班學習小組</h2>` + sgSection.join('');
+  }
+  document.getElementById('myRequestsList').innerHTML = html;
 
   const countEl = document.getElementById('driftCount');
-  if(driftCount>0){ countEl.style.display='inline-block'; countEl.textContent = driftCount; }
+  if(driftCounter.n>0){ countEl.style.display='inline-block'; countEl.textContent = driftCounter.n; }
   else { countEl.style.display='none'; }
 }
 
@@ -353,6 +439,7 @@ let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderClassSwitcher();
 renderScopeCards();
+renderStudyGroupScopeCards();
 renderMyRequests();
 </script>
 <script src="usage-modal.js"></script>

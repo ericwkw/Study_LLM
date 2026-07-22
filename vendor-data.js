@@ -206,6 +206,72 @@ function membershipDrift(entry){
   return {added, removed};
 }
 
+/* Study groups — added 2026-07-22 (Story 1, wave-one build, parallel track to
+ * Story 2). Fixes the real gap named in EdCity_SMS_Consolidation_Stories.md
+ * Story 1: 陳老師 teaches 中二乙班 and 中一丙班, and wants to pull a handful of
+ * students from BOTH into one reading circle — but c.groups (增潤組/核心組/支援組
+ * above) are pedagogical sub-groups scoped to a SINGLE class, by design (see the
+ * comment above CLASSES). A study group is a deliberately DIFFERENT concept:
+ * cross-class, teacher-defined, independent of the official class/group
+ * structure — never confuse the two, and never let SMS's official
+ * organizational layer or 何主任's roster read/write this data (see 🔒
+ * ownership note already on groups.html for the same reasoning applied to
+ * ordinary teaching groups).
+ *
+ * Scope, confirmed by Eric: WITHIN this school only. Cross-school study groups
+ * are a real future need but explicitly deferred, not modeled here.
+ *
+ * memberRefs stores {classId, name} pairs rather than a flat name list, since
+ * the whole point is members can come from different classes — a plain name
+ * isn't even guaranteed unique across classes (see 陳嘉欣 in 2b vs 1a). expiresAt
+ * is optional (Eric's stories doc: "with an optional expiry") — null means
+ * open-ended. */
+const STUDY_GROUPS = [
+  {id:'sg1', name:'跨班閱讀圈', goal:'從兩班中挑選閱讀能力相近的學生，六星期的共讀單元，不跟班別走。',
+   teacher:'陳老師', color:'var(--ec-teal)', expiresAt:'2026-09-05',
+   memberRefs:[
+     {classId:'2b', name:'王思穎'}, {classId:'2b', name:'林一心'}, {classId:'2b', name:'徐朗'},
+     {classId:'1c', name:'馬顯宗'}, {classId:'1c', name:'蘇文樂'},
+   ]},
+];
+
+/* Resolves memberRefs to live student objects, dropping any whose class no
+ * longer has them (e.g. a student who has since transferred out) — same
+ * "drop silently rather than error" convention as groupMembers() above, but
+ * cross-class lookups mean this ALSO has to tolerate a memberRef pointing at
+ * a classId that's been removed entirely, not just a student within it. */
+function studyGroupMembers(sgId){
+  const sg = STUDY_GROUPS.find(x=>x.id===sgId);
+  if(!sg) return [];
+  return sg.memberRefs
+    .map(ref=>{
+      const c = CLASSES[ref.classId];
+      if(!c) return null;
+      const s = c.students.find(x=>x.n===ref.name && !x.left);
+      return s ? {...s, classId:ref.classId, className:c.className} : null;
+    })
+    .filter(Boolean);
+}
+function studyGroupHeadcount(sgId){ return studyGroupMembers(sgId).length; }
+function studyGroupLabel(sgId){
+  const sg = STUDY_GROUPS.find(x=>x.id===sgId);
+  if(!sg) return sgId;
+  return sg.name+'（'+studyGroupHeadcount(sgId)+' 人 · 跨班）';
+}
+/* Scope-key convention for grant/pending/trial entries: groupId becomes
+ * '__study_group__'+sgId, classId stays null (there isn't one — that's the
+ * whole point). Existing generic rendering (eddata-console.html's pendingHtml,
+ * req cards, etc.) reads .group/.headcount/.memberSnapshot as plain
+ * strings/numbers and doesn't care where they came from, so no changes were
+ * needed there. membershipDrift() already guards on `!entry.classId` and
+ * returns null — meaning study-group-scoped entries deliberately skip live
+ * drift-detection in this first build (a known, honest limitation, not an
+ * oversight: recomputing "who's currently in this cross-class group" against
+ * a snapshot needs its own comparison logic, not the class+group one above —
+ * left for a later pass rather than half-building it here). */
+function isStudyGroupScope(groupId){ return typeof groupId === 'string' && groupId.startsWith('__study_group__'); }
+function studyGroupIdFromScope(groupId){ return groupId.replace('__study_group__', ''); }
+
 const VENDORS = [
   {
     id:'zhixie', name:'智寫科技', product:'寫作回饋工具',
