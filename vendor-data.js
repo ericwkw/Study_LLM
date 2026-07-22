@@ -94,29 +94,38 @@ const CLASSES = {
 const CLASS_LIST = Object.keys(CLASSES).map(id=>({id, ...CLASSES[id]}));
 
 /* Sequential ID generator for students created via 批量編班's intake path —
- * simulates what EdData would assign in reality. Starts past every seed sid
- * above so nothing collides. */
+ * simulates what the school's identity layer (SMS, via 曾主任's approval) would
+ * assign in reality. Starts past every seed sid above so nothing collides. */
 let STUDENT_SEQ = 2100;
 function nextStudentId(){ return 'S' + (STUDENT_SEQ++); }
 
 /* Identity-record requests — added 2026-07-22 to fix a real layering mistake:
  * creating a brand-new student's identity (name + ID) or changing a teacher's
- * actual employment status are EdData-owned actions (identity/records layer),
- * not SMS-organizational ones. SMS (roster.html) can only REQUEST these now;
- * EdData (eddata-console.html, 馮 Sir) is where they're actually approved and
- * take effect — the same request/execute split already used for vendor
- * data-access grants. Seeded with one pending example each so eddata-console.html
- * has real content on a fresh load, same convention as VENDORS/TRIALS above.
+ * actual employment status are identity-layer actions, not SMS-organizational
+ * ones. SMS (roster.html) can only REQUEST these; a distinct actor approves and
+ * executes them — the same request/execute split already used for vendor
+ * data-access grants.
  *
- * Corrected 2026-07-22 (second pass, same day): approving an intake request used
- * to ALSO push the new student straight into whatever class 何主任 named in her
- * original request — meaning EdData's approval click was doing SMS's organizational
- * job (class assignment) in the same step as its own job (identity creation). That
- * re-created, one layer down, exactly the conflation the request/execute split was
- * built to remove. `suggestedClassId` (renamed from `targetClassId`) is now only
- * context for 馮 Sir — non-binding. Approval creates the student in UNASSIGNED_STUDENTS
- * below; assigning them to an actual class is a separate, later SMS action, using
- * the same class-assignment mechanism 學生編班 already has for everyone else. */
+ * CORRECTED 2026-07-22, same day, second pass: this was originally attributed
+ * to EdData (eddata-console.html, 馮 Sir). Real EdData/Account Admin product
+ * screens showed real EdData has no identity-approval function at all — it's
+ * vendor data-access governance only. This authority is now confirmed as
+ * belonging to a distinct new actor, 曾主任 (Ms. Tsang, School Records Officer,
+ * records-console.html) — modeled separately on purpose, so a later decision to
+ * fold her into an existing role doesn't require re-deriving the scope. Seeded
+ * with one pending example each so records-console.html has real content on a
+ * fresh load, same convention as VENDORS/TRIALS above.
+ *
+ * Earlier correction (2026-07-22, first pass, same day): approving an intake
+ * request used to ALSO push the new student straight into whatever class
+ * 何主任 named in her original request — meaning the approval click was doing
+ * SMS's organizational job (class assignment) in the same step as the identity
+ * job. That re-created, one layer down, exactly the conflation the
+ * request/execute split was built to remove. `suggestedClassId` (renamed from
+ * `targetClassId`) is now only context for 曾主任 — non-binding. Approval
+ * creates the student in UNASSIGNED_STUDENTS below; assigning them to an actual
+ * class is a separate, later SMS action, using the same class-assignment
+ * mechanism 學生編班 already has for everyone else. */
 const STUDENT_INTAKE_REQUESTS = [
   {id:'sir0', name:'黎曉盈', suggestedClassId:'1a', hkid:'4471', contact:'9821 3345', sen:'', requestedBy:'何主任', status:'pending'},
 ];
@@ -124,15 +133,16 @@ const TEACHER_STATUS_REQUESTS = [
   {id:'tsr0', teacherName:'李老師', newStatus:'departed', requestedBy:'何主任', status:'pending'},
 ];
 
-/* Students whose identity EdData has approved/created, but who have not yet been
- * organized into a class — the landing spot for a freshly-approved intake request.
- * 學生編班 (roster.html) surfaces this list at the top of its table with its own
- * "編班" action, reusing the exact same class-assignment code path used for
- * ordinary reassignment, so a new student isn't a special case once they reach
- * this list — they're just a student waiting for the one SMS-organizational step
- * that was never EdData's to do. Seeded with one example so 學生編班 has real
- * content to demonstrate this on a fresh load, without first needing a live
- * approve action on eddata-console.html (a separate page session anyway). */
+/* Students whose identity 曾主任 has approved/created, but who have not yet
+ * been organized into a class — the landing spot for a freshly-approved intake
+ * request. 學生編班 (roster.html) surfaces this list at the top of its table
+ * with its own "編班" action, reusing the exact same class-assignment code path
+ * used for ordinary reassignment, so a new student isn't a special case once
+ * they reach this list — they're just a student waiting for the one
+ * SMS-organizational step that was never the identity layer's to do. Seeded
+ * with one example so 學生編班 has real content to demonstrate this on a fresh
+ * load, without first needing a live approve action on records-console.html
+ * (a separate page session anyway). */
 const UNASSIGNED_STUDENTS = [
   {n:'黃梓恩', sid:'S2101'},
 ];

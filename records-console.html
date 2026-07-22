@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校務紀錄審批 — 校管系統（示意）</title>
+<style>
+  :root{
+    --ec-blue:#008BD1;--ec-blue-dark:#0072ab;--ec-green:#00AC6C;--ec-amber:#F5A623;--ec-maroon:#7B2539;--ec-purple:#7C5CDB;--ec-teal:#0f8c8c;
+    --ink:#1e2a35;--ink-2:#55636f;--ink-3:#8a97a3;--line:#dde3e8;--bg:#eef1f4;font-size:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;}
+
+  /* Same SMS-family shell as roster.html/eddata-console.html — this is a third
+     desk within SMS's identity layer, not a fourth system. Ms. Tsang's avatar
+     carries the actor distinction (teal), same pattern as 何主任 (blue) and
+     馮 Sir (purple) on the other two consoles. */
+  .sys-sidebar{width:200px;flex-shrink:0;background:#0c2c40;color:#dfe8ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;border-top:4px solid var(--ec-blue-dark);}
+  .sys-sidebar .sh-label{padding:20px 16px 12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#8fcdf0;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);}
+  .sys-nav{padding:12px 10px;flex:1;}
+  .sys-nav a{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;color:#c7d2da;text-decoration:none;font-size:.8rem;margin-bottom:2px;}
+  .sys-nav a:hover{background:rgba(255,255,255,.06);}
+  .sys-nav a.active{background:rgba(255,255,255,.14);color:#fff;font-weight:600;}
+  .sys-sidebar-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);}
+  .sys-sidebar-foot a{font-size:.74rem;color:#93a4b1;text-decoration:none;}
+  .sys-sidebar-foot a:hover{color:#fff;}
+  .sys-main{flex:1;min-width:0;}
+
+  .role-banner{background:#0f3347;color:#dfe8ef;font-size:.7rem;font-weight:700;letter-spacing:.18em;padding:9px 26px;position:sticky;top:0;z-index:50;}
+  .topbar{background:#fff;border-bottom:3px solid var(--ec-blue-dark);padding:12px 26px;display:flex;align-items:center;gap:14px;}
+  .topbar img{height:28px;width:auto;}
+  .topbar .sys{font-size:.85rem;font-weight:700;color:var(--ec-blue-dark);}
+  .topbar .sys small{display:block;font-size:.64rem;color:var(--ink-3);font-weight:500;}
+  .topbar .who{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--ink-2);text-align:right;}
+  .topbar .who .avatar{width:34px;height:34px;border-radius:50%;background:var(--ec-teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;}
+  .topbar .who small{display:block;font-size:.66rem;color:var(--ink-3);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:24px 20px 80px;}
+  .ribbon{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;
+    color:#b91c1c;background:#fee2e2;border:1px solid #f5c6c6;border-radius:99px;padding:5px 14px;margin-bottom:16px;}
+  h1{font-size:1.5rem;font-weight:800;}
+  .sub{font-size:.82rem;color:var(--ink-2);margin:6px 0 18px;line-height:1.65;max-width:56em;}
+
+  .foundation{
+    background:#fff;border-left:4px solid var(--ec-teal);border-radius:8px;padding:12px 16px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.7;margin-bottom:20px;max-width:60em;
+  }
+  .foundation b{color:var(--ink);}
+
+  h2{font-size:.92rem;font-weight:700;margin:22px 0 11px;}
+
+  .req{background:#fafcfd;border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-bottom:10px;}
+  .req:last-child{margin-bottom:0;}
+  .req .r-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:9px;}
+  .req .r-head b{font-size:.84rem;display:block;}
+  .req .r-head small{font-size:.7rem;color:var(--ink-3);display:block;margin-top:2px;line-height:1.6;}
+  .req .r-head .status{margin-left:auto;font-size:.64rem;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap;}
+  .status.pending{color:#8a5a00;background:#fdf1c7;}
+  .status.approved{color:#0c6b48;background:#e6f7ef;}
+  .status.denied{color:#b91c1c;background:#fee2e2;}
+
+  .req-context{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.83rem;margin-bottom:2px;}
+  .req-context .actor{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:var(--ink);}
+  .req-context .actor .ic{width:24px;height:24px;border-radius:50%;background:#eef2f5;color:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:800;flex-shrink:0;}
+  .req-context .verb{color:var(--ink-3);font-size:.76rem;}
+  .req-context .tool-target{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ec-teal);background:#e6f4f4;border:1px solid #c3e5e5;border-radius:8px;padding:3px 11px;font-size:.8rem;}
+  .req-context small{width:100%;font-size:.7rem;color:var(--ink-3);margin-top:1px;}
+
+  .act{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 15px;font-size:.76rem;color:var(--ec-blue-dark);font-weight:700;cursor:pointer;font-family:inherit;}
+  .act:hover{border-color:var(--ec-blue);}
+  .act.deny{color:#b91c1c;}
+  .act.deny:hover{border-color:#f5c6c6;}
+  .req .btns{display:flex;gap:8px;}
+  .empty-msg{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center;font-size:.8rem;color:var(--ink-3);}
+
+  .audit{margin-top:6px;}
+  .a-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-2);line-height:1.6;}
+  .a-row:first-child{border-top:none;}
+  .a-row .a-ic{flex-shrink:0;}
+  .a-row .a-time{font-size:.68rem;color:var(--ink-3);white-space:nowrap;margin-left:auto;padding-left:10px;}
+
+  .tabs{display:flex;gap:22px;margin:16px 0 22px;border-bottom:1px solid var(--line);}
+  .tab-btn{background:none;border:none;padding:10px 2px;font-size:.86rem;font-weight:600;color:var(--ink-3);
+    cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;display:flex;align-items:center;gap:7px;}
+  .tab-btn.active{color:var(--ink);border-bottom-color:var(--ec-teal);}
+  .tab-btn .tab-count{font-size:.64rem;font-weight:700;color:#8a5a00;background:#fdf1c7;border-radius:99px;padding:1px 8px;}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+
+  .downstream{
+    margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+    font-size:.78rem;color:var(--ink-2);line-height:1.8;
+  }
+  .downstream b{color:var(--ink);display:block;margin-bottom:4px;font-size:.84rem;}
+  .downstream .flow{font-size:.76rem;color:var(--ink-3);}
+  .downstream .flow em{font-style:normal;color:var(--ec-teal);font-weight:700;}
+
+  .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.78rem;padding:9px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:120;}
+  .toast.show{opacity:.94;}
+  footer.note{margin-top:36px;font-size:.68rem;color:var(--ink-3);text-align:center;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<aside class="sys-sidebar">
+  <div class="sh-label">校務紀錄組（曾主任）</div>
+  <nav class="sys-nav">
+    <a href="records-console.html" class="active">🗂 校務紀錄審批</a>
+  </nav>
+  <div class="sys-sidebar-foot">
+    <a href="roster.html">← 返回校管系統（校務處）</a>
+  </div>
+</aside>
+
+<div class="sys-main">
+<div class="role-banner">校 務 行 政 層 級 — 學 生／教 師 身 分 紀 錄 審 批（校 管 系 統）</div>
+<div class="topbar">
+  <img src="edcity_logo.svg" alt="香港教育城 EdCity">
+  <span class="sys">校務紀錄審批<small>校管系統（SMS）的身分紀錄層 · 與 EdData（供應商資料存取）分屬不同職能</small></span>
+  <span class="who"><span>曾主任<small>校務紀錄組 · 身分紀錄審批人</small></span><span class="avatar">曾</span></span>
+</div>
+
+<div class="wrap">
+  <div class="ribbon">🔴 待決策 · 此畫面示意校管系統（SMS）身分紀錄層的審批流程——屬架構方向，尚未承諾建置</div>
+
+  <h1>身分紀錄審批</h1>
+  <div class="sub">你負責的是 SMS 裏最不可逆的一類事實：一位新生的身分正式成立，或一位教師的僱傭關係正式終結。校務處（何主任）可以提出請求，但不能自行執行——這裏是唯一能把這些事實寫進正式紀錄的地方。</div>
+
+  <div class="foundation">🗂 正式的學生與教師身分紀錄由校管系統（SMS）保存，經此頁核准後生效。這與 <b>EdData</b>（供應商資料存取審批，見 eddata-console.html）是完全不同的職能——EdData 決定供應商能看到哪一層資料，這裏決定「這個人是否正式存在於系統」。</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="identity" onclick="showTab('identity')">身分紀錄請求<span class="tab-count" id="identityCount" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="audit" onclick="showTab('audit')">稽核記錄</button>
+  </div>
+
+  <section class="tab-pane active" data-pane="identity">
+    <h2>新生建立請求</h2>
+    <div class="sub" style="margin:0 0 12px;max-width:56em;">校務處在「批量編班」遇到一個從未存在於系統的姓名時，在此提出建立請求，而不是由校方直接建立學生身分記錄——正式的學生身分記錄由你保存，校務處只負責組織「這位學生在哪一班」。</div>
+    <div id="intakeReqList"></div>
+
+    <h2 style="margin-top:26px;">教師狀態變更請求</h2>
+    <div class="sub" style="margin:0 0 12px;max-width:56em;">教師的在職狀態屬於正式僱傭記錄，同樣由你保存；校務處在「教師名冊」只能提出變更請求，須經你核准後才會實際生效。</div>
+    <div id="statusReqList"></div>
+
+    <div class="downstream">
+      <b>核准後的下游影響</b>
+      <span class="flow">新生請求核准 → <em>學生編班</em>會出現這位學生，並獲派學生編號 → 教學分組等畫面才會看到她。教師狀態請求核准 → <em>任教編配</em>的重新編配選單才會反映新的在職狀態。本頁與校務處控制台是不同頁面，此原型沒有跨頁面資料儲存——核准動作只在本頁的瀏覽階段內生效。</span>
+    </div>
+  </section>
+
+  <section class="tab-pane" data-pane="audit">
+    <h2>稽核記錄</h2>
+    <div class="audit" id="auditList"></div>
+  </section>
+
+  <footer class="note">
+    校務紀錄審批 · 校管系統示意畫面 · 內部示範原型，僅供概念演示<br>
+    2026-07-22 修正：此職能原先錯誤地放在 eddata-console.html（馮 Sir）之下——真實的 EdData 只負責供應商資料存取治理，沒有身分審批功能。此頁把該職能移到獨立、正確歸屬的角色（曾主任）之下，即使日後決定合併給現有角色，範圍也已清楚定義，毋須重新推導。
+  </footer>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="vendor-data.js"></script>
+<script>
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));
+}
+
+const AUDIT = [
+  {ic:'✓', text:'曾主任核准建立新生 黎曉盈（學生編號 s-legacy-01，尚未編班），由何主任提出請求', time:'2026-07-10'},
+];
+
+function renderIdentityTabCount(){
+  const pendingIntake = STUDENT_INTAKE_REQUESTS.filter(r=>r.status==='pending').length;
+  const pendingStatus = TEACHER_STATUS_REQUESTS.filter(r=>r.status==='pending').length;
+  const total = pendingIntake + pendingStatus;
+  const el = document.getElementById('identityCount');
+  if (total>0){ el.style.display='inline-block'; el.textContent=total; } else { el.style.display='none'; }
+}
+
+function renderIntakeRequests(){
+  document.getElementById('intakeReqList').innerHTML = STUDENT_INTAKE_REQUESTS.length ? STUDENT_INTAKE_REQUESTS.map(r=>{
+    const cls = CLASSES[r.suggestedClassId];
+    const statusLabel = r.status==='pending' ? '⏳ 待審批' : r.status==='approved' ? '✓ 已核准（尚未編班）' : '✕ 已拒絕';
+    return `<div class="req" id="intake-${r.id}">
+      <div class="r-head">
+        <div class="req-context">
+          <span class="actor"><span class="ic">${r.requestedBy[0]}</span>${r.requestedBy}</span>
+          <span class="verb">請求建立新生 →</span>
+          <span class="tool-target">${r.name}</span>
+          <small>校務處建議班別（非最終）：${cls ? cls.className : r.suggestedClassId}　·　HKID 尾4碼：${r.hkid||'—'}　家長聯絡電話：${r.contact||'—'}　SEN 備註：${r.sen||'—'}</small>
+        </div>
+        <span class="status ${r.status}">${statusLabel}</span>
+      </div>
+      ${r.status==='pending' ? `<div class="btns">
+        <button class="act" onclick="approveIntake('${r.id}')">✓ 核准並建立學生記錄</button>
+        <button class="act deny" onclick="denyIntake('${r.id}')">拒絕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty-msg">目前沒有待處理的新生建立請求</div>`;
+  renderIdentityTabCount();
+}
+/* Approval creates the student's identity — that's SMS's identity layer, owned
+ * by 曾主任, full stop. It does NOT place them in the class 何主任 suggested;
+ * class assignment is an SMS-organizational decision, made separately on
+ * roster.html's 學生編班 tab once the student shows up there as "未編班"
+ * (see UNASSIGNED_STUDENTS). Same conflation-fix Eric caught earlier, now
+ * correctly attributed to 曾主任 rather than EdData/馮 Sir. */
+function approveIntake(id){
+  const r = STUDENT_INTAKE_REQUESTS.find(x=>x.id===id);
+  const entry = {n:r.name, sid: nextStudentId()};
+  UNASSIGNED_STUDENTS.push(entry);
+  r.status = 'approved';
+  AUDIT.unshift({ic:'✓', text:'曾主任核准建立新生 '+r.name+'（學生編號 '+entry.sid+'，尚未編班），由'+r.requestedBy+'提出請求', time:'2026-07-22'});
+  renderIntakeRequests(); renderAudit();
+  toast('已建立學生記錄：'+r.name+'（'+entry.sid+'）— 尚未編班，須由校務處在 SMS 指派班別');
+}
+function denyIntake(id){
+  const r = STUDENT_INTAKE_REQUESTS.find(x=>x.id===id);
+  r.status = 'denied';
+  AUDIT.unshift({ic:'✕', text:'曾主任拒絕'+r.requestedBy+'提出的新生建立請求（'+r.name+'）', time:'2026-07-22'});
+  renderIntakeRequests(); renderAudit();
+  toast('已拒絕：'+r.name);
+}
+
+const STATUS_LABEL_ED = {active:'在職', leave:'請假', departed:'已離職'};
+
+function renderStatusRequests(){
+  document.getElementById('statusReqList').innerHTML = TEACHER_STATUS_REQUESTS.length ? TEACHER_STATUS_REQUESTS.map(r=>{
+    const statusLabel = r.status==='pending' ? '⏳ 待審批' : r.status==='approved' ? '✓ 已核准' : '✕ 已拒絕';
+    return `<div class="req" id="statusreq-${r.id}">
+      <div class="r-head">
+        <div class="req-context">
+          <span class="actor"><span class="ic">${r.requestedBy[0]}</span>${r.requestedBy}</span>
+          <span class="verb">請求將狀態改為 →</span>
+          <span class="tool-target">${STATUS_LABEL_ED[r.newStatus]}</span>
+          <small>對象：${r.teacherName}</small>
+        </div>
+        <span class="status ${r.status}">${statusLabel}</span>
+      </div>
+      ${r.status==='pending' ? `<div class="btns">
+        <button class="act" onclick="approveStatus('${r.id}')">✓ 核准並更新僱傭記錄</button>
+        <button class="act deny" onclick="denyStatus('${r.id}')">拒絕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty-msg">目前沒有待處理的教師狀態變更請求</div>`;
+  renderIdentityTabCount();
+}
+function approveStatus(id){
+  const r = TEACHER_STATUS_REQUESTS.find(x=>x.id===id);
+  const t = TEACHERS.find(x=>x.name===r.teacherName);
+  if (t) t.status = r.newStatus;
+  r.status = 'approved';
+  AUDIT.unshift({ic:'✓', text:'曾主任核准將'+r.teacherName+'的僱傭狀態改為「'+STATUS_LABEL_ED[r.newStatus]+'」，由'+r.requestedBy+'提出請求', time:'2026-07-22'});
+  renderStatusRequests(); renderAudit();
+  toast('已更新僱傭狀態：'+r.teacherName+' → '+STATUS_LABEL_ED[r.newStatus]);
+}
+function denyStatus(id){
+  const r = TEACHER_STATUS_REQUESTS.find(x=>x.id===id);
+  r.status = 'denied';
+  AUDIT.unshift({ic:'✕', text:'曾主任拒絕'+r.requestedBy+'提出的教師狀態變更請求（'+r.teacherName+'）', time:'2026-07-22'});
+  renderStatusRequests(); renderAudit();
+  toast('已拒絕請求：'+r.teacherName);
+}
+
+function renderAudit(){
+  document.getElementById('auditList').innerHTML = AUDIT.map(a=>
+    `<div class="a-row"><span class="a-ic">${a.ic}</span><span>${a.text}</span><span class="a-time">${a.time}</span></div>`
+  ).join('');
+}
+
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
+renderIntakeRequests();
+renderStatusRequests();
+renderAudit();
+</script>
+<script src="demo-nav.js"></script>
+</body>
+</html>

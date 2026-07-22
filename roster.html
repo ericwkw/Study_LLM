@@ -181,7 +181,7 @@
     <h1>任教編配</h1>
     <div class="sub">哪位老師任教哪一班、哪一科，由校務處在此編配——教學分組、學生工具申請、試用邀請等教師畫面看到的班別，源頭都在這裡，不是各自另外設定。</div>
 
-    <div class="foundation">🏗 EdData 負責保存學生與教師的正式紀錄；但紀錄「怎樣組織」——即誰教哪一班——是校管系統（SMS）的職責，不屬於 EdData。</div>
+    <div class="foundation">🏗 學生與教師的正式身分紀錄由校務紀錄組（曾主任）保存；但紀錄「怎樣組織」——即誰教哪一班——是校務處在校管系統（SMS）的職責。（2026-07-22 修正：此前誤把身分保存職能歸於 EdData——真實的 EdData 只治理供應商資料存取，不保存身分紀錄，見 records-console.html。）</div>
 
     <table>
       <thead><tr><th>老師</th><th>班別</th><th>科目</th><th>學年</th><th></th></tr></thead>
@@ -205,7 +205,7 @@
   <section class="tab-pane" data-pane="bulk">
     <h1>批量編班</h1>
     <div class="sub">貼上或上載 CSV，一次處理多位學生的班別——用於<b>學期中的例外情況</b>：個別插班生、學期中改組等。系統會逐行判斷：這個名字是新生，還是已存在、要轉班？</div>
-    <div class="scope-note" style="margin:0 0 16px;">⚠️ <b>不是</b>開學時全校性收生的機制——那是官方學籍紀錄（來源待確認）進入 EdData 的問題，屬於另一個尚未設計的範圍，不應該和這裡的「學期中個別例外」混為一談。詳見下方「此原型刻意不做的事」。</div>
+    <div class="scope-note" style="margin:0 0 16px;">⚠️ <b>不是</b>開學時全校性收生的機制——那是官方學籍紀錄（來源：WebSAMS）進入校管系統（SMS）身分層的問題，屬於另一個尚未設計的範圍，不應該和這裡的「學期中個別例外」混為一談。詳見下方「此原型刻意不做的事」。</div>
 
     <div class="foundation">🏗 判斷方式：若填有<b>學生編號</b>並能在現有名冊中對應到一位在校學生，直接視為「現有轉班」（編號不會重複，不需要人手核實）；沒有編號時退而求其次，改以姓名比對——若姓名唯一對應到一位在校學生，視為「現有轉班」；找不到對應，視為「新生」；若姓名對應到多於一位同名學生，會請你手動核實，不會自動猜測。</div>
 
@@ -226,10 +226,10 @@
       <p class="why">批量匯入牽涉真實學生的敏感個人資料，範圍比單一轉班大得多——以下兩點刻意留白，是判斷過的結果，不是還沒做完：</p>
       <div class="sync-steps">
         <div class="sync-step"><span class="num">1</span><span><b>批次紀錄與局部復原</b> — 執行後無法查到「這是哪一次匯入」，也無法只還原批次中的一位學生；要做到這樣，需要一整套批次紀錄與復原機制，遠超這個示意原型的範圍</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>敏感資料應否離開 EdData</b> — HKID、SEN 備註等資料應否曾以 CSV 形式存在於校務處的電腦上，是校本資料管治政策問題，不是介面設計可以代為決定的事</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>開學時的全校性學籍收生</b> — 曾經誤把這個畫面當成「一次過收生」的機制；每一筆新生都要 EdData 個別審批，對插班等零星個案沒問題，但用來處理全校規模的收生會需要逐一核准數百筆請求。真正的年度收生應該是另一條路徑（很可能由官方學籍來源直接進入 EdData，而非經校務處逐筆上載 CSV 請求），來源與機制仍待確認，不在這個畫面的範圍內</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>敏感資料應否留在校方手上</b> — HKID、SEN 備註等資料應否曾以 CSV 形式存在於校務處的電腦上，是校本資料管治政策問題，不是介面設計可以代為決定的事</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>開學時的全校性學籍收生</b> — 曾經誤把這個畫面當成「一次過收生」的機制；每一筆新生都要校務紀錄組（曾主任）個別審批，對插班等零星個案沒問題，但用來處理全校規模的收生會需要逐一核准數百筆請求。真正的年度收生應該是另一條路徑（很可能由 WebSAMS 官方學籍來源直接進入校管系統身分層，而非經校務處逐筆上載 CSV 請求），機制細節仍待確認，不在這個畫面的範圍內</span></div>
       </div>
-      <p class="why-caveat">⚠️ 這裡示範的是「安全欄位預設可見、敏感欄位需手動展開」的介面模式，不代表已回答「敏感資料應否以此形式匯出」這個問題。<br>另外：即使填有 HKID／家長聯絡電話／SEN 備註，確認執行後校管系統也<b>不會保留</b>這些欄位——只用作匯入當刻核對是否配對到正確學生；正式的身分與個人記錄應由 EdData 保存，校管系統只負責「怎樣編班」。</p>
+      <p class="why-caveat">⚠️ 這裡示範的是「安全欄位預設可見、敏感欄位需手動展開」的介面模式，不代表已回答「敏感資料應否以此形式匯出」這個問題。<br>另外：即使填有 HKID／家長聯絡電話／SEN 備註，確認執行後校管系統也<b>不會保留</b>這些欄位——只用作匯入當刻核對是否配對到正確學生；正式的身分與個人記錄由校務紀錄組（曾主任）保存，校管系統只負責「怎樣編班」。</p>
     </div>
   </section>
 
@@ -237,7 +237,7 @@
     <h1>學生編班</h1>
     <div class="sub">哪位學生屬於哪一班，同樣由校務處在此編配——這與「教學分組」不同：教學分組是老師按教學需要自行劃分的小組，只有老師自己看到；學生編班是正式的班別歸屬，教學分組、批改入檔、學生入口都跟著它走。</div>
 
-    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。<br>🆕 新生的身分由 EdData 核准建立（見「批量編班」），但核准當下<b>不會</b>自動編班——會先以「未編班」狀態出現在下方，指派班別是獨立的一步，一律在這裡完成。</div>
+    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。<br>🆕 新生的身分由校務紀錄組（曾主任）核准建立（見「批量編班」），但核准當下<b>不會</b>自動編班——會先以「未編班」狀態出現在下方，指派班別是獨立的一步，一律在這裡完成。</div>
 
     <div class="table-toolbar">
       <input type="text" id="studentSearch" placeholder="🔍 搜尋學生姓名…" oninput="renderStudents()">
@@ -374,8 +374,9 @@ function toggleSortDir(){
 function renderStudents(){
   // tab count reflects total currently-enrolled students, not the filtered/searched view —
   // filtering the table shouldn't make the tab label lie about how many students exist.
-  // Includes UNASSIGNED_STUDENTS — they're real, EdData-approved students, just not yet
-  // organized into a class, so they still count as "enrolled" for this purpose.
+  // Includes UNASSIGNED_STUDENTS — they're real students whose identity 曾主任
+  // (School Records Officer) has approved, just not yet organized into a class,
+  // so they still count as "enrolled" for this purpose.
   const totalEnrolled = CLASS_LIST.reduce((sum,c)=>sum + c.students.filter(s=>!s.left).length, 0) + UNASSIGNED_STUDENTS.length;
   document.getElementById('countStudents').textContent = '('+totalEnrolled+')';
   const searchTerm = (document.getElementById('studentSearch').value || '').trim();
@@ -383,10 +384,10 @@ function renderStudents(){
   const sortBy = document.getElementById('studentSortBy').value;
   const dir = STUDENT_SORT_DIR === 'asc' ? 1 : -1;
   const rows = [];
-  // 未編班 group — where a student lands right after 馮 Sir approves an intake
-  // request, per Eric's correction: EdData creates the identity, but assigning
-  // a class is a separate, later SMS-organizational step, not bundled into
-  // approval. Shown first (only when not filtering to a single class), with its
+  // 未編班 group — where a student lands right after 曾主任 approves an intake
+  // request, per Eric's correction: the identity layer creates the identity,
+  // but assigning a class is a separate, later SMS-organizational step, not
+  // bundled into approval. Shown first (only when not filtering to a single class), with its
   // own 編班 action rather than 轉班, since there's no "from" class yet.
   if (!filterClass && UNASSIGNED_STUDENTS.length) {
     const unassignedMatched = UNASSIGNED_STUDENTS.filter(s => !searchTerm || s.n.includes(searchTerm));
@@ -526,7 +527,7 @@ function confirmClassTransfer(fromClassId, name){
 }
 
 /* Assigning a class to a student who just landed in UNASSIGNED_STUDENTS (an
- * EdData-approved intake, per Eric's correction) — deliberately its own pair of
+ * intake approved by 曾主任, per Eric's correction) — deliberately its own pair of
  * functions rather than reusing startClassTransfer/confirmClassTransfer, since
  * there's no "from" class here, only a "to" class. Once assigned, the student is
  * indistinguishable from any other — same object shape, same CLASSES array. */
@@ -569,12 +570,13 @@ const STATUS_LABEL = {active:'在職', leave:'請假', departed:'已離職'};
 function renderTeachers(){
   document.getElementById('countTeachers').textContent = '('+TEACHERS.length+')';
   document.getElementById('teacherTbody').innerHTML = TEACHERS.map(t=>{
-    // A pending TEACHER_STATUS_REQUESTS entry means 何主任 already asked EdData
-    // to change this — the dropdown is replaced with a plain pending badge so
-    // it's clear the record hasn't actually changed yet and isn't hers to set.
+    // A pending TEACHER_STATUS_REQUESTS entry means 何主任 already asked 曾主任
+    // (School Records Officer) to change this — the dropdown is replaced with a
+    // plain pending badge so it's clear the record hasn't actually changed yet
+    // and isn't hers to set.
     const pendingReq = TEACHER_STATUS_REQUESTS.find(r=>r.teacherName===t.name && r.status==='pending');
     const statusCell = pendingReq
-      ? `${STATUS_LABEL[t.status]}　<span class="st warn">⏳ 已請求改為「${STATUS_LABEL[pendingReq.newStatus]}」，待 EdData 審批</span>`
+      ? `${STATUS_LABEL[t.status]}　<span class="st warn">⏳ 已請求改為「${STATUS_LABEL[pendingReq.newStatus]}」，待校務紀錄組審批</span>`
       : `<select onchange="proposeTeacherStatus(this,'${t.name}')">
           <option value="active" ${t.status==='active'?'selected':''}>在職</option>
           <option value="leave" ${t.status==='leave'?'selected':''}>請假</option>
@@ -595,24 +597,24 @@ function renderTeachers(){
  * instant commit on <select onchange>. The dropdown proposes; nothing is written to
  * TEACHERS until 確認 is clicked, and 取消 reverts the dropdown via a full re-render.
  *
- * Only "已離職" goes through EdData: departure ends employment — a genuine
- * identity/records fact — while 在職/請假 are reversible, organizational states
- * (a leave doesn't end anyone's employment) that SMS can set directly, same as
- * before this request/execute pattern existed. Routing every status flip through
- * an approval queue would make a routine, temporary change (someone going on
- * leave) wait on EdData for no real reason. */
+ * Only "已離職" goes through 曾主任 (School Records Officer): departure ends
+ * employment — a genuine identity/records fact — while 在職/請假 are reversible,
+ * organizational states (a leave doesn't end anyone's employment) that SMS can
+ * set directly, same as before this request/execute pattern existed. Routing
+ * every status flip through an approval queue would make a routine, temporary
+ * change (someone going on leave) wait on the records layer for no real reason. */
 function proposeTeacherStatus(selectEl, name){
   const newStatus = selectEl.value;
   const t = TEACHERS.find(x=>x.name===name);
   if (newStatus === t.status) return;
   document.querySelectorAll('.status-confirm-row').forEach(r=>r.remove());
-  const requiresEdData = newStatus === 'departed';
+  const requiresRecordsApproval = newStatus === 'departed';
   const impact = newStatus === 'active'
     ? '她會重新出現在「任教編配」的重新編配選單中'
     : '她將從「任教編配」的重新編配選單中移除，無法被指派新的班別';
-  const actionLabel = requiresEdData ? '向 EdData 請求將' : '將';
-  const confirmLabel = requiresEdData ? '送出請求' : '確認';
-  const tail = requiresEdData ? '——核准後'+impact+'。確定送出請求嗎？' : '——'+impact+'。確定嗎？';
+  const actionLabel = requiresRecordsApproval ? '向校務紀錄組請求將' : '將';
+  const confirmLabel = requiresRecordsApproval ? '送出請求' : '確認';
+  const tail = requiresRecordsApproval ? '——核准後'+impact+'。確定送出請求嗎？' : '——'+impact+'。確定嗎？';
   const row = document.createElement('tr');
   row.className = 'status-confirm-row';
   row.innerHTML = `<td colspan="5" style="padding:0;">
@@ -626,10 +628,11 @@ function proposeTeacherStatus(selectEl, name){
 }
 function confirmTeacherStatus(name, status){
   if (status === 'departed'){
-    // Departure is an identity/records fact (EdData layer), not an organizational
-    // one — SMS can only request it here, mirroring the vendor data-access
-    // request/approve pattern in eddata-console.html. TEACHERS.status is NOT
-    // written here; it only changes once 馮 Sir approves on eddata-console.html.
+    // Departure is an identity/records fact (SMS's identity layer), not an
+    // organizational one — SMS can only request it here, mirroring the vendor
+    // data-access request/approve pattern in eddata-console.html, but approved
+    // by a distinct actor. TEACHERS.status is NOT written here; it only changes
+    // once 曾主任 (School Records Officer) approves on records-console.html.
     TEACHER_STATUS_REQUESTS.push({
       id: 'tsr' + Date.now(),
       teacherName: name,
@@ -638,7 +641,7 @@ function confirmTeacherStatus(name, status){
       status: 'pending'
     });
     renderTeachers();
-    toast('已向 EdData 送出請求：將 '+name+' 的狀態改為「'+STATUS_LABEL[status]+'」，待審批');
+    toast('已向校務紀錄組送出請求：將 '+name+' 的狀態改為「'+STATUS_LABEL[status]+'」，待審批');
     return;
   }
   // 在職／請假 are reversible organizational states — SMS applies these directly.
@@ -650,18 +653,18 @@ function confirmTeacherStatus(name, status){
 
 /* 批量編班 — Corrected scope (Eric, 2026-07-22): this is NOT the annual/official
  * intake mechanism. It was originally built as if it were ("如開學新收生" in the
- * old copy), but that's wrong — annual official student records almost certainly
- * come from an external source (school/government registration system, exact
- * origin still unconfirmed) and should land in EdData directly, not via SMS
+ * old copy), but that's wrong — annual official student records come from
+ * WebSAMS and should land in SMS's identity layer directly, not via SMS
  * requesting hundreds of individual approvals through this CSV tool. This
  * pipeline is for MID-YEAR EXCEPTIONS ONLY: an individual transfer student, a
  * handful of students reassigned mid-term. Each row is judged independently by
  * whether its name/id matches an existing, currently-enrolled student anywhere
- * in CLASS_LIST. No match → new-student EdData request (low-volume, one-by-one
- * approval is appropriate for this scope). Exactly one match → reassignment
- * (pure SMS-organizational, no EdData involvement). More than one match →
- * 手動核實, never guessed. Sensitive fields (HKID/contact/SEN) are parsed and
- * shown for verification only, never persisted — see the tab's own caveat box. */
+ * in CLASS_LIST. No match → new-student identity request, routed to 曾主任
+ * (School Records Officer — low-volume, one-by-one approval is appropriate for
+ * this scope). Exactly one match → reassignment (pure SMS-organizational, no
+ * records-layer involvement). More than one match → 手動核實, never guessed.
+ * Sensitive fields (HKID/contact/SEN) are parsed and shown for verification
+ * only, never persisted — see the tab's own caveat box. */
 let BULK_ROWS = [];
 
 function populateValidClassCodesHint(){
@@ -836,13 +839,13 @@ function commitBulkBatch(){
     const targetClass = CLASSES[r.targetCode];
     if (!targetClass || r.problems.some(p=>p.includes('完全重複'))){ remaining.push(r); return; }
     if (r.mode === 'new'){
-      // A brand-new student's identity (name + ID) is an EdData fact, not an
-      // SMS-organizational one — SMS can only REQUEST intake here, same as
+      // A brand-new student's identity (name + ID) is a records-layer fact, not
+      // an SMS-organizational one — SMS can only REQUEST intake here, same as
       // teacher status changes. hkid/contact/sen ARE carried into the request
-      // (EdData needs them to actually create the identity record), but they
+      // (曾主任 needs them to actually create the identity record), but they
       // still never land in SMS's own CLASSES data — only in the request object,
-      // which lives on until 馮 Sir approves or denies it on eddata-console.html.
-      // The class code typed in the CSV is only a SUGGESTION for 馮 Sir's context —
+      // which lives on until 曾主任 approves or denies it on records-console.html.
+      // The class code typed in the CSV is only a SUGGESTION for her context —
       // approval creates the student unassigned; the admin still has to place them
       // into a class afterward, on 學生編班, once they show up there as 未編班.
       STUDENT_INTAKE_REQUESTS.push({
@@ -882,7 +885,7 @@ function commitBulkBatch(){
     document.getElementById('bulkCsvInput').value = '';
   }
   renderBulkPreview();
-  const banner = `<div class="bulk-summary" style="background:#effaf5;border-color:#bfe8d7;">✓ 已處理：${requested} 筆新生已送交 EdData 請求建立（待 馮 Sir 審批後，會先以「未編班」狀態出現在「學生編班」，仍需你手動指派班別），轉班 ${reassigned} 位現有學生已即時生效。${skippedCount ? '尚有 '+skippedCount+' 筆未能處理，已保留在下方及輸入框中——修正後按「解析並預覽」可重新嘗試。' : '全部資料已處理完成。'}轉班結果可到「學生編班」查看；新生請求狀態可請 資訊科技統籌 於 EdData 控制台查看（本頁開啟期間有效，沒有跨頁面的資料儲存）。</div>`;
+  const banner = `<div class="bulk-summary" style="background:#effaf5;border-color:#bfe8d7;">✓ 已處理：${requested} 筆新生已送交校務紀錄組請求建立（待曾主任審批後，會先以「未編班」狀態出現在「學生編班」，仍需你手動指派班別），轉班 ${reassigned} 位現有學生已即時生效。${skippedCount ? '尚有 '+skippedCount+' 筆未能處理，已保留在下方及輸入框中——修正後按「解析並預覽」可重新嘗試。' : '全部資料已處理完成。'}轉班結果可到「學生編班」查看；新生請求狀態可請曾主任於校務紀錄審批控制台查看（本頁開啟期間有效，沒有跨頁面的資料儲存）。</div>`;
   document.getElementById('bulkPreviewWrap').innerHTML = banner + document.getElementById('bulkPreviewWrap').innerHTML;
   toast('批量編班完成 · '+requested+' 筆新生請求已送出，轉班 '+reassigned+(skippedCount ? '，尚有 '+skippedCount+' 筆待處理' : ''));
 }

@@ -25,7 +25,7 @@ const PAGES = [
     ['index.html','AI 工具首頁',''],
     ['chat.html','AI 對話（科目助理）',''],
     ['agents.html','Apps／代理庫',''],
-    ['marking.html','AI 批改（故事 1）','y'],
+    ['marking.html','AI 批改','y'],
     ['materials.html','教材準備（三大用例）','y'],
     ['material-library.html','教材庫（我的教材）','y'],
     ['groups.html','教學分組','y'],
@@ -34,27 +34,30 @@ const PAGES = [
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],
   ]},
   {group:'📈 科主任（李主任）', items:[
-    ['dept.html','科組統計視圖（故事 7）','y'],
+    ['dept.html','科組統計視圖','y'],
     ['dept-trial-evaluations.html','工具試用評估','y'],
   ]},
   {group:'🔧 資訊科技統籌（馮 Sir）', items:[
-    ['subscriptions.html','訂閱管理（故事 4）','y'],
+    ['subscriptions.html','訂閱管理','y'],
     ['eddata-console.html','EdData 資料存取審批','r'],
   ]},
   {group:'📋 校務處（何主任）', items:[
     ['roster.html','校務處控制台（教師名冊／任教編配／批量編班／學生編班）','y'],
   ]},
+  {group:'🗂 校務紀錄組（曾主任）', items:[
+    ['records-console.html','身分紀錄審批（2026-07-22 新增，取代誤植於 EdData 的同一職能）','r'],
+  ]},
   {group:'🎒 學生／家長（Karen）', items:[
-    ['student.html','學生／家長入口（故事 8）','r'],
+    ['student.html','學生／家長入口','r'],
   ]},
   {group:'🏷 內容審核員（平台營運）', items:[
-    ['tags.html','標籤審核與管理（故事 6）','r'],
+    ['tags.html','標籤審核與管理','r'],
   ]},
   {group:'🤝 供應商關係主任（方小姐 · 平台營運）', items:[
-    ['vetting.html','供應商審核（故事 3）','y'],
+    ['vetting.html','供應商審核','y'],
   ]},
   {group:'🏢 供應商（智寫科技）', items:[
-    ['vendor-portal.html','供應商入口（無故事支撐）','y'],
+    ['vendor-portal.html','供應商入口','y'],
     ['vendor-data-console.html','資料存取控制台（接收 EdData 批出的資料）','r'],
   ]},
 ];
@@ -67,7 +70,17 @@ function init(){
     '<a href="'+f+'"'+(f===here?' class="here"':'')+'>'+n+(t?'<span class="tag '+t+'">'+(t==='y'?'🟡 提案中':'🔴 待決策')+'</span>':'')+'</a>'
   ).join('')).join('')
   + '<div class="legend">🟡 提案中＝設計方案，未建置　🔴 待決策＝尚待管治／領導層決定<br>正式產品不會顯示此導覽。</div>';
-  pill.onclick=()=>panel.classList.toggle('show');
+  // Scroll the current page's entry into view on every open, so the panel
+  // doesn't dump you back at the top each time — it stays oriented on where
+  // you actually are, not just where the list happens to start.
+  pill.onclick=()=>{
+    const opening = !panel.classList.contains('show');
+    panel.classList.toggle('show');
+    if(opening){
+      const hereEl = panel.querySelector('.here');
+      if(hereEl) hereEl.scrollIntoView({block:'center'});
+    }
+  };
   document.addEventListener('click',e=>{if(!e.target.closest('.dn-pill')&&!e.target.closest('.dn-panel'))panel.classList.remove('show');});
   document.body.appendChild(pill);document.body.appendChild(panel);
 }
