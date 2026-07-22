@@ -128,6 +128,12 @@
   .bulk-select-banner{background:#e8f0fe;border:1px solid #adc8f5;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.79rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .sort-toolbar{display:flex;align-items:center;gap:8px;}
   .stale-batch{background:#fdf6ec;border:1px solid #f3e3c3;border-radius:8px;padding:10px 14px;font-size:.78rem;color:var(--ink-2);margin-bottom:14px;line-height:1.6;}
+
+  .role-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .role-chip{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;border-radius:99px;padding:4px 12px;color:#fff;}
+  .role-chip.rm{cursor:pointer;background:none;border:1px solid rgba(255,255,255,.6);color:inherit;font-size:.68rem;font-weight:700;padding:0 5px;border-radius:50%;margin-left:2px;}
+  .role-chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .role-add-pick{font-family:inherit;font-size:.74rem;border:1px solid var(--line);border-radius:6px;padding:4px 8px;}
 </style>
 </head>
 <body>
@@ -161,6 +167,7 @@
     <button class="tab-btn" data-tab="assign" onclick="showTab('assign')">任教編配 <span class="tab-count" id="countAssign"></span></button>
     <button class="tab-btn" data-tab="bulk" onclick="showTab('bulk')">批量編班 <span class="tab-count" id="countBulk"></span></button>
     <button class="tab-btn" data-tab="students" onclick="showTab('students')">學生編班 <span class="tab-count" id="countStudents"></span></button>
+    <button class="tab-btn" data-tab="roles" onclick="showTab('roles')">角色與權限 <span class="tab-count" id="countRoles"></span></button>
   </div>
 
   <section class="tab-pane active" data-pane="teachers">
@@ -274,9 +281,36 @@
     </div>
   </section>
 
+  <section class="tab-pane" data-pane="roles">
+    <h1>角色與權限</h1>
+    <div class="sub">現實系統目前只有「校務行政」一個角色，何主任要逐個帳戶手動賦予或收回權限。呢度示範一個角色可以拆細——每位老師可以同時持有多於一個角色，各自對應一個較窄的可見範圍，而唔係全部人都睇晒全校資料。</div>
+
+    <div class="foundation">🏗 角色是老師身分上的<b>標籤</b>，唔係另一種帳戶——同一個人可以同時係「任教老師」＋「科主任」，或者「任教老師」＋「SEN 統籌」。收回角色只會縮窄佢睇到嘅範圍，唔會影響佢原本任教班別嘅日常操作。</div>
+
+    <div id="roleLegend" class="role-legend"></div>
+
+    <div class="bulk-select-banner" id="roleBulkBar" style="display:none;"></div>
+
+    <table>
+      <thead><tr><th></th><th>教師</th><th>所屬科組</th><th>目前角色</th><th></th></tr></thead>
+      <tbody id="roleTbody"></tbody>
+    </table>
+
+    <div class="downstream" style="margin-top:20px;">
+      <b>角色收窄咗乜嘢（構想中，此原型只做示意）</b>
+      <p class="why">目的：唔係淨係加多一個標籤，而是實際上縮窄一個人平時睇到嘅資料範圍。以「科主任」為例：</p>
+      <div class="sync-steps">
+        <div class="sync-step"><span class="num">1</span><span><b>科組統計視圖</b>（見 dept.html）— 只有持有「科主任」角色嘅老師先會睇到本科全班別嘅統計，其他任教老師只睇自己任教嘅班別</span></div>
+        <div class="sync-step"><span class="num">2</span><span><b>SEN 統籌</b> — 只有持有呢個角色嘅老師先睇到全校 SEN 標籤與支援計劃狀態，其他人（包括科主任）睇唔到</span></div>
+        <div class="sync-step"><span class="num">3</span><span><b>校務行政</b> — 依然係目前現實系統入面實際做緊呢啲事嘅角色，呢次拆分想收窄佢嘅範圍，唔係取代佢</span></div>
+      </div>
+      <p class="why-caveat">⚠️ 呢個原型只喺 dept.html 加咗一句對應說明，實際嘅角色式權限收窄（例如登入後自動隱藏睇唔到嘅畫面）未接通，需要平台知道「而家登入緊嘅係邊個」，同「編配之後理應發生的事」提到嘅缺口一樣。</p>
+    </div>
+  </section>
+
   <footer class="note">
-    學校管理系統 · 故事 2「The Reliable Roster」示意畫面 · 內部示範原型，僅供概念演示<br>
-    名冊維護是全平台唯一今天已真實存在的基礎功能；教師名冊、任教編配與學生編班則是為它補建的示意視窗（原「完整度檢視」已折疊為「學生編班」內的班別狀態標籤，不再獨立成頁）。
+    學校管理系統 · 故事 2「The Reliable Roster」／故事 3「角色與權限」示意畫面 · 內部示範原型，僅供概念演示<br>
+    名冊維護是全平台唯一今天已真實存在的基礎功能；教師名冊、任教編配、學生編班與角色權限則是為它補建的示意視窗（原「完整度檢視」已折疊為「學生編班」內的班別狀態標籤，不再獨立成頁）。
   </footer>
 </div>
 </div>
@@ -890,6 +924,107 @@ function commitBulkBatch(){
   toast('批量編班完成 · '+requested+' 筆新生請求已送出，轉班 '+reassigned+(skippedCount ? '，尚有 '+skippedCount+' 筆待處理' : ''));
 }
 
+/* 角色與權限 (Story 3) — roles live on TEACHERS (vendor-data.js: roles:[]),
+ * not as a separate account type, so this tab never conflicts with 教師名冊's
+ * in-職/請假/已離職 status — a role toggle here changes visibility scope only,
+ * never employment status. classroom_teacher is the one role every teacher
+ * always holds and can't remove — it's the default, not an assignable extra. */
+let ROLE_SELECTED = new Set();
+
+function renderRoleLegend(){
+  document.getElementById('roleLegend').innerHTML = ROLE_DEFS.map(r=>
+    `<span class="role-chip" style="background:${r.color};" title="${r.scope}">${r.label}</span>`
+  ).join('');
+}
+
+function renderRoles(){
+  document.getElementById('countRoles').textContent = '('+TEACHERS.length+')';
+  document.getElementById('roleTbody').innerHTML = TEACHERS.map(t=>{
+    const roles = t.roles || ['classroom_teacher'];
+    const chips = roles.map(rid=>{
+      const removable = rid !== 'classroom_teacher';
+      return `<span class="role-chip" style="background:${roleColor(rid)};">${roleLabel(rid)}${removable ? `<span class="role-chip rm" onclick="removeRole('${t.name}','${rid}')" title="收回呢個角色">✕</span>` : ''}</span>`;
+    }).join('');
+    const assignable = ROLE_DEFS.filter(r=>r.id!=='classroom_teacher' && !roles.includes(r.id));
+    const addPicker = assignable.length
+      ? `<select class="role-add-pick" onchange="if(this.value){addRole('${t.name}', this.value); this.value='';}">
+          <option value="">+ 賦予角色…</option>
+          ${assignable.map(r=>`<option value="${r.id}">${r.label}</option>`).join('')}
+        </select>`
+      : '';
+    const selected = ROLE_SELECTED.has(t.name);
+    return `<tr data-role-teacher="${t.name}" class="${selected?'row-selected':''}">
+      <td><input type="checkbox" class="row-check" ${selected?'checked':''} onchange="toggleRoleSelect('${t.name}', this)"></td>
+      <td><b>${t.name}</b></td>
+      <td>${subjectName(t.subjectId)}</td>
+      <td><div class="role-chip-row">${chips}</div></td>
+      <td>${addPicker}</td>
+    </tr>`;
+  }).join('');
+  renderRoleBulkBar();
+}
+
+function addRole(name, roleId){
+  const t = TEACHERS.find(x=>x.name===name);
+  if (!t) return;
+  if (!t.roles) t.roles = ['classroom_teacher'];
+  if (!t.roles.includes(roleId)) t.roles.push(roleId);
+  renderRoles();
+  toast('已賦予 '+name+'「'+roleLabel(roleId)+'」角色');
+}
+function removeRole(name, roleId){
+  const t = TEACHERS.find(x=>x.name===name);
+  if (!t) return;
+  t.roles = (t.roles||[]).filter(r=>r!==roleId);
+  renderRoles();
+  toast('已收回 '+name+'「'+roleLabel(roleId)+'」角色');
+}
+
+function toggleRoleSelect(name, el){
+  if (el.checked) ROLE_SELECTED.add(name); else ROLE_SELECTED.delete(name);
+  renderRoles();
+}
+/* Batch apply/revoke — this is the actual fix for "何主任 mustn't touch
+ * accounts one at a time": select a handful of teachers (e.g. everyone who
+ * just joined a subject panel this term) and grant/revoke one role across
+ * all of them in a single action, instead of opening each teacher's row. */
+function renderRoleBulkBar(){
+  const bar = document.getElementById('roleBulkBar');
+  if (!ROLE_SELECTED.size){ bar.style.display = 'none'; bar.innerHTML = ''; return; }
+  bar.style.display = 'flex';
+  const opts = ROLE_DEFS.filter(r=>r.id!=='classroom_teacher').map(r=>`<option value="${r.id}">${r.label}</option>`).join('');
+  bar.innerHTML = `
+    已選 <b>${ROLE_SELECTED.size}</b> 位教師 ·
+    <select id="roleBulkPick" class="role-add-pick">${opts}</select>
+    <button class="act" onclick="bulkApplyRole()">批量賦予</button>
+    <button class="act" onclick="bulkRevokeRole()">批量收回</button>
+    <button class="act" onclick="clearRoleSelect()">清除選擇</button>`;
+}
+function clearRoleSelect(){ ROLE_SELECTED.clear(); renderRoles(); }
+function bulkApplyRole(){
+  const roleId = document.getElementById('roleBulkPick').value;
+  let count = 0;
+  ROLE_SELECTED.forEach(name=>{
+    const t = TEACHERS.find(x=>x.name===name);
+    if (!t) return;
+    if (!t.roles) t.roles = ['classroom_teacher'];
+    if (!t.roles.includes(roleId)){ t.roles.push(roleId); count++; }
+  });
+  renderRoles();
+  toast('已為 '+count+' 位教師賦予「'+roleLabel(roleId)+'」角色');
+}
+function bulkRevokeRole(){
+  const roleId = document.getElementById('roleBulkPick').value;
+  let count = 0;
+  ROLE_SELECTED.forEach(name=>{
+    const t = TEACHERS.find(x=>x.name===name);
+    if (!t || !t.roles) return;
+    if (t.roles.includes(roleId)){ t.roles = t.roles.filter(r=>r!==roleId); count++; }
+  });
+  renderRoles();
+  toast('已為 '+count+' 位教師收回「'+roleLabel(roleId)+'」角色');
+}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 renderAssignments();
@@ -897,6 +1032,8 @@ populateStudentClassFilter();
 populateValidClassCodesHint();
 renderStudents();
 renderTeachers();
+renderRoleLegend();
+renderRoles();
 </script>
 <script src="demo-nav.js"></script>
 </body>

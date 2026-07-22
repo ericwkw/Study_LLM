@@ -165,13 +165,56 @@ function subjectName(id){ const s = SUBJECTS.find(x=>x.id===id); return s ? s.na
  * than each teacher-tier page silently assuming every named teacher is still
  * active. Mutate objects' fields in place (never reassign the TEACHERS array
  * itself) — same gotcha as CLASS_LIST, since other code may hold a reference. */
+/* `roles` added 2026-07-22 (Story 3, wave-one build): fixes the real gap named
+ * in EdCity_SMS_Consolidation_Stories.md Story 3 — the real Account Admin
+ * system only has one effective tier ("School Administrator"), so 李主任
+ * (subject panel head) can't get subject-wide visibility without either being
+ * handed full admin rights or being locked out entirely. Each teacher can now
+ * hold zero or more of ROLE_DEFS below, defaulting to just classroom_teacher.
+ * A person's TEACHERS entry and their role set are deliberately the same
+ * record — a "role" is a property of an existing identity, not a separate
+ * account type, so this doesn't reopen the identity/organization conflation
+ * fixed earlier this session. */
 const TEACHERS = [
-  {name:'陳老師', subjectId:'chi', contact:'chan.teacher@school.edu.hk', status:'active'},
-  {name:'黃老師', subjectId:'chi', contact:'wong.teacher@school.edu.hk', status:'active'},
-  {name:'李老師', subjectId:'chi', contact:'li.teacher@school.edu.hk', status:'leave'},
-  {name:'馬老師', subjectId:'ls', contact:'ma.teacher@school.edu.hk', status:'departed'},
+  {name:'陳老師', subjectId:'chi', contact:'chan.teacher@school.edu.hk', status:'active', roles:['classroom_teacher']},
+  {name:'黃老師', subjectId:'chi', contact:'wong.teacher@school.edu.hk', status:'active', roles:['classroom_teacher']},
+  {name:'李老師', subjectId:'chi', contact:'li.teacher@school.edu.hk', status:'leave', roles:['classroom_teacher']},
+  {name:'馬老師', subjectId:'ls', contact:'ma.teacher@school.edu.hk', status:'departed', roles:['classroom_teacher']},
+  /* 李主任 previously existed only as a static, unmanaged persona in dept.html's
+   * topbar — never an actual roster entry, so there was nowhere to demonstrate
+   * that his subject-wide visibility could be a scoped role rather than full
+   * admin. Added here so the fix has a real record to point at. */
+  {name:'李主任', subjectId:'chi', contact:'lee.panelhead@school.edu.hk', status:'active', roles:['classroom_teacher','subject_panel_head']},
+  /* New example teacher so sen_coordinator has a concrete holder to demonstrate
+   * against too, not just a role that exists in name only. */
+  {name:'梁老師', subjectId:'ls', contact:'leung.teacher@school.edu.hk', status:'active', roles:['classroom_teacher','sen_coordinator']},
 ];
 function activeTeachers(){ return TEACHERS.filter(t=>t.status==='active'); }
+
+/* Role definitions — the near-term fix confirmed for Story 3: a FIXED set of
+ * named roles, not open-ended custom roles (that's explicitly flagged as
+ * speculative/deferred in the stories doc). Each role's `scope` is a plain
+ * description of what it grants, shown in the roster's roles tab and
+ * referenced from the pages the role actually governs — kept as prose here
+ * rather than a real permissions engine, since this is still a prototype, not
+ * a built access-control system. */
+const ROLE_DEFS = [
+  {id:'classroom_teacher', label:'任教老師', color:'var(--ec-blue)',
+   scope:'預設角色，每位教師都有。只看到自己任教班別的資料，可使用 AI 教學工具、教學分組、學生工具申請等課堂層級功能。'},
+  {id:'subject_panel_head', label:'科主任', color:'var(--ec-purple)',
+   scope:'可查閱本科所有班別的統計視圖（科組統計視圖），毋須擁有校務處的完整權限。範圍只限本科，不涉及其他科目或校務行政功能。'},
+  {id:'sen_coordinator', label:'SEN 統籌', color:'var(--ec-teal)',
+   scope:'可查閱全校學生的 SEN 標籤與支援計劃狀態。呢類資料比一般學術資料敏感，範圍獨立於科主任之外，亦不等同於校務行政權限。'},
+  {id:'ict_coordinator', label:'資訊科技統籌', color:'#7C5CDB',
+   scope:'管理 EdMarket 訂閱與 EdData 供應商資料存取審批。不涉及學生／教師身分紀錄（該職能由校務紀錄組獨立負責）。'},
+  {id:'school_admin', label:'校務行政', color:'var(--ec-blue-dark)',
+   scope:'管理教師名冊、任教編配、批量編班、學生編班等全校組織性事務。現實系統目前只有呢一個角色，正是呢次角色拆分想解決的權限過度集中問題。'},
+  {id:'principal', label:'校長', color:'#8a5a00',
+   scope:'可查閱全校（跨科）層面的統計與趨勢視圖，不涉及個別學生的日常課堂操作。'},
+];
+function roleLabel(roleId){ const r = ROLE_DEFS.find(x=>x.id===roleId); return r ? r.label : roleId; }
+function roleColor(roleId){ const r = ROLE_DEFS.find(x=>x.id===roleId); return r ? r.color : 'var(--ink-3)'; }
+function teachersWithRole(roleId){ return TEACHERS.filter(t=>(t.roles||[]).includes(roleId)); }
 
 function classGroups(classId){ return (CLASSES[classId] && CLASSES[classId].groups) || []; }
 function groupMembers(classId, groupId){
