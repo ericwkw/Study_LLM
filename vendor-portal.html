@@ -202,17 +202,23 @@
       </div>
     </div>
   </section>
-
-  <footer class="note">
-    EdCity 供應商入口 · 供應商側示意畫面 · 內部示範原型，僅供概念演示<br>
-    此畫面沒有對應的用戶故事；內容由故事 3（審核方視角）鏡像推導而成，當中假設（例如供應商可否看到審核備註全文）仍待驗證。
-  </footer>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
+/* 邀請老師試用 is the toolTrial slice of this page — 認證進度 (the default tab)
+ * is unrelated and stays regardless of this flag. */
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof featureOn === 'function' && !featureOn('toolTrial')) {
+    const btn = document.querySelector('[data-tab="invite"]');
+    const pane = document.querySelector('[data-pane="invite"]');
+    if (btn) btn.style.display = 'none';
+    if (pane) pane.style.display = 'none';
+  }
+});
 function resubmit(btn){btn.textContent='已上傳 · 待覆核 ✓';btn.disabled=true;toast('對應文件已提交 · EdMarket 將安排覆核會議');}
 
 /* This vendor persona is 智寫科技 (zhixie). Trials created here are pushed into the

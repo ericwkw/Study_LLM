@@ -119,16 +119,6 @@
   <h1>中文科 · 科組統計</h1>
   <div class="sub">滙總全科五位教師的數據，只顯示<b>趨勢方向</b>（進步／持平／回落），按年級及技能維度呈現。2025/26 下學期。</div>
 
-  <div class="principle">
-    <b>🛡️ 刻意的設計：不設教師排名</b>
-    排名比較的前提，是假設每位教師的評分尺度完全一致；事實並非如此，這樣比較也不公平。此視圖要回答的是「新閱讀計劃是否見效」，而不是「哪位教師的班進步最快」。至於跨教師校準數據的存取權限，仍待領導層決定。
-  </div>
-
-  <div class="principle" style="border-left-color:var(--ec-purple, #9333ea);">
-    <b>🔑 角色與此畫面的關係（構想中，SMS 故事 3）</b>
-    此全科視圖不應人人都看到——只有在 SMS 校務處控制台（roster.html）持有「科主任」角色的老師（目前是李主任），才看到全科所有班別的滙總，其他任教老師只看到自己任教的班別。此原型未接通登入身分，畫面實際上未有按角色隱藏或顯示，只是在此標明應有的範圍界線。
-  </div>
-
   <div class="cards">
     <div class="stat"><div class="k">全科整體趨勢</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
     <div class="stat"><div class="k">中一級</div><div class="v up"><span class="dir">▲</span>進步中</div></div>
@@ -149,9 +139,6 @@
       <tr><td>自願重寫／訂正率（沒有分數誘因下）</td><td><span class="trend flat">▶ 大致持平</span></td><td>非考核指標</td></tr>
     </tbody>
   </table>
-  <div class="dim-note">作為政府資助機構，成效不應只看考試表現。持續學習的意欲與成績同樣重要，此視圖兩者並列。</div>
-
-  <footer class="note">EdCity 科組視圖 · 故事 7「The Department Picture」示意畫面 · 內部示範原型，僅供概念演示</footer>
 </div>
 </main>
 
@@ -160,6 +147,7 @@
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>

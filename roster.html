@@ -174,21 +174,15 @@
     <h1>教師名冊</h1>
     <div class="sub">教師的在職狀態、所屬科組與聯絡方式，由校務處在此維護——任教編配、供應商邀請等畫面應信任這裡的紀錄，而不是各自假設「這個名字仍然在職」。</div>
 
-    <div class="foundation">🏗 只有<b>在職中</b>的教師會在「任教編配」的重新編配選單中出現；請假或已離職的教師不能被指派新的班別。</div>
-
     <table>
       <thead><tr><th>教師</th><th>所屬科組</th><th>聯絡方式</th><th>狀態</th><th></th></tr></thead>
       <tbody id="teacherTbody"></tbody>
     </table>
-
-    <div class="scope-note">⚠️ 狀態變更會即時影響本頁「任教編配」分頁的重新編配選單（本頁開啟期間有效）；此原型沒有跨頁面的資料儲存，離開此頁後不會保留。</div>
   </section>
 
   <section class="tab-pane" data-pane="assign">
     <h1>任教編配</h1>
     <div class="sub">哪位老師任教哪一班、哪一科，由校務處在此編配——教學分組、學生工具申請、試用邀請等教師畫面看到的班別，源頭都在這裡，不是各自另外設定。</div>
-
-    <div class="foundation">🏗 學生與教師的正式身分紀錄由校務紀錄組（曾主任）保存；但紀錄「怎樣組織」——即誰教哪一班——是校務處在校管系統（SMS）的職責。（2026-07-22 修正：此前誤把身分保存職能歸於 EdData——真實的 EdData 只治理供應商資料存取，不保存身分紀錄，見 records-console.html。）</div>
 
     <table>
       <thead><tr><th>老師</th><th>班別</th><th>科目</th><th>學年</th><th></th></tr></thead>
@@ -196,26 +190,11 @@
     </table>
 
     <div id="reassignBox"></div>
-
-    <div class="downstream" style="margin-top:20px;">
-      <b>編配之後，理應發生的事（構想中，此原型尚未真正接通）</b>
-      <p class="why">目的：校務處只需要在這裡改一次，新舊老師的教學畫面就應該自動反映，不用另外通知任何人——就像轉班一樣。以下是應該出現的效果：</p>
-      <div class="sync-steps">
-        <div class="sync-step"><span class="num">1</span><span><b>新老師的教學分組</b> — 一登入就看到這個班，不用自己去申請或設定</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>新老師的學生工具申請／試用邀請</b> — 原本卡在舊老師名下的待處理項目，自動轉交給她</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>原本老師的畫面</b> — 這個班從她的畫面消失，避免她誤以為自己還要負責</span></div>
-      </div>
-      <p class="why-caveat">⚠️ 但目前按「確認編配」只會更新上面這個表格，不會真的觸發以上三件事——要做到這樣，需要教學分組等畫面知道「現在登入的是誰」，這個原型還沒有這個機制。</p>
-    </div>
   </section>
 
   <section class="tab-pane" data-pane="bulk">
     <h1>批量編班</h1>
     <div class="sub">貼上或上載 CSV，一次處理多位學生的班別——用於<b>學期中的例外情況</b>：個別插班生、學期中改組等。系統會逐行判斷：這個名字是新生，還是已存在、要轉班？</div>
-    <div class="scope-note" style="margin:0 0 16px;">⚠️ <b>不是</b>開學時全校性收生的機制——那是官方學籍紀錄（來源：WebSAMS）進入校管系統（SMS）身分層的問題，屬於另一個尚未設計的範圍，不應該和這裡的「學期中個別例外」混為一談。詳見下方「此原型刻意不做的事」。</div>
-
-    <div class="foundation">🏗 判斷方式：若填有<b>學生編號</b>並能在現有名冊中對應到一位在校學生，直接視為「現有轉班」（編號不會重複，不需要人手核實）；沒有編號時退而求其次，改以姓名比對——若姓名唯一對應到一位在校學生，視為「現有轉班」；找不到對應，視為「新生」；若姓名對應到多於一位同名學生，會請你手動核實，不會自動猜測。</div>
-
     <div class="bulk-input">
       <textarea id="bulkCsvInput" rows="6" placeholder="姓名,學生編號(選填),目標班別代碼,HKID尾4碼(選填),家長聯絡電話(選填),SEN備註(選填)"></textarea>
     </div>
@@ -227,24 +206,11 @@
     </div>
 
     <div id="bulkPreviewWrap"></div>
-
-    <div class="downstream" style="margin-top:20px;">
-      <b>此原型刻意不做的事（已決定，非遺漏）</b>
-      <p class="why">批量匯入牽涉真實學生的敏感個人資料，範圍比單一轉班大得多——以下兩點刻意留白，是判斷過的結果，不是還沒做完：</p>
-      <div class="sync-steps">
-        <div class="sync-step"><span class="num">1</span><span><b>批次紀錄與局部復原</b> — 執行後無法查到「這是哪一次匯入」，也無法只還原批次中的一位學生；要做到這樣，需要一整套批次紀錄與復原機制，遠超這個示意原型的範圍</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>敏感資料應否留在校方手上</b> — HKID、SEN 備註等資料應否曾以 CSV 形式存在於校務處的電腦上，是校本資料管治政策問題，不是介面設計可以代為決定的事</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>開學時的全校性學籍收生</b> — 曾經誤把這個畫面當成「一次過收生」的機制；每一筆新生都要校務紀錄組（曾主任）個別審批，對插班等零星個案沒問題，但用來處理全校規模的收生會需要逐一核准數百筆請求。真正的年度收生應該是另一條路徑（很可能由 WebSAMS 官方學籍來源直接進入校管系統身分層，而非經校務處逐筆上載 CSV 請求），機制細節仍待確認，不在這個畫面的範圍內</span></div>
-      </div>
-      <p class="why-caveat">⚠️ 這裡示範的是「安全欄位預設可見、敏感欄位需手動展開」的介面模式，不代表已回答「敏感資料應否以此形式匯出」這個問題。<br>另外：即使填有 HKID／家長聯絡電話／SEN 備註，確認執行後校管系統也<b>不會保留</b>這些欄位——只用作匯入當刻核對是否配對到正確學生；正式的身分與個人記錄由校務紀錄組（曾主任）保存，校管系統只負責「怎樣編班」。</p>
-    </div>
   </section>
 
   <section class="tab-pane" data-pane="students">
     <h1>學生編班</h1>
     <div class="sub">哪位學生屬於哪一班，同樣由校務處在此編配——這與「教學分組」不同：教學分組是老師按教學需要自行劃分的小組，只有老師自己看到；學生編班是正式的班別歸屬，教學分組、批改入檔、學生入口都跟著它走。</div>
-
-    <div class="foundation">🏗 這裡管理的是<b>班別</b>歸屬（正式、全平台共用）；組別（增潤組／核心組／支援組）則由老師在「教學分組」自行決定，校務處不會、也不需要看到。<br>🆕 新生的身分由校務紀錄組（曾主任）核准建立（見「批量編班」），但核准當下<b>不會</b>自動編班——會先以「未編班」狀態出現在下方，指派班別是獨立的一步，一律在這裡完成。</div>
 
     <div class="table-toolbar">
       <input type="text" id="studentSearch" placeholder="🔍 搜尋學生姓名…" oninput="renderStudents()">
@@ -267,25 +233,11 @@
       <tbody id="studentTbody"></tbody>
     </table>
 
-    <div class="scope-note" id="studentScopeNote"></div>
-
-    <div class="downstream" style="margin-top:20px;">
-      <b>轉班之後，理應發生的事</b>
-      <p class="why">目的：校務處只需要在這裡轉一次班，不用另外通知教學分組、批改系統、學生入口——這些畫面應該自動跟著更新：</p>
-      <div class="sync-steps">
-        <div class="sync-step"><span class="num">1</span><span><b>教學分組</b> — 學生自動從原班老師的組別名單中消失，不會誤發教材或工具給她</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>批改入檔</b> — 之後交的功課，成績計入新班，不會誤記在原班</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>學生入口</b> — 學生登入時看到的班別立即更新</span></div>
-      </div>
-      <p class="why-caveat">⚠️ 在這一頁按「確認轉班」，確實會即時更新上方名單（本頁開啟期間有效）；但教學分組等畫面是獨立的頁面，這個原型沒有跨頁面的資料儲存，所以離開這一頁後，教學分組實際打開時看到的仍是原本的示範學生名單。</p>
-    </div>
   </section>
 
   <section class="tab-pane" data-pane="roles">
     <h1>角色與權限</h1>
     <div class="sub">現實系統目前只有「校務行政」一個角色，何主任要逐個帳戶手動賦予或收回權限。此處示範角色可以拆細：每位老師可同時持有多於一個角色，各自對應較窄的可見範圍，而非人人都看到全校資料。</div>
-
-    <div class="foundation">🏗 角色是老師身分上的<b>標籤</b>，並非另一種帳戶——同一人可同時是「任教老師」及「科主任」，或「任教老師」及「SEN 統籌」。收回角色只會縮窄其可見範圍，不影響原本任教班別的日常操作。</div>
 
     <div id="roleLegend" class="role-legend"></div>
 
@@ -295,27 +247,12 @@
       <thead><tr><th></th><th>教師</th><th>所屬科組</th><th>目前角色</th><th></th></tr></thead>
       <tbody id="roleTbody"></tbody>
     </table>
-
-    <div class="downstream" style="margin-top:20px;">
-      <b>角色收窄咗乜嘢（構想中，此原型只做示意）</b>
-      <p class="why">目的並非只加一個標籤，而是實際縮窄一個人平時看到的資料範圍。以「科主任」為例：</p>
-      <div class="sync-steps">
-        <div class="sync-step"><span class="num">1</span><span><b>科組統計視圖</b>（見 dept.html）— 只有持有「科主任」角色的老師會看到本科全班別的統計，其他任教老師只看到自己任教的班別</span></div>
-        <div class="sync-step"><span class="num">2</span><span><b>SEN 統籌</b> — 只有持有此角色的老師看到全校 SEN 標籤與支援計劃狀態，其他人（包括科主任）看不到</span></div>
-        <div class="sync-step"><span class="num">3</span><span><b>校務行政</b> — 依然是目前現實系統中實際負責這些事的角色，此次拆分是想收窄其範圍，而非取代它</span></div>
-      </div>
-      <p class="why-caveat">⚠️ 此原型只在 dept.html 加了一句對應說明，實際的角色式權限收窄（例如登入後自動隱藏看不到的畫面）尚未接通，需要平台知道「目前登入的是誰」，與「編配之後理應發生的事」提到的缺口相同。</p>
-    </div>
   </section>
-
-  <footer class="note">
-    學校管理系統 · 故事 2「The Reliable Roster」／故事 3「角色與權限」示意畫面 · 內部示範原型，僅供概念演示<br>
-    名冊維護是全平台唯一今天已真實存在的基礎功能；教師名冊、任教編配、學生編班與角色權限則是為它補建的示意視窗（原「完整度檢視」已折疊為「學生編班」內的班別狀態標籤，不再獨立成頁）。
-  </footer>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
 function showTab(name){
@@ -466,8 +403,6 @@ function renderStudents(){
   });
   if (!rows.length) rows.push('<tr><td colspan="6" style="text-align:center;color:var(--ink-3);padding:26px;">沒有符合條件的學生</td></tr>');
   document.getElementById('studentTbody').innerHTML = rows.join('');
-  document.getElementById('studentScopeNote').innerHTML =
-    '⚠️ 此分頁讀寫的是與「教學分組」「學生工具申請」「試用邀請」相同的班別資料（本頁開啟期間即時生效），但這個原型沒有跨頁面的資料儲存——離開此頁後再打開其他畫面，看到的仍是原本的示範資料。';
   renderBulkSelectBar();
 }
 function toggleRowSelect(el){

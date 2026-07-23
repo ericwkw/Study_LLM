@@ -187,9 +187,7 @@
     <p>「符合準則」到哪裏為止、「背書」從哪裏開始？認證狀態的確切措辭，須待裁定後方可發佈。現行工作措辭如下：</p>
     <div class="quote">「此工具已通過教育城基準合規審核。教育城不就採購作任何推薦。」</div>
   </div>
-
-  <footer class="note">EdCity 供應商審核 · 故事 3「Before It's Trustworthy」示意畫面 · 內部示範原型，僅供概念演示</footer>
-  </div>
+</div>
 </main>
 
 <div class="toast" id="toast"></div>
@@ -197,6 +195,7 @@
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>

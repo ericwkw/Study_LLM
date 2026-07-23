@@ -20,6 +20,10 @@ const CSS = `
 .dn-panel .tag.r{color:#b91c1c;background:#fee2e2;}
 .dn-panel .legend{font-size:.62rem;color:#8a97a3;margin-top:10px;padding:8px 4px 0;border-top:1px solid #e6ebf0;line-height:1.6;}
 `;
+/* 4th element (optional) = feature-flag key from feature-flags.js. An entry
+ * whose flag is off is filtered out of the nav entirely (page is untouched on
+ * disk — just not listed here for this walkthrough). See feature-flags.js for
+ * what each flag covers and why. */
 const PAGES = [
   {group:'👩‍🏫 教師（陳老師）', items:[
     ['index.html','AI 工具首頁',''],
@@ -30,12 +34,12 @@ const PAGES = [
     ['material-library.html','教材庫（我的教材）','y'],
     ['groups.html','教學分組','y'],
     ['group-access-requests.html','學生工具申請（含全班／分組、成員異動提示）','y'],
-    ['trial-invites.html','試用邀請（供應商發起）','r'],
+    ['trial-invites.html','試用邀請（供應商發起）','r','toolTrial'],
     ['insights.html','班級學習面貌（核心價值，含多班切換）','r'],
   ]},
   {group:'📈 科主任（李主任）', items:[
     ['dept.html','科組統計視圖','y'],
-    ['dept-trial-evaluations.html','工具試用評估','y'],
+    ['dept-trial-evaluations.html','工具試用評估','y','toolTrial'],
   ]},
   {group:'🔧 資訊科技統籌（馮 Sir）', items:[
     ['subscriptions.html','訂閱管理','y'],
@@ -45,7 +49,7 @@ const PAGES = [
     ['roster.html','校務處控制台（教師名冊／任教編配／批量編班／學生編班）','y'],
   ]},
   {group:'🗂 校務紀錄組（曾主任）', items:[
-    ['records-console.html','身分紀錄審批（2026-07-22 新增，取代誤植於 EdData 的同一職能）','r'],
+    ['records-console.html','身分紀錄審批（2026-07-22 新增，取代誤植於 EdData 的同一職能）','r','recordsApproval'],
   ]},
   {group:'🎒 學生／家長（Karen）', items:[
     ['student.html','學生／家長入口','r'],
@@ -66,7 +70,12 @@ function init(){
   const pill=document.createElement('button');pill.className='dn-pill';pill.textContent='🧭 示範導覽';
   const panel=document.createElement('div');panel.className='dn-panel';
   const here=location.pathname.split('/').pop()||'index.html';
-  panel.innerHTML = PAGES.map(g=>'<h6>'+g.group+'</h6>'+g.items.map(([f,n,t])=>
+  // Filter by feature flag (typeof-guarded: pages that don't load feature-flags.js
+  // for some reason just show everything, rather than throwing).
+  const flagOn = k => (typeof featureOn === 'function') ? featureOn(k) : true;
+  const visiblePages = PAGES.map(g=>({group:g.group, items:g.items.filter(([,,,flag])=>!flag || flagOn(flag))}))
+    .filter(g=>g.items.length);
+  panel.innerHTML = visiblePages.map(g=>'<h6>'+g.group+'</h6>'+g.items.map(([f,n,t])=>
     '<a href="'+f+'"'+(f===here?' class="here"':'')+'>'+n+(t?'<span class="tag '+t+'">'+(t==='y'?'🟡 提案中':'🔴 待決策')+'</span>':'')+'</a>'
   ).join('')).join('')
   + '<div class="legend">🟡 提案中＝設計方案，未建置　🔴 待決策＝尚待管治／領導層決定<br>正式產品不會顯示此導覽。</div>';

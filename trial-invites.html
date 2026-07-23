@@ -127,13 +127,13 @@
 
   <h2>已回應的邀請</h2>
   <div id="decidedList"></div>
-
-  <footer class="note">EdCity 試用邀請 · 課堂層級示意畫面 · 內部示範原型，僅供概念演示</footer>
 </main>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
+guardWholePage('toolTrial', '.main');
 const MY_NAME = '陳老師';
 let activeClassId = '2b';
 

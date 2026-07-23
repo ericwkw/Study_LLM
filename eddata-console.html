@@ -226,8 +226,6 @@
   <h1>資料存取審批</h1>
   <div class="sub">你管理的是<b>供應商關係</b>，不是一張張孤立的申請單。每個供應商有自己已核准的層級與組別；新請求要對照這個關係來看，而不是每次由零判斷。</div>
 
-  <div class="foundation">🔐 每個供應商的存取記錄會<b>累積</b>：新請求會加到同一供應商已有的層級與組別之上，而不是重新計算。訂閱管理決定「用不用這件工具」；這裏決定「供應商能看到哪一層資料」。學生與教師的正式身分紀錄不在這裏——那是<b>校務紀錄審批</b>（曾主任，見 records-console.html）的職責，EdData 只治理供應商能看到已存在紀錄的哪一部分。</div>
-
   <div class="tabs">
     <button class="tab-btn active" data-tab="relations" onclick="showTab('relations')">供應商關係</button>
     <button class="tab-btn" data-tab="trials" onclick="showTab('trials')">試用請求<span class="tab-count" id="trialCount" style="display:none;"></span></button>
@@ -245,10 +243,6 @@
     <h2>供應商關係</h2>
     <div id="vendorList"></div>
 
-    <div class="downstream">
-      <b>審批後的下游影響（自動，毋須人手跟進）</b>
-      <span class="flow">核准層級 → <em>供應商</em> 取得範圍內資料，僅限已核准組別 → <em>Apps／代理</em>（EdCity.ai）顯示「校方已核准」 → 本頁的供應商關係與稽核記錄同步更新，教師與 IT 統籌均可查閱</span>
-    </div>
   </section>
 
   <section class="tab-pane" data-pane="trials">
@@ -261,17 +255,25 @@
     <h2>稽核記錄</h2>
     <div class="audit" id="auditList"></div>
   </section>
-
-  <footer class="note">
-    EdData 存取審批 · 校管系統示意畫面 · 內部示範原型，僅供概念演示<br>
-    此畫面與 EdCity.ai 教學工具分屬不同系統，透過 API 交換資料，並非同一應用的另一分頁。
-  </footer>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
+/* 試用請求 is the toolTrial slice of this page — the rest (供應商關係／稽核記錄) is
+ * unrelated data-access governance and stays regardless of this flag. Hides the
+ * tab entry itself, not the underlying render logic — flip the flag back and
+ * it's exactly as built. */
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof featureOn === 'function' && !featureOn('toolTrial')) {
+    const btn = document.querySelector('[data-tab="trials"]');
+    const pane = document.querySelector('[data-pane="trials"]');
+    if (btn) btn.style.display = 'none';
+    if (pane) pane.style.display = 'none';
+  }
+});
 const TIER_RANK = {'Tier 1 · 基本資料':1, 'Tier 2 · 敏感個人資料':2, 'Tier 3 · 表現數據':3};
 
 /* VENDORS and TRIALS are loaded from vendor-data.js (shared with subscriptions.html

@@ -132,8 +132,6 @@
   <h1>資料存取控制台</h1>
   <div class="sub">這裏顯示的一切都<b>由學校 EdData 批出</b>，你不能在此申請更多存取範圍或層級——要擴大範圍，須回到學校，由校方經 EdData 重新審批。</div>
 
-  <div class="foundation">🔒 資料存取範圍由學校決定，此頁僅反映 EdData 批出的結果，不能自行擴權。如需更多資料，請學校經 EdData 重新審批。</div>
-
   <div class="tabs">
     <button class="tab-btn active" data-tab="grant" onclick="showTab('grant')">已核准的資料存取</button>
     <button class="tab-btn" data-tab="accounts" onclick="showTab('accounts')">已建立的帳戶</button>
@@ -169,11 +167,6 @@
     </div>
     <div class="revoke-note">⚠️ <b>自動失效：</b>如學生轉組或轉班，下次同步時本系統會自動移除其帳戶對應——供應商不會保留已失效的存取，也毋須手動清理。這與校管系統（roster.html）的轉班同步是同一條自動鏈的延伸。</div>
   </section>
-
-  <footer class="note">
-    資料存取控制台 · 供應商側示意畫面 · 內部示範原型，僅供概念演示<br>
-    此畫面與 EdData 存取審批（eddata-console.html）分屬不同系統，供應商只透過 API 接收結果，看不到校方內部的審批過程。
-  </footer>
 </div>
 </div>
 
@@ -216,6 +209,7 @@ function showTab(name){
 renderAccounts();
 renderSync();
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>

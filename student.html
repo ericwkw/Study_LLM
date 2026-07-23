@@ -151,7 +151,6 @@
   </div>
   </div><!-- /practice-card -->
 
-  <div class="privacy">🔒 這裏只會顯示<b>你自己</b>的進度，沒有排名，也不會跟同學比較。這是刻意的設計，不是未完成的功能。</div>
 
   <div class="prog-card">
     <h3>技能進度</h3>
@@ -201,11 +200,6 @@
     <div class="consent"><span class="cb"></span>家長／監護人同意書 — 待家長於家長端確認（此示意畫面不可操作）</div>
     <button class="btn" disabled>暫未開放 · 待領導層風險決策</button>
   </div>
-
-  <footer class="note">
-    EdCity 學生／家長入口 · 故事 8「Karen's Own View」示意畫面 · 內部示範原型，僅供概念演示<br>
-    政府《藍圖》將學生使用 AI 歸入課程路徑；此入口屬平台自選項目，並無時間壓力，設計方案已備存待決。
-  </footer>
 </div>
 
 <script>
@@ -278,6 +272,7 @@ function sToast(m){
 /* apply default mood filter on load */
 setMood(document.querySelector('.mood.on'));
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>

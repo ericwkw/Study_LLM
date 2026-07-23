@@ -95,16 +95,13 @@
 
   <h1>工具試用評估</h1>
   <div class="sub">全科訂閱須先由你實測評估，才能交資訊科技統籌批出；個別教師自行試用毋須經過此步。若評估不通過，會記錄原因，供應商在冷靜期內不能就同一工具再次申請全科評估。</div>
-  <div class="off-system-note">邀約試用的接洽（供應商聯絡、約時間）維持在系統之外進行，如電郵或電話；下方的評估紀錄由你接洽後自行建立。</div>
-
   <div id="trialList"></div>
-
-  <footer class="note">EdCity 工具試用評估 · 科組視圖延伸畫面 · 內部示範原型，僅供概念演示</footer>
 </div>
 </main>
 
 <div class="toast" id="toast"></div>
 <script>
+guardWholePage('toolTrial', '.main');
 const TRIALS = [
   {id:'d1', vendor:'智寫科技', product:'寫作回饋工具', status:'pending', declineReason:null, cooldownUntil:null},
   {id:'d2', vendor:'語音通 AI', product:'AI 朗讀評測全科版', status:'declined',
@@ -169,6 +166,7 @@ let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1700);}
 renderTrials();
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>

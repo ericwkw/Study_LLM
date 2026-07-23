@@ -173,8 +173,6 @@
     </div>
   </div>
 
-  <div class="ownership">🔒 分組只有你看得到——行政系統與科組統計都不會採用。學生轉班後會自動退出，毋須手動清理。</div>
-
   <div class="toolbar">
     <button class="btn" onclick="toast('原型示範：建立新分組')">＋ 新增分組</button>
     <span class="hint-move">提示：拖放學生到另一組，或點按移至下一組</span>
@@ -205,11 +203,10 @@
       <button class="btn" onclick="createStudyGroup()">建立學習小組</button>
     </div>
   </div>
-
-  <footer class="note">EdCity 教學分組 · 故事 1「Teaching Groups」延伸示意畫面 · 內部示範原型，僅供概念演示</footer>
 </main>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
 /* GROUPS/students used to live only here; they're now CLASSES[classId].groups/.students

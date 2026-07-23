@@ -127,8 +127,6 @@
   <h1>身分紀錄審批</h1>
   <div class="sub">你負責的是 SMS 裏最不可逆的一類事實：一位新生的身分正式成立，或一位教師的僱傭關係正式終結。校務處（何主任）可以提出請求，但不能自行執行——這裏是唯一能把這些事實寫進正式紀錄的地方。</div>
 
-  <div class="foundation">🗂 正式的學生與教師身分紀錄由校管系統（SMS）保存，經此頁核准後生效。這與 <b>EdData</b>（供應商資料存取審批，見 eddata-console.html）是完全不同的職能——EdData 決定供應商能看到哪一層資料，這裏決定「這個人是否正式存在於系統」。</div>
-
   <div class="tabs">
     <button class="tab-btn active" data-tab="identity" onclick="showTab('identity')">身分紀錄請求<span class="tab-count" id="identityCount" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="audit" onclick="showTab('audit')">稽核記錄</button>
@@ -143,27 +141,20 @@
     <div class="sub" style="margin:0 0 12px;max-width:56em;">教師的在職狀態屬於正式僱傭記錄，同樣由你保存；校務處在「教師名冊」只能提出變更請求，須經你核准後才會實際生效。</div>
     <div id="statusReqList"></div>
 
-    <div class="downstream">
-      <b>核准後的下游影響</b>
-      <span class="flow">新生請求核准 → <em>學生編班</em>會出現這位學生，並獲派學生編號 → 教學分組等畫面才會看到她。教師狀態請求核准 → <em>任教編配</em>的重新編配選單才會反映新的在職狀態。本頁與校務處控制台是不同頁面，此原型沒有跨頁面資料儲存——核准動作只在本頁的瀏覽階段內生效。</span>
-    </div>
   </section>
 
   <section class="tab-pane" data-pane="audit">
     <h2>稽核記錄</h2>
     <div class="audit" id="auditList"></div>
   </section>
-
-  <footer class="note">
-    校務紀錄審批 · 校管系統示意畫面 · 內部示範原型，僅供概念演示<br>
-    2026-07-22 修正：此職能原先錯誤地放在 eddata-console.html（馮 Sir）之下——真實的 EdData 只負責供應商資料存取治理，沒有身分審批功能。此頁把該職能移到獨立、正確歸屬的角色（曾主任）之下，即使日後決定合併給現有角色，範圍也已清楚定義，毋須重新推導。
-  </footer>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="feature-flags.js"></script>
 <script src="vendor-data.js"></script>
 <script>
+guardWholePage('recordsApproval', '.sys-main');
 function showTab(name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active', p.dataset.pane===name));

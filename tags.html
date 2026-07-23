@@ -158,9 +158,7 @@
     </tbody>
   </table>
   <div class="tax-note">分類法（科目 × 技能維度 × 掌握程度）由跨職能工作小組負責，<b>內容尚未定案</b>，上表僅為示意。所謂「與政府對齊」，實質就是對應官方課程框架：供應商工具、AI 批改與科組統計使用同一套語言，而這套語言以官方課程為本，並非平台自創。</div>
-
-  <footer class="note">EdCity 標籤審核與管理 · 故事 6「The Tag Check」示意畫面 · 內部示範原型，僅供概念演示</footer>
-  </div>
+</div>
 </main>
 
 <div class="toast" id="toast"></div>
@@ -175,6 +173,7 @@ function fixTag(btn){
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1900);}
 </script>
+<script src="feature-flags.js"></script>
 <script src="demo-nav.js"></script>
 </body>
 </html>
